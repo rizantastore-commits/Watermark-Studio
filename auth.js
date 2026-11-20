@@ -84,6 +84,16 @@ const Auth = (() => {
   </div></div>`);
   const hb = Q('.hb');
   if (hb && !ADMIN_PAGE) hb.insertAdjacentHTML('beforeend', '<button class="upg" id="upg" data-plans aria-label="Premium" hidden>👑<em>Premium</em></button><button class="ib um" id="um" aria-label="Akun saya" hidden></button>');
+  if (hb && !ADMIN_PAGE) { // HP: tombol sekunder dikumpulkan ke satu menu ☰ supaya header rapi (di layar lebar tetap tampil biasa)
+    const mn = document.createElement('div'); mn.className = 'hmenu'; mn.id = 'hmenu';
+    [...hb.children].forEach(c => { if (c.id != 'un' && c.id != 're') mn.appendChild(c); });
+    hb.appendChild(mn);
+    hb.insertAdjacentHTML('beforeend', '<button class="ib hbm" id="hbm" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="hmenu">☰</button>');
+    const bm = Q('#hbm'), setOpen = o => { mn.classList.toggle('open', o); bm.setAttribute('aria-expanded', String(o)); bm.textContent = o ? '✕' : '☰'; };
+    bm.addEventListener('click', e => { e.stopPropagation(); setOpen(!mn.classList.contains('open')); });
+    document.addEventListener('click', e => { if (mn.classList.contains('open') && (!e.target.closest('#hmenu') || e.target.closest('#hmenu button, #hmenu a'))) setOpen(false); });
+    document.addEventListener('keydown', e => { if (e.key == 'Escape') setOpen(false); });
+  }
   if (!ADMIN_PAGE) document.querySelectorAll('.sec').forEach(s => {
     if (C.PREMIUM_TABS.includes(s.id.slice(2))) s.insertAdjacentHTML('afterbegin', '<div class="lockbar"><span>🔒 Fitur premium</span><button type="button" data-up="Fitur ini">Unlock</button></div>');
   });
@@ -109,6 +119,7 @@ const Auth = (() => {
     const ug = Q('#upg'); if (ug) { ug.hidden = !U; ug.classList.toggle('on', p); ug.querySelector('em').textContent = p ? 'Perpanjang' : 'Premium'; }
     if (um) { um.hidden = !U; if (U) um.innerHTML = `<span class="av">${esc(U.username[0].toUpperCase())}</span>${p ? '<i class="pro">PRO</i>' : ''}`; }
     document.querySelectorAll('.sec').forEach(s => s.classList.toggle('lockd', locked(s.id.slice(2))));
+    if (window.WM_THEME) WM_THEME.lockCustom(!p); // template tema gratis, warna atur sendiri khusus premium
     onTab();
     if (lastP !== null && lastP !== p) if (typeof toast == 'function') toast(p ? 'Premium aktif, semua fitur terbuka 🎀' : 'Premium kamu sudah habis, fitur premium terkunci lagi');
     lastP = p;

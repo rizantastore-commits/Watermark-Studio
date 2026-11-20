@@ -114,7 +114,7 @@
     const laba = (+r.price || 0) - (+r.cost || 0);
     return `<article class="tk-rec ${s}"><div class="tk-h"><strong>${E(r.app)}</strong><span class="badge ${bd[0]}">${E(bd[1])}</span></div>
       ${r.email ? `<small>📧 ${E(r.email)}</small>` : ''}${r.buyer || r.wa ? `<small>👤 ${E(r.buyer || '')}${r.wa ? ' · ' + E(r.wa) : ''}</small>` : ''}
-      <div class="tk-grid"><span>Tgl order<b>${fd(r.orderDate)}</b></span><span>Durasi<b>${dlab(r.days)}</b></span><span>${r.ref ? 'Refund' : 'Perpanjangan'}<b>${r.ref ? rp(r.ref.amount) + ' · ' + fd(r.ref.date) : fd(r.end)}</b></span><span>Harga${r.cost ? ' · laba' : ''}<b>${rp(r.price)}${r.cost ? ` · <i class="${laba < 0 ? 'neg' : 'pos'}" style="font-style:normal">${rp(laba)}</i>` : ''}</b></span></div>
+      <div class="tk-grid"><span>Tgl order<b>${fd(r.orderDate)}</b></span><span>Durasi<b>${dlab(r.days)}</b></span><span>${r.ref ? 'Refund' : 'Perpanjangan'}<b>${r.ref ? rp(r.ref.amount) + ' · ' + fd(r.ref.date) : fd(r.end)}</b></span><span>Harga${r.cost ? ' · laba' : ''}<b>${rp(r.price)}${r.cost ? ` · <i class="${laba < 0 ? 'neg' : 'plus'}" style="font-style:normal">${rp(laba)}</i>` : ''}</b></span></div>
       <div class="tk-pg"><i style="width:${pct}%"></i></div>
       <small>${r.ref ? 'Sudah di-refund' : rmTxt(r)}${r.renewals ? ` · ${r.renewals}× diperpanjang` : ''}${r.note ? ' · ' + E(r.note) : ''}</small>
       <div class="tk-act">${acts}</div></article>`;
@@ -371,7 +371,7 @@
     const base = parse(today().slice(0, 7) + '-01'), ms = [];
     for (let i = 5; i >= 0; i--) ms.push(ymd(new Date(base.getFullYear(), base.getMonth() - i, 1)).slice(0, 7));
     const rows = ms.map(m => ({m, x: report(m, RR, XX)})), mx = Math.max(1, ...rows.map(r => r.x.omz));
-    return `<div class="tk-bars">${rows.map(({m, x}) => `<div class="tk-bar"><b>${rpS(x.omz)}</b><div class="tk-bt"><i style="height:${Math.round(x.omz / mx * 100)}%"></i></div><span>${parse(m + '-01').toLocaleDateString('id-ID', {month: 'short'})}</span><small class="${x.laba < 0 ? 'neg' : 'pos'}">${rpS(x.laba)}</small></div>`).join('')}</div><small>Batang = omzet, angka kecil di bawah = laba bersih tiap bulan.</small>`;
+    return `<div class="tk-bars">${rows.map(({m, x}) => `<div class="tk-bar"><b>${rpS(x.omz)}</b><div class="tk-bt"><i style="height:${Math.round(x.omz / mx * 100)}%"></i></div><span>${parse(m + '-01').toLocaleDateString('id-ID', {month: 'short'})}</span><small class="${x.laba < 0 ? 'neg' : 'plus'}">${rpS(x.laba)}</small></div>`).join('')}</div><small>Batang = omzet, angka kecil di bawah = laba bersih tiap bulan.</small>`;
   }
   function customers() {
     const m = {};

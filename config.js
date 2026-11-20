@@ -24,6 +24,8 @@ window.WM_CONFIG = {
   COMPARE: [
     ['Watermark teks, badge, logo, kontak', true, true],
     ['Download PNG / JPG / WebP', true, true],
+    ['Template tema warna', true, true],
+    ['Atur warna sendiri (custom)', false, true],
     ['Jumlah foto', '1 foto', 'Sampai 40 + ZIP'],
     ['Watermark Penuh (memenuhi foto)', false, true],
     ['Frame testimoni & bingkai upload', false, true],
@@ -50,6 +52,7 @@ window.WM_CONFIG = {
     'Frame testimoni, bingkai upload & atur foto',
     'Filter foto & Maskot',
     'Banyak foto sekaligus + Download ZIP',
+    'Atur warna tema sendiri (custom)',
     'Simpan template sendiri & template premium',
     'Kasir & rekap toko: produk & stok, laporan laba, refund, pengingat perpanjangan, backup data'
   ]

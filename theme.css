@@ -73,17 +73,55 @@ input:focus,select:focus,textarea:focus{border-color:var(--p)!important;box-shad
 }
 @keyframes sheet{from{transform:translateY(40px);opacity:0}}
 
-/* header admin & kasir tetap muat di HP kecil (tombol tema menambah 1 ikon) */
-@media(max-width:560px){
-  .atop{gap:6px;padding:8px 10px}
-  .atop .ttl{flex:1 1 0;min-width:0}
-  .atop .ttl h1{font-size:17px}
-  .atop .ttl p{display:none}
-  .atop .gmark.sm{width:38px;height:38px;font-size:19px}
-  .atop .ib{width:36px;height:36px;flex:none}
-  .atop .btn{height:38px;padding:0 10px;font-size:13px;flex:none}
-  .tk-hm{display:none}
-}
-
 /* kolom halaman admin/kasir boleh menyusut (sebelumnya melebar di layar 320px sehingga bisa digeser ke samping) */
 .adm{grid-template-columns:minmax(0,1fr)}
+
+/* warna atur sendiri: premium. Template tema bebas dipakai semua akun */
+.cust{position:relative}
+.tlock{display:inline-block;margin-left:6px;padding:1px 9px;border-radius:99px;font:700 11px/18px Fredoka,sans-serif;color:var(--onp,#fff);background:linear-gradient(135deg,var(--p),var(--p2));vertical-align:middle}
+.tlock::before{content:none}
+.cust.lockd>label,.cust.lockd>.tcn{opacity:.45;filter:saturate(.6)}
+.cust .clk{position:absolute;inset:34px 0 0;z-index:2;display:grid;place-items:center;width:100%;border:2px dashed var(--line);border-radius:18px;background:rgba(127,127,127,.06);color:var(--pd);font:700 14px Fredoka,sans-serif;cursor:pointer}
+.cust .clk[hidden]{display:none}
+#up,#plans{z-index:130} /* jendela unlock tampil di atas jendela pengaturan */
+
+/* ===== Header: di HP hanya logo + judul (+ undo/redo) + tombol ☰; sisanya masuk menu ===== */
+.top,.atop{position:relative;z-index:30}
+.hmenu{display:contents}
+.hbm{display:none}
+@media(max-width:640px){
+  .hb{gap:6px;margin-left:auto;flex:none;align-items:center}
+  .hbm{display:grid;font-size:18px;line-height:1}
+  .hmenu{display:none;position:absolute;right:8px;top:calc(100% + 8px);z-index:40;width:min(260px,calc(100vw - 32px));padding:8px;gap:6px;
+    background:var(--solid);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--shadow);animation:pop .2s}
+  .hmenu.open{display:grid}
+  /* tiap tombol jadi baris berlabel */
+  .hmenu>*{display:flex!important;align-items:center;justify-content:flex-start;gap:12px;width:100%!important;height:48px!important;padding:0 14px!important;
+    border-radius:16px!important;font:600 15px Fredoka,Nunito,sans-serif;text-decoration:none;color:var(--ink);box-shadow:none!important;animation:none;line-height:1}
+  .hmenu>*[hidden]{display:none!important}
+  .hmenu>.ib,.hmenu>.btn{background:var(--soft);border:2px solid var(--line)}
+  .hmenu>.ib::after,.hmenu>.btn::after{content:attr(aria-label);font:600 15px Fredoka,Nunito,sans-serif;color:var(--ink);white-space:nowrap}
+  .hmenu .tk-hm{display:none}
+  .hmenu>.upg{color:var(--onp,#fff);background:linear-gradient(135deg,var(--p),var(--p2));border-color:transparent;animation:none!important}
+  .hmenu>.upg em{display:inline;font-style:normal;font:600 15px Fredoka,Nunito,sans-serif}
+  .hmenu>.upg::after{content:none}
+  .hmenu>.upg.on{color:var(--pd);background:var(--soft);border:2px solid var(--line)}
+  .hmenu>.um .av{width:28px;height:28px;font-size:14px;flex:none}
+  .hmenu>.um .pro{position:static;margin-left:auto;font-size:10px}
+  .top{gap:8px;padding:8px 10px}.top .ttl h1{font-size:17px}.top .ib{width:34px;height:34px}.top .hb{gap:5px}
+  /* kasir */
+  .atop{gap:8px;padding:8px 10px}
+  .atop .ttl{flex:1 1 0;min-width:0}
+  .atop .ttl h1{font-size:18px}
+  .atop .ttl p{display:none}
+  .atop .gmark.sm{width:40px;height:40px;font-size:20px}
+  .atop .ib{width:38px;height:38px;flex:none}
+  /* kasir: 5 menu sejajar satu baris, ikon di atas teks */
+  #vt,#dvt{gap:2px;padding:4px}
+  #vt{grid-template-columns:repeat(5,minmax(0,1fr))}
+  #dvt{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #vt button,#dvt button{height:auto;min-height:44px;padding:5px 0;font-size:11px;line-height:1.2;white-space:normal;display:grid;justify-items:center;align-content:center;gap:1px}
+  /* ikon dipisah ke baris sendiri */
+  .tk-seg button .ic{font-size:17px;line-height:1}
+}
+@media(max-width:360px){#vt,#dvt,.tk-seg{padding:3px}#vt{grid-template-columns:repeat(5,minmax(0,1fr))}#dvt{grid-template-columns:repeat(4,minmax(0,1fr))}.tk-seg button{padding:5px 0;font-size:10.5px}}

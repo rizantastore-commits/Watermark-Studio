@@ -81,7 +81,7 @@ window.WM_THEME = (() => {
     try { const o = localStorage.getItem(OLD); if (o == 'light' || o == 'dark') return {p: o == 'dark' ? 'night' : 'pink', c: null, f: 'def'}; } catch (e) {}
     return DEF();
   }
-  let ST = load(), setVars = [];
+  let ST = load(), setVars = [], LOCK = false; // LOCK = warna sendiri terkunci (akun gratis); pilihan tersimpan tidak dihapus
   const preset = id => PRESETS.find(p => p.id == id) || PRESETS[0];
   const font = id => FONTS.find(f => f.id == id) || FONTS[0];
   const fonts = new Set();
@@ -92,8 +92,8 @@ window.WM_THEME = (() => {
   }
   /* warna yang sedang dipakai (untuk mengisi kolom warna sendiri) */
   function colors(st) {
-    st = st || ST; if (st.p == 'custom' && st.c) return {ink: st.c.ink, bg: st.c.bg, ac: st.c.ac};
-    const p = preset(st.p); return {ink: p.ink, bg: p.bg, ac: p.ac};
+    st = st || ST; if (st.p == 'custom' && st.c && !LOCK) return {ink: st.c.ink, bg: st.c.bg, ac: st.c.ac};
+    const p = preset(st.p == 'custom' ? 'auto' : st.p); return {ink: p.ink, bg: p.bg, ac: p.ac};
   }
   function check(c) { // kontras teks vs latar
     const r = contrast(c.ink, c.bg);
@@ -104,7 +104,7 @@ window.WM_THEME = (() => {
     ST = st || ST; const sty = DOC.style;
     setVars.forEach(v => sty.removeProperty(v)); setVars = [];
     let mode = null, accent = '';
-    if (ST.p == 'custom' && ST.c && norm(ST.c.ink) && norm(ST.c.bg) && norm(ST.c.ac)) {
+    if (ST.p == 'custom' && !LOCK && ST.c && norm(ST.c.ink) && norm(ST.c.bg) && norm(ST.c.ac)) {
       const d = derive(ST.c.ink, ST.c.bg, ST.c.ac); mode = d.dark ? 'dark' : 'light'; accent = ST.c.ac;
       for (const k in d.vars) { sty.setProperty(k, d.vars[k]); setVars.push(k); }
     } else {
@@ -122,7 +122,7 @@ window.WM_THEME = (() => {
     if (m) { if (origMeta === null) origMeta = m.content; m.content = accent || origMeta; }
   }
   const keep = n => { try { localStorage.setItem(KEY, JSON.stringify(n)); } catch (e) {} };
-  const api = {onSave: null}; // auth.js memasang ini untuk menyimpan tema ke akun (Google Sheets)
+  const api = {onSave: null, onLock: null}; // auth.js memasang ini untuk menyimpan tema ke akun (Google Sheets)
   function set(patch) {
     const n = {...ST, ...patch}; ST = n; keep(n); apply(n);
     if (api.onSave) api.onSave(n);
@@ -137,6 +137,7 @@ window.WM_THEME = (() => {
     const n = {p, c: p == 'custom' ? {ink: norm(s.c.ink), bg: norm(s.c.bg), ac: norm(s.c.ac)} : null, f: FONTS.some(x => x.id == s.f) ? s.f : 'def'};
     ST = n; keep(n); apply(n);
   }
+  function lockCustom(v) { v = !!v; if (v === LOCK) return; LOCK = v; apply(); if (api.onLock) api.onLock(v); }
   const isDefault = () => ST.p == 'auto' && ST.f == 'def';
   function clearLocal() { // dipakai saat keluar akun, supaya tema tidak terbawa ke akun lain di perangkat yang sama
     try { localStorage.removeItem(KEY); localStorage.removeItem(OLD); } catch (e) {}
@@ -144,6 +145,6 @@ window.WM_THEME = (() => {
   }
   apply(ST);
 
-  Object.assign(api, {PRESETS, FONTS, get state() { return ST; }, set, reset, adopt, isDefault, clearLocal, apply, colors, check, norm, preset});
+  Object.assign(api, {lockCustom, get locked() { return LOCK; }, PRESETS, FONTS, get state() { return ST; }, set, reset, adopt, isDefault, clearLocal, apply, colors, check, norm, preset});
   return api;
 })();

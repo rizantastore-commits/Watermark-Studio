@@ -69,7 +69,7 @@
 .tk-line b{font-family:Fredoka,sans-serif;text-align:right}
 .tk-line small{grid-column:1/-1;margin-top:-2px}
 .tk-line .btn{height:30px;padding:0 10px;font-size:12px}
-.neg{color:#c0264f!important}.pos{color:#116b3a!important}
+.neg{color:#c0264f!important}.plus{color:#116b3a!important}
 .st.hl{border-color:var(--p);background:linear-gradient(135deg,rgba(255,79,154,.12),transparent)}
 .st.hl b{font-size:24px}
 .tk-trow{display:grid;grid-template-columns:1fr 1.5fr auto;gap:6px;align-items:center}
@@ -128,7 +128,10 @@
 .tokopg .adm{grid-template-columns:minmax(0,1fr)}
 .tokopg .st b{font-size:clamp(17px,1.9vw,22px);white-space:nowrap}
 .tokopg .st.hl b{font-size:clamp(18px,2.1vw,24px)}
-.tk-bar small{text-align:center;justify-self:stretch}
+.tk-bar small{display:block;width:100%;min-width:0;text-align:center;white-space:nowrap;overflow:hidden}
+.tk-bar b{max-width:100%;white-space:nowrap;overflow:hidden}
+.tk-bars{width:100%;margin:0 auto}
+@media(max-width:400px){.tk-bars{gap:4px}.tk-bar b{font-size:11px}.tk-bar small{font-size:10.5px}.tk-card.wide{padding:16px 12px}}
 
 /* HP kecil (≤360px): tab kasir jadi 3 kolom supaya tidak melebar */
 @media(max-width:360px){#vt,#dvt,.tk-seg{grid-template-columns:repeat(3,minmax(0,1fr))}.tk-seg button{padding:0 2px}}

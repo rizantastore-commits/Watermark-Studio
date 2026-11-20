@@ -17,7 +17,8 @@ window.WM_SETTINGS = (() => {
     <div class="stb">
       <section id="stTema">
         <div class="sgrp"><h4>Template</h4><div class="tp" id="tpGrid">${T.PRESETS.map(p => `<button type="button" class="tpb" data-p="${p.id}" aria-pressed="false"><i style="background:linear-gradient(135deg,${p.bg} 50%,${p.ac} 50%)"></i><span>${esc(p.n)}</span></button>`).join('')}</div></div>
-        <div class="sgrp"><h4>Atur sendiri</h4>
+        <div class="sgrp cust" id="tCust"><h4>Atur sendiri <span class="tlock" id="tLk">👑 Premium</span></h4>
+          <button type="button" class="clk" id="tUnl">🔒 Buka dengan Premium</button>
           ${COLORS.map(([k, l]) => `<label class="tcr"><span>${l}</span><input type="color" data-c="${k}" aria-label="${l}"><input class="hx" type="text" data-h="${k}" maxlength="7" spellcheck="false" autocapitalize="none" autocomplete="off" aria-label="Kode ${l}"></label>`).join('')}
           <div class="tcn" id="tcN" role="status"></div>
         </div>
@@ -43,6 +44,7 @@ window.WM_SETTINGS = (() => {
   </div></div>`);
 
   const set = Q('#set'), hexOk = v => !!T.norm(v);
+  const canCustom = () => typeof Auth != 'undefined' && Auth.isPremium();
 
   /* ---------- tab ---------- */
   function showTab(t) {
@@ -67,12 +69,15 @@ window.WM_SETTINGS = (() => {
     el.textContent = r.level == 'ok' ? '✓ Teks mudah dibaca' : r.level == 'warn' ? '⚠️ Teks agak sulit dibaca, coba beda warna dengan latar' : '⛔ Teks terlalu sulit dibaca, warna ini belum diterapkan';
   }
   function paintTema() {
-    const st = T.state, c = T.colors();
-    document.querySelectorAll('.tpb').forEach(b => b.setAttribute('aria-pressed', String(st.p == b.dataset.p)));
+    const st = T.state, c = T.colors(), ok = canCustom(), ep = st.p == 'custom' && !ok ? 'auto' : st.p;
+    document.querySelectorAll('.tpb').forEach(b => b.setAttribute('aria-pressed', String(ep == b.dataset.p)));
+    Q('#tCust').classList.toggle('lockd', !ok); Q('#tLk').hidden = ok; Q('#tUnl').hidden = ok;
+    document.querySelectorAll('#tCust input').forEach(i => { i.disabled = !ok; });
     COLORS.forEach(([k]) => { Q(`[data-c="${k}"]`).value = c[k]; Q(`[data-h="${k}"]`).value = c[k]; });
     Q('#tFont').value = st.f; note(c);
   }
   function fromFields(src) { // baca 3 warna dari kolom, terapkan kalau valid dan terbaca
+    if (!canCustom()) return;
     const c = {};
     for (const [k] of COLORS) { const v = T.norm(src && src.dataset.h == k ? src.value : Q(`[data-h="${k}"]`).value); if (!v) { return; } c[k] = v; }
     COLORS.forEach(([k]) => { Q(`[data-c="${k}"]`).value = c[k]; if (!src || src.dataset.h != k) Q(`[data-h="${k}"]`).value = c[k]; });
@@ -119,10 +124,11 @@ window.WM_SETTINGS = (() => {
   /* ---------- event ---------- */
   document.addEventListener('click', e => {
     const t = e.target;
-    const o = t.closest('[data-set]'); if (o) { e.preventDefault(); return open(o.dataset.set || 'tema'); }
+    const o = t.closest('[data-opts]'); if (o) { e.preventDefault(); return open(o.dataset.opts || 'tema'); }
     if (t.closest('#accSet')) return open('tema');
     if (!set.contains(t)) return;
     const s = t.closest('[data-st]'); if (s) return showTab(s.dataset.st);
+    if (t.closest('#tUnl')) return Auth.upsell('Warna atur sendiri');
     const p = t.closest('.tpb'); if (p) { T.set({p: p.dataset.p, c: null}); return paintTema(); }
     if (t.closest('#tReset')) { T.reset(); return paintTema(); }
     if (t.closest('#sEye')) { const h = Q('#sNp').type == 'password'; ['#sNp', '#sNp2', '#sOp'].forEach(x => { Q(x).type = h ? 'text' : 'password'; }); }
@@ -135,6 +141,7 @@ window.WM_SETTINGS = (() => {
     if (t.id == 'sNp') { strength(t.value); Q('#sNp2w').hidden = !t.value; }
   });
   set.addEventListener('change', e => { const t = e.target; if (t.dataset.h && !hexOk(t.value)) t.value = Q(`[data-c="${t.dataset.h}"]`).value; }); // kode hex rusak -> kembali ke warna terakhir yang valid
+  T.onLock = () => { if (!set.hidden && tab == 'tema') paintTema(); }; // status premium berubah saat jendela terbuka
   Q('#sForm').addEventListener('submit', save);
   document.addEventListener('keydown', e => { if (e.key == 'Escape' && !set.hidden) close(); });
 
