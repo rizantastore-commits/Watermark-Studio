@@ -24,7 +24,7 @@ Nomor WA & pesan juga bisa diganti kapan saja di sheet **Config** (tanpa upload 
 3. Buka `admin.html` → kelola member di sana.
 
 ## 4. Upload
-Upload semua file ke hosting (`index.html`, `admin.html`, `*.js`, `*.css`). Folder `apps-script` tidak perlu diupload.
+Upload semua file ke hosting (`index.html`, `watermark.html`, `admin.html`, `*.js`, `*.css`). Folder `apps-script` tidak perlu diupload.
 
 ## Cara pakai panel admin
 Buka `admin.html` → cari member → **Atur** → pilih role **Premium** + durasi (7 hari, 1 bulan, … atau seumur hidup) → **Simpan**.
@@ -39,3 +39,36 @@ Kalau `API_URL` dikosongkan, web jalan di **mode demo** (data di browser). Admin
 3. Sheet baru **Templates** dibuat otomatis saat template pertama disimpan. Jangan diedit manual.
 4. Di sheet **Config**, ubah `wa_text` jadi "Halo kak Rizanta Studio, ..." kalau masih tertulis Rizanta Store.
 5. Harga paket diatur di `config.js` → `PLANS`.
+
+## Update v9 (Kasir jadi halaman utama + produk, stok, laporan)
+Halaman utama (`index.html`) sekarang **Kasir & Rekap Toko**. Editor watermark pindah ke `watermark.html` (ada tombol 🎀 di kasir dan tombol 🧾 di watermark). Semua data **per akun**: tiap member punya rekap, produk, stok, dan pengeluaran sendiri, tidak saling terlihat.
+
+Fitur kasir: rekap akun (order, sisa durasi, tgl perpanjangan, pengingat H-1/H-3/H-7), **produk & stok** (modal, paket harga, stok berkurang otomatis saat jual, peringatan stok menipis, salin daftar harga untuk WA), **laporan bulanan** (omzet, modal, pengeluaran, laba bersih, produk terlaris, riwayat), dan **hitung refund**.
+
+Cara update:
+1. Buka Apps Script, **ganti seluruh isi Code.gs** dengan versi baru → Save.
+2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
+3. Upload SEMUA file ini ke hosting (timpa yang lama): `index.html`, `watermark.html`, `toko.html`, `toko.js`, `toko.css`, `admin.html`, `auth.js`, `auth.css`, `api.js`, `config.js`. (`toko.html` hanya pengalihan untuk bookmark lama.)
+4. Sheet **Records** dibuat otomatis. Jangan diedit manual.
+
+Pengaturan di `config.js` → `STORE`:
+- `PREMIUM_ONLY: true` = hanya premium/admin yang bisa memakai kasir (akun gratis melihat kartu kunci + tombol ke Watermark). Kalau mau dibuka untuk semua, ubah jadi `false` **dan** ubah `STORE_PREMIUM_ONLY` di `Code.gs` jadi `false` (lalu deploy New version).
+- `REMIND_DAYS` = pilihan pengingat. `DURATIONS` = tombol durasi cepat. `WA_REMIND` = teks WA ke pembeli.
+
+Catatan: pengingat tampil sebagai banner saat halaman dibuka (bukan notifikasi otomatis saat web tertutup). Batas 2000 catatan per akun (penjualan + produk + pengeluaran). Modal per penjualan sudah dihitung di laporan dari harga modal; menu Pengeluaran khusus biaya lain (iklan, fee, dll.).
+
+
+## Update v10 (perbaikan scroll, pratinjau kasir untuk akun gratis, fitur baru)
+Tidak ada perubahan di `Code.gs`, jadi **tidak perlu deploy ulang Apps Script**. Cukup upload file berikut ke hosting (timpa yang lama): `index.html`, `toko.js`, `toko.css`, `admin.css`, `config.js`.
+
+**Perbaikan bug scroll:** di halaman Kasir (dan Admin) scroll dengan roda mouse / sentuhan sebelumnya macet dan harus menarik scrollbar di kanan. Penyebabnya `body` ber-`overflow:auto` dan `overscroll-behavior:none` padahal tingginya `auto`, sehingga event scroll tertahan di body. Sekarang `body.adminpg` memakai `overflow:visible` dan `overscroll-behavior:auto` (di `admin.css`).
+
+**Pratinjau Kasir untuk akun gratis:** akun yang belum premium sekarang melihat penjelasan fitur, cara kerja, dan **contoh tampilan kasir yang bisa dicoba** (tab Rekap, Produk, Laporan, Refund dengan data fiktif; kalkulator refund benar-benar jalan). Data contoh dibuat di browser dan tidak dikirim ke server. Tombol aksi di contoh hanya menampilkan petunjuk, dan tiap beberapa klik muncul ajakan upgrade.
+
+**Fitur baru kasir (premium):**
+- **Urutkan** catatan (segera habis, terbaru, nama, harga) dan **jumlah** di tiap filter.
+- Statistik **Potensi perpanjang ≤ 7 hari** (total harga akun yang akan jatuh tempo).
+- **Duplikat** catatan untuk jual produk yang sama ke pembeli lain.
+- Laporan: **grafik tren 6 bulan** (omzet + laba) dan tombol **salin ringkasan** bulan (siap tempel ke WA).
+- Tab baru **Alat**: pelanggan teratas (total belanja, tombol WA), daftar jatuh tempo 7 hari (bisa disalin), **backup & pulihkan** semua data ke file JSON (maksimal 500 catatan sekali pulihkan; isi file divalidasi dulu).
+- Tombol **tema terang/gelap** di header kasir.

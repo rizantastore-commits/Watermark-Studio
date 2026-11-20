@@ -1,4 +1,4 @@
-body.adminpg{overflow:auto;height:auto;min-height:100%}
+body.adminpg{overflow:visible;overscroll-behavior:auto;height:auto;min-height:100%}
 .adm{position:relative;z-index:1;max-width:980px;margin:auto;padding:14px 14px calc(30px + env(safe-area-inset-bottom,0px));display:grid;gap:14px}
 .atop{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel);backdrop-filter:blur(12px);border:2.5px solid var(--line);border-radius:26px;box-shadow:var(--shadow)}
 .atop .ttl{flex:1;min-width:0}.atop h1{font-size:20px;color:var(--pd)}.atop p{margin:0;font-size:12px;color:var(--mut)}

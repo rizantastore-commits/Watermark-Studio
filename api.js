@@ -60,6 +60,15 @@ window.WM_API = (() => {
       if (i < 0 && a.tpls.length >= 20) return ER('Maksimal 20 template per akun.');
       i >= 0 ? a.tpls[i] = it : a.tpls.push(it); store(d); return OK();
     }
+    if (act == 'rec_list') return OK({records: a.recs || []});
+    if (act == 'rec_save') {
+      if (C.STORE && C.STORE.PREMIUM_ONLY !== false && !prem(a, n)) return ER('Kasir & rekap toko khusus akun premium.', 'premium');
+      let o; try { o = JSON.parse(r.data); } catch (e) { return ER('Data catatan tidak valid.'); }
+      a.recs = a.recs || []; const i = a.recs.findIndex(x => x.id == r.id); o.id = r.id;
+      if (i < 0 && a.recs.length >= 2000) return ER('Maksimal 2000 catatan per akun. Hapus yang lama dulu.');
+      i >= 0 ? a.recs[i] = o : a.recs.push(o); store(d); return OK();
+    }
+    if (act == 'rec_delete') { a.recs = (a.recs || []).filter(x => x.id != r.id); store(d); return OK(); }
     if (act == 'tpl_delete') { a.tpls = (a.tpls || []).filter(t => t.n != r.name); store(d); return OK(); }
     if (a.role != 'admin') return ER('Khusus admin.', 'forbidden');
     if (act == 'admin_list') return OK({users: d.users.map(u => pub(u, n))});

@@ -28,8 +28,18 @@ window.WM_CONFIG = {
     ['Watermark Penuh (memenuhi foto)', false, true],
     ['Frame testimoni & bingkai upload', false, true],
     ['Filter foto & Maskot', false, true],
-    ['Template tersimpan di akun (sync device)', false, true]
+    ['Template tersimpan di akun (sync device)', false, true],
+    ['Kasir: rekap, produk & stok, laporan, refund, pengingat', false, true]
   ],
+
+  // Kasir & Rekap Toko (index.html). Data tersimpan per akun di sheet "Records".
+  STORE: {
+    PREMIUM_ONLY: true,            // true = khusus premium/admin. Samakan dengan STORE_PREMIUM_ONLY di Code.gs
+    REMIND_DAYS: [1, 3, 7],        // pilihan pengingat H-1, H-3, H-7
+    DURATIONS: [7, 14, 30, 60, 90, 180, 365],
+    // {nama} {app} {status} otomatis terisi saat klik tombol WA ke pembeli
+    WA_REMIND: 'Halo kak {nama}, {app} kakak {status}. Mau diperpanjang kak? 😊'
+  },
 
   // Tab yang dikunci untuk akun gratis (id tab di script.js)
   PREMIUM_TABS: ['tile', 'frame', 'cfr', 'ph', 'filter', 'mascot'],
@@ -40,6 +50,7 @@ window.WM_CONFIG = {
     'Frame testimoni, bingkai upload & atur foto',
     'Filter foto & Maskot',
     'Banyak foto sekaligus + Download ZIP',
-    'Simpan template sendiri & template premium'
+    'Simpan template sendiri & template premium',
+    'Kasir & rekap toko: produk & stok, laporan laba, refund, pengingat perpanjangan, backup data'
   ]
 };

@@ -3,52 +3,216 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
 <meta name="theme-color" content="#ff7eb6">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
-<title>Watermark Studio · Rizanta Studio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;700;800&family=Pacifico&family=Lobster&family=Bangers&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Montserrat:wght@700&family=Playfair+Display:wght@700&family=Baloo+2:wght@700&family=Permanent+Marker&family=Oswald:wght@600&family=Chewy&family=Righteous&family=Satisfy&display=swap" rel="stylesheet">
+<title>Kasir & Rekap Toko · Rizanta Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="toko.css">
+<script>try{var t=localStorage.getItem("wm_th");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
-<body class="gated">
+<body class="gated adminpg tokopg">
 <div class="blob b1"></div><div class="blob b2"></div>
-<div class="deco" aria-hidden="true"><i>♡</i><i>✦</i><i>✿</i><i>♡</i><i>✦</i><i>♡</i></div>
-
-<div class="app">
-  <header class="top">
-    <div class="mark" id="hLogo"></div>
-    <div class="ttl"><h1>Watermark Studio</h1><p>by Rizanta Studio</p></div>
-    <div class="hb">
-      <button class="ib" id="un" data-i="undo" aria-label="Undo (Ctrl+Z)" title="Undo (Ctrl+Z)" disabled></button>
-      <button class="ib" id="re" data-i="redo" aria-label="Redo (Ctrl+Y)" title="Redo (Ctrl+Y)" disabled></button>
-      <button class="ib" id="th" aria-label="Ganti tema"></button>
-    </div>
+<div class="adm" id="tkp">
+  <header class="atop">
+    <div class="gmark sm">🧾</div>
+    <div class="ttl"><h1>Kasir & Rekap Toko</h1><p>Data khusus akunmu · Rizanta Studio</p></div>
+    <div class="hb"><button class="ib" id="tkth" type="button" aria-label="Ganti tema" title="Ganti tema (terang/gelap)">🌙</button></div>
+    <a class="btn" href="watermark.html" aria-label="Buka Watermark Studio" title="Watermark Studio">🎀<span class="tk-hm"> Watermark</span></a>
   </header>
 
-  <main class="stage">
-    <div class="cv"><canvas id="cv"></canvas></div>
-    <div class="strip" id="strip" hidden></div>
-    <div class="bar">
-      <label class="btn" title="Pilih foto (boleh banyak sekaligus)"><span data-i="camera"></span><em>Foto</em><input type="file" id="photo" accept="image/*" multiple hidden></label>
-      <button class="btn" id="pv" title="Preview layar penuh"><span data-i="eye"></span><em>Preview</em></button>
-      <select id="fmt" aria-label="Format file"><option value="png">PNG</option><option value="jpeg">JPG</option><option value="webp">WebP</option></select>
-      <button class="btn pri" id="dl"><span data-i="download"></span><em>Download</em></button>
-      <button class="btn" id="cp" hidden title="Salin ke clipboard"><span data-i="copy"></span><em>Salin</em></button>
-      <button class="btn" id="sh" hidden title="Bagikan"><span data-i="share"></span></button>
+  <section id="lk" class="pv" hidden>
+    <div class="pv-hero">
+      <div class="mico">🧾</div>
+      <span class="pv-pill">👑 Fitur Premium</span>
+      <h2>Kasir &amp; Rekap Toko</h2>
+      <p class="gsub">Catat penjualan akun/aplikasi, hitung untung rugi, dan dapat pengingat perpanjangan. Data tersimpan per akun, jadi tiap member punya rekap sendiri dan tidak pernah tercampur.</p>
+      <div class="pv-acts">
+        <button class="btn pri" data-up="Kasir &amp; Rekap Toko" type="button">👑 Unlock Premium</button>
+        <button class="btn" data-plans type="button">💳 Lihat paket &amp; harga</button>
+        <a class="btn" href="watermark.html">🎀 Watermark Studio (gratis)</a>
+      </div>
     </div>
+
+    <h3 class="pv-h">Bisa ngapain aja?</h3>
+    <div class="pv-feat">
+      <div class="pv-f"><i>📒</i><b>Rekap jualan rapi</b><span>Catat aplikasi/akun yang dijual: pembeli, email, WhatsApp, harga, modal, dan durasi. Tiap catatan punya bar sisa hari dan status berwarna (aktif, segera habis, lewat).</span></div>
+      <div class="pv-f"><i>🔔</i><b>Pengingat perpanjangan</b><span>Pilih pengingat H-1, H-3, atau H-7. Saat waktunya, muncul banner di atas dan tombol WA langsung kirim pesan siap pakai ke pembeli.</span></div>
+      <div class="pv-f"><i>📦</i><b>Produk &amp; stok</b><span>Isi produk sekali: modal, paket harga, stok. Saat menjual tinggal pilih produknya, harga terisi otomatis dan stok berkurang sendiri. Ada peringatan stok menipis.</span></div>
+      <div class="pv-f"><i>📊</i><b>Laporan &amp; tren</b><span>Omzet, modal, pengeluaran, dan laba bersih tiap bulan, plus produk terlaris dan grafik tren 6 bulan. Bisa diunduh ke CSV atau disalin sebagai ringkasan.</span></div>
+      <div class="pv-f"><i>💸</i><b>Hitung refund otomatis</b><span>Harga ÷ durasi × sisa hari − potongan admin. Mendukung garansi refund penuh, lalu rinciannya bisa disalin untuk dikirim ke pembeli.</span></div>
+      <div class="pv-f"><i>👥</i><b>Pelanggan &amp; backup</b><span>Lihat pembeli paling royal, daftar akun jatuh tempo, duplikat catatan, urutkan sesuka hati, dan backup/pulihkan semua data ke file JSON.</span></div>
+    </div>
+
+    <h3 class="pv-h">Cara kerjanya</h3>
+    <div class="pv-steps">
+      <div class="pv-st"><b>Isi produk sekali</b>Masukkan nama, modal, paket harga, dan stok.</div>
+      <div class="pv-st"><b>Catat tiap penjualan</b>Pilih produk, isi pembeli, selesai. Tanggal berakhir dihitung otomatis.</div>
+      <div class="pv-st"><b>Pantau &amp; ingatkan</b>Lihat laba, kirim WA perpanjangan, hitung refund kalau diminta.</div>
+    </div>
+
+    <h3 class="pv-h">Coba lihat contohnya</h3>
+    <small class="pv-sub">Ini tampilan aslinya dengan data fiktif. Klik tab, filter, dan coba hitung refund-nya sendiri.</small>
+    <div class="pv-demo" id="dm">
+      <span class="pv-tag">CONTOH TAMPILAN · DATA FIKTIF</span>
+      <div class="stats" id="dStats"></div>
+      <div class="seg tk-seg" id="dvt">
+        <button type="button" data-dv="rekap" class="on">📒 Rekap</button>
+        <button type="button" data-dv="prod">📦 Produk</button>
+        <button type="button" data-dv="lap">📊 Laporan</button>
+        <button type="button" data-dv="refund">💸 Refund</button>
+      </div>
+      <section id="dv-rekap">
+        <div class="tk-rm" id="dRm" hidden></div>
+        <div class="tools">
+          <input type="search" id="dQ" placeholder="Cari aplikasi, email, pembeli…" aria-label="Cari contoh">
+          <button class="btn pri" type="button" data-dx="add">+ Catat</button>
+          <button class="btn" type="button" data-dx="csv" aria-label="Unduh CSV">⬇</button>
+        </div>
+        <div class="chips" id="dFlt"></div>
+        <div class="tk-list" id="dList"></div>
+      </section>
+      <section id="dv-prod" hidden>
+        <div class="tools"><button class="btn pri" type="button" data-dx="padd">+ Produk</button><button class="btn" type="button" data-dx="pcopy">📋 Salin daftar harga</button></div>
+        <div class="tk-list" id="dPl"></div>
+      </section>
+      <section id="dv-lap" hidden>
+        <div class="tools"><span class="pv-mo" id="dLapM"></span><button class="btn pri" type="button" data-dx="xadd">+ Pengeluaran</button></div>
+        <div class="stats" id="dLapSum"></div>
+        <div class="tk-card wide"><h3>Tren 6 bulan</h3><div id="dLapTr"></div></div>
+        <div class="tk-two">
+          <div class="tk-card wide"><h3>Produk terlaris</h3><div id="dLapTop"></div></div>
+          <div class="tk-card wide"><h3>Pengeluaran</h3><div id="dLapEx"></div></div>
+        </div>
+        <div class="tk-card wide"><h3>Riwayat transaksi</h3><div id="dLapTx"></div></div>
+      </section>
+      <section id="dv-refund" hidden>
+        <div class="tk-card">
+          <h3>Coba hitung refund</h3>
+          <small>Refund = harga ÷ durasi × sisa hari − potongan admin. Ubah angkanya, hasilnya langsung berubah.</small>
+          <div class="row2">
+            <label class="f"><span>Harga bayar (Rp)</span><input type="number" id="dP" inputmode="numeric" min="0" value="35000"></label>
+            <label class="f"><span>Durasi total (hari)</span><input type="number" id="dD" inputmode="numeric" min="1" value="30"></label>
+          </div>
+          <div class="row2">
+            <label class="f"><span>Hari terpakai</span><input type="number" id="dU" inputmode="numeric" min="0" value="10"></label>
+            <label class="f"><span>Potongan admin (%)</span><input type="number" id="dF" inputmode="numeric" min="0" value="10"></label>
+          </div>
+          <div class="tk-out" id="dOut"></div>
+          <small>Di versi premium, hasil ini bisa langsung dicatat sebagai refund ke rekap dan rinciannya disalin ke WhatsApp pembeli.</small>
+        </div>
+      </section>
+    </div>
+
+    <div class="pv-cta"><span>Suka? Buka semua fiturnya 👑</span><button type="button" data-plans>Lihat paket</button></div>
+  </section>
+
+  <main id="panel" hidden>
+    <div class="tk-err" id="tkErr" hidden></div>
+    <div class="tk-rm" id="remind" hidden></div>
+    <div class="stats" id="stats"></div>
+    <div class="tk-rm tk-low" id="lowstk" hidden></div>
+    <div class="seg tk-seg" id="vt">
+      <button type="button" data-v="rekap" class="on">📒 Rekap</button>
+      <button type="button" data-v="prod">📦 Produk</button>
+      <button type="button" data-v="lap">📊 Laporan</button>
+      <button type="button" data-v="refund">💸 Refund</button>
+      <button type="button" data-v="alat">🧰 Alat</button>
+    </div>
+
+    <section id="v-rekap">
+      <div class="tools">
+        <input type="search" id="q" placeholder="Cari aplikasi, email, pembeli…" aria-label="Cari">
+        <button class="btn pri" id="add" type="button">+ Catat</button>
+        <button class="btn" id="csv" type="button" title="Unduh rekap (CSV)" aria-label="Unduh CSV">⬇</button>
+      </div>
+      <div class="tk-fl">
+        <div class="chips" id="flt"></div>
+        <select id="srt" aria-label="Urutkan catatan"><option value="due">↕ Segera habis</option><option value="new">↕ Terbaru</option><option value="name">↕ Nama A–Z</option><option value="price">↕ Harga tertinggi</option></select>
+      </div>
+      <div id="list" class="tk-list"></div>
+    </section>
+
+    <section id="v-prod" hidden>
+      <div class="tools">
+        <button class="btn pri" id="addp" type="button">+ Produk</button>
+        <button class="btn" id="pcopy" type="button">📋 Salin daftar harga</button>
+      </div>
+      <small class="tk-hint">Isi produk sekali (modal, paket harga, stok). Saat mencatat penjualan tinggal pilih produknya: harga terisi otomatis dan stok berkurang sendiri.</small>
+      <div id="plist" class="tk-list"></div>
+    </section>
+
+    <section id="v-lap" hidden>
+      <div class="tools">
+        <select id="lapM" aria-label="Pilih bulan"></select>
+        <button class="btn pri" id="addx" type="button">+ Pengeluaran</button>
+        <button class="btn" id="lapcsv" type="button" title="Unduh laporan bulan ini (CSV)" aria-label="Unduh laporan CSV">⬇</button>
+        <button class="btn" id="lapcopy" type="button" title="Salin ringkasan bulan ini" aria-label="Salin ringkasan">📋</button>
+      </div>
+      <div class="stats" id="lapSum"></div>
+      <div class="tk-card wide"><h3>Tren 6 bulan</h3><div id="lapTr"></div></div>
+      <div class="tk-two">
+        <div class="tk-card wide"><h3>Produk terlaris</h3><div id="lapTop"></div></div>
+        <div class="tk-card wide"><h3>Pengeluaran</h3><small>Modal tiap penjualan sudah dihitung dari harga modal produk. Isi pengeluaran hanya untuk biaya lain (iklan, fee, dll.).</small><div id="lapEx"></div></div>
+      </div>
+      <div class="tk-card wide"><h3>Riwayat transaksi</h3><div id="lapTx"></div></div>
+    </section>
+
+    <section id="v-refund" hidden>
+      <div class="tk-card">
+        <h3>Hitung Refund</h3>
+        <small>Refund = harga ÷ durasi × sisa hari − potongan admin</small>
+        <div class="prev" id="rfSrc" hidden></div>
+        <div class="row2">
+          <label class="f"><span>Harga bayar (Rp)</span><input type="number" id="rfP" inputmode="numeric" min="0" placeholder="mis. 30000"></label>
+          <label class="f"><span>Durasi total (hari)</span><input type="number" id="rfD" inputmode="numeric" min="1" placeholder="mis. 30"></label>
+        </div>
+        <div class="row2">
+          <label class="f"><span>Tgl order / mulai</span><input type="date" id="rfO"></label>
+          <label class="f"><span>Tgl refund</span><input type="date" id="rfT"></label>
+        </div>
+        <div class="row2">
+          <label class="f"><span>Hari terpakai (otomatis)</span><input type="number" id="rfU" inputmode="numeric" min="0" placeholder="dihitung dari tanggal"></label>
+          <label class="f"><span>Garansi refund penuh (hari)</span><input type="number" id="rfG" inputmode="numeric" min="0" placeholder="0 = tidak ada"></label>
+        </div>
+        <div class="row2">
+          <label class="f"><span>Potongan admin</span><select id="rfFT"><option value="pct">Persen (%)</option><option value="rp">Nominal (Rp)</option></select></label>
+          <label class="f"><span>Besar potongan</span><input type="number" id="rfF" inputmode="numeric" min="0" placeholder="0"></label>
+        </div>
+        <div id="rfOut" class="tk-out"></div>
+        <div class="row2">
+          <button class="btn" id="rfcopy" type="button">📋 Salin rincian</button>
+          <button class="btn pri" id="rfrec" type="button" hidden>Catat sebagai refund</button>
+          <button class="btn" id="rfreset" type="button">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-alat" hidden>
+      <div class="tk-card wide"><h3>👥 Pelanggan teratas</h3><small>Diurutkan dari total belanja (sudah dikurangi refund).</small><div id="alCust"></div></div>
+      <div class="tk-card wide"><h3>⏰ Jatuh tempo 7 hari ke depan</h3><div id="alDue"></div><button class="btn" id="dueCopy" type="button">📋 Salin daftar</button></div>
+      <div class="tk-card wide"><h3>💾 Backup &amp; pulihkan</h3><small>Unduh semua catatan (penjualan, produk, pengeluaran) ke satu file JSON. Simpan di tempat aman, lalu pulihkan kapan saja. Maksimal 500 catatan sekali pulihkan.</small>
+        <div class="row2"><button class="btn pri" id="bkp" type="button">⬇ Backup (JSON)</button><button class="btn" id="rst" type="button">⬆ Pulihkan dari file</button></div>
+        <input type="file" id="rstF" accept="application/json,.json" hidden>
+      </div>
+    </section>
   </main>
-
-  <nav class="tabs" id="tabs"></nav>
-  <section class="secs" id="secs"><div class="subs" id="subs"></div><div class="panes" id="panes"></div></section>
+  <footer class="gcred" id="acred"></footer>
 </div>
-
-<input type="file" id="photoRep" accept="image/*" hidden>
+<datalist id="appl"></datalist>
+<datalist id="catl"></datalist>
 <div id="toast" role="status"></div>
+<div class="mdl" id="em" hidden><div class="mcard ed"></div></div>
+<div class="mdl" id="rn" hidden><div class="mcard ed"></div></div>
+<div class="mdl" id="pm" hidden><div class="mcard ed"></div></div>
+<div class="mdl" id="xm" hidden><div class="mcard ed"></div></div>
 <script src="config.js"></script>
 <script src="api.js"></script>
+<script>window.WM_PAGE = 'toko';</script>
 <script src="auth.js"></script>
-<script src="script.js"></script>
+<script src="toko.js"></script>
+<script>(()=>{const c=WM_CONFIG.CREDITS||{};document.getElementById("acred").innerHTML=`Dibuat dengan 💖 oleh <b>${c.brand||""}</b>${c.dev?` · Dev <a href="${c.link||"#"}" target="_blank" rel="noopener">${c.dev}</a>`:""}`})()</script>
 </body>
 </html>

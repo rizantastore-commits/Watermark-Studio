@@ -1,0 +1,131 @@
+/* Kasir & Rekap Toko (dipakai bersama style.css + auth.css + admin.css) */
+.tokopg input[type=text],.tokopg input[type=search],.tokopg input[type=number],.tokopg input[type=date],.tokopg input[type=tel],.tokopg textarea{
+  width:100%;min-width:0;padding:10px 14px;border:2.5px solid var(--line);border-radius:16px;background:var(--solid);color:var(--ink);font:700 14px Nunito,sans-serif;box-shadow:none}
+.tokopg .f select{width:100%}
+.tokopg .f>span{font-size:12px;color:var(--mut)}
+.tk-hm{display:inline}
+.tk-seg{max-width:460px}
+.tk-seg button{font-size:14px}
+#v-rekap,#v-refund{display:grid;gap:12px}
+#v-rekap[hidden],#v-refund[hidden]{display:none}
+.tokopg #panel{display:grid;gap:14px}
+.tokopg #panel[hidden]{display:none}
+
+.tk-err{padding:12px 14px;border-radius:18px;background:#ffd1d1;border:2px solid #e88;color:#7a1a1a;font-weight:800}
+.tk-rm{display:grid;gap:8px;padding:12px 14px;border-radius:22px;background:rgba(242,184,75,.2);border:2.5px solid #f2b84b}
+.tk-rm b{font:600 16px Fredoka,sans-serif}
+.tk-rmr{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center}
+.tk-rmr span{min-width:0}.tk-rmr small{display:block}
+.tk-rmr .btn{height:36px;padding:0 12px;font-size:13px}
+
+.tk-list{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.tk-rec{display:grid;gap:8px;align-content:start;padding:14px;background:var(--panel);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--chunk);text-align:left;animation:fade .25s}
+.tk-rec.soon{border-color:#f2b84b}.tk-rec.ex{border-color:#e07a8f}.tk-rec.ref{opacity:.75}
+.tk-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tk-h strong{font:600 17px Fredoka,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.tk-h .badge{margin:0;flex:none}
+.tk-rec small{display:block;overflow:hidden;text-overflow:ellipsis}
+.tk-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+.tk-grid span{font-size:11px;color:var(--mut);line-height:1.25}
+.tk-grid b{display:block;font:600 14px Fredoka,sans-serif;color:var(--ink)}
+.tk-pg{height:8px;border-radius:99px;background:var(--soft);overflow:hidden}
+.tk-pg i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--p2),var(--p))}
+.tk-rec.soon .tk-pg i{background:#f2b84b}.tk-rec.ex .tk-pg i{background:#e0407f}.tk-rec.ref .tk-pg i{background:#bbb}
+.tk-act{display:flex;flex-wrap:wrap;gap:6px}
+.tk-act .btn{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto}
+.badge.ok{background:#d9f7e6;color:#116b3a}
+.badge.soon{background:#ffe9b8;color:#7a5200}
+.badge.ex{background:#ffd1d1;color:#a11}
+.badge.rf{background:#e6e6ee;color:#555}
+
+.tk-card{display:grid;gap:12px;padding:18px;background:var(--panel);border:2.5px solid var(--line);border-radius:26px;box-shadow:var(--shadow);max-width:560px;width:100%}
+.tk-card h3{margin:0;font:600 20px Fredoka,sans-serif;color:var(--pd)}
+.tk-out{display:grid;gap:6px;padding:12px 14px;border-radius:18px;background:var(--soft);border:2px solid var(--line)}
+.tk-out .ln{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.tk-out .ln span{color:var(--mut)}.tk-out .ln b{font-family:Fredoka,sans-serif}
+.tk-out .net{margin-top:4px;padding-top:8px;border-top:2px dashed var(--line);display:flex;justify-content:space-between;align-items:center}
+.tk-out .net b{font:700 24px Fredoka,sans-serif;color:var(--pd)}
+.tk-card .row2 .btn{height:44px}
+.ed .chips button{height:34px;padding:0 12px;font-size:13px}
+.ed input,.ed select{font-size:14px}
+@media(max-width:560px){.tk-hm{display:none}.tokopg .upg em{display:none}.tokopg .upg{padding:0 11px}.tk-list{grid-template-columns:1fr}.tk-rmr{grid-template-columns:1fr auto auto}}
+
+/* ===== v9: produk, stok, laporan ===== */
+.tk-seg{grid-template-columns:repeat(4,1fr);max-width:680px}
+.tk-seg button{font-size:13px;padding:0 4px;white-space:nowrap}
+#v-prod,#v-lap{display:grid;gap:12px}
+#v-prod[hidden],#v-lap[hidden]{display:none}
+.tk-hint{color:var(--mut);font-weight:700}
+.tk-low{background:rgba(255,126,182,.16);border-color:var(--p2)}
+.tk-low .btn{height:36px;padding:0 12px;font-size:13px;justify-self:start}
+.tk-tiers{display:flex;flex-wrap:wrap;gap:6px}
+.tk-tier{display:inline-flex;flex-direction:column;padding:5px 10px;border-radius:14px;background:var(--soft);border:2px solid var(--line);font-size:11px;color:var(--mut);line-height:1.25}
+.tk-tier b{font:600 14px Fredoka,sans-serif;color:var(--ink)}
+.tk-tier em{font-style:normal;color:#116b3a;font-weight:800}
+.tk-card.wide{max-width:none}
+.tk-two{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.tk-line{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:8px 0;border-bottom:2px dashed var(--line);font-size:13px}
+.tk-line:last-child{border-bottom:0}
+.tk-line b{font-family:Fredoka,sans-serif;text-align:right}
+.tk-line small{grid-column:1/-1;margin-top:-2px}
+.tk-line .btn{height:30px;padding:0 10px;font-size:12px}
+.neg{color:#c0264f!important}.pos{color:#116b3a!important}
+.st.hl{border-color:var(--p);background:linear-gradient(135deg,rgba(255,79,154,.12),transparent)}
+.st.hl b{font-size:24px}
+.tk-trow{display:grid;grid-template-columns:1fr 1.5fr auto;gap:6px;align-items:center}
+.tk-trow .btn{height:40px;padding:0 12px}
+.tk-ck{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13px}
+.tk-ck input{width:18px;height:18px;accent-color:var(--p)}
+@media(max-width:560px){.tk-seg button{font-size:12px}.tk-two{grid-template-columns:1fr}}
+
+/* ===== v10: pratinjau kasir untuk akun gratis ===== */
+.pv{display:grid;gap:18px}
+.pv-hero{display:grid;gap:10px;justify-items:center;text-align:center;padding:26px 20px;background:var(--panel);backdrop-filter:blur(12px);border:2.5px solid var(--line);border-radius:30px;box-shadow:var(--shadow)}
+.pv-hero h2{margin:0;font:700 clamp(24px,5vw,32px) Fredoka,sans-serif;color:var(--pd)}
+.pv-hero .gsub{max-width:58ch;line-height:1.5}
+.pv-pill{padding:3px 14px;border-radius:99px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font:600 13px Fredoka,sans-serif}
+.pv-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:6px}
+.pv-acts .btn{flex:0 1 auto}
+.pv-h{margin:6px 0 -4px;font:600 21px Fredoka,sans-serif;color:var(--pd);text-align:center}
+.pv-sub{display:block;text-align:center;margin:-10px 0 0}
+.pv-feat{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pv-f{display:grid;gap:4px;align-content:start;padding:14px;text-align:left;background:var(--panel);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--chunk)}
+.pv-f i{font-style:normal;font-size:26px;line-height:1}
+.pv-f b{font:600 16px Fredoka,sans-serif;color:var(--ink)}
+.pv-f span{font-size:13px;color:var(--mut);line-height:1.5}
+.pv-steps{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));counter-reset:pvs}
+.pv-st{position:relative;padding:14px 14px 14px 54px;background:var(--soft);border:2px dashed var(--line);border-radius:20px;text-align:left;font-size:13px;line-height:1.45;color:var(--mut)}
+.pv-st::before{counter-increment:pvs;content:counter(pvs);position:absolute;left:13px;top:13px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 15px Fredoka,sans-serif;color:#fff;background:linear-gradient(135deg,var(--p),var(--p2))}
+.pv-st b{display:block;font:600 15px Fredoka,sans-serif;color:var(--ink)}
+.pv-demo{position:relative;display:grid;gap:12px;padding:32px 12px 14px;border:2.5px dashed var(--p);border-radius:30px;background:var(--panel)}
+.pv-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);padding:2px 14px;border-radius:0 0 14px 14px;background:var(--p);color:#fff;font:700 11px/20px Fredoka,sans-serif;letter-spacing:.04em;white-space:nowrap}
+.pv-demo section{display:grid;gap:12px}
+.pv-mo{flex:1;align-self:center;font:600 16px Fredoka,sans-serif;color:var(--pd)}
+.pv-cta{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 18px;border-radius:99px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font:600 14px Fredoka,sans-serif;box-shadow:0 4px 0 #e0407f,0 12px 24px -10px rgba(224,64,127,.7)}
+.pv-cta button{height:38px;padding:0 16px;border:0;border-radius:99px;background:#fff;color:var(--pd);font:700 14px Fredoka,sans-serif;cursor:pointer;flex:none}
+
+/* ===== v10: fitur baru kasir ===== */
+#vt{grid-template-columns:repeat(5,1fr);max-width:760px}
+#vt button{font-size:13px}
+#dvt{grid-template-columns:repeat(4,1fr)}
+#v-alat{display:grid;gap:12px}
+.tk-fl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tk-fl .chips{flex:1 1 auto}
+.tk-fl select{height:38px;padding:0 12px;font-size:13px}
+.chips button em{font-style:normal;opacity:.65;margin-left:5px;font-size:.85em}
+.tk-line.c3{grid-template-columns:1fr auto auto}
+#v-lap .tools{flex-wrap:wrap}
+#v-lap .tools select{flex:1 1 150px}
+.tk-bars{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;align-items:end}
+.tk-bar{display:grid;gap:3px;justify-items:center;text-align:center;font-size:11px;min-width:0}
+.tk-bar b{font:600 12px Fredoka,sans-serif;color:var(--ink)}
+.tk-bar span{color:var(--mut);font-weight:800}
+.tk-bar small{font:600 11px Fredoka,sans-serif}
+.tk-bt{width:min(48px,76%);height:96px;display:flex;align-items:flex-end;background:var(--soft);border-radius:12px;overflow:hidden}
+.tk-bt i{display:block;width:100%;min-height:3px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,var(--p),var(--p2))}
+@media(max-width:560px){#vt button,#dvt button{font-size:11.5px;padding:0 2px}.pv-hero{padding:22px 14px}.pv-acts .btn{flex:1 1 100%}.pv-demo{padding:32px 8px 10px}.pv-cta{font-size:13px}}
+
+.tokopg .adm{grid-template-columns:minmax(0,1fr)}
+.tokopg .st b{font-size:clamp(17px,1.9vw,22px);white-space:nowrap}
+.tokopg .st.hl b{font-size:clamp(18px,2.1vw,24px)}
+.tk-bar small{text-align:center;justify-self:stretch}

@@ -1,8 +1,8 @@
 'use strict';
-/* Login / daftar, status premium, dan penguncian fitur. Dipakai oleh index.html dan admin.html */
+/* Login / daftar, status premium, dan penguncian fitur. Dipakai oleh index.html (kasir), watermark.html, dan admin.html */
 const Auth = (() => {
   const C = window.WM_CONFIG, A = window.WM_API, Q = s => document.querySelector(s);
-  const ADMIN_PAGE = window.WM_PAGE == 'admin', TK = 'wm_tok';
+  const ADMIN_PAGE = window.WM_PAGE == 'admin', KASIR = window.WM_PAGE == 'toko', TK = 'wm_tok';
   let U = null, CFG = {waNumber: C.WA_NUMBER, waText: C.WA_TEXT}, off = 0, mode = 'login', lastP = null, busy = false;
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
   const now = () => Date.now() + off;
@@ -29,14 +29,14 @@ const Auth = (() => {
     <div class="gwrap">
       <aside class="ghero">
         <div class="gbrand"><span class="gmark">🎀</span><div><b>Watermark Studio</b><small>by ${esc(CR.brand || 'Rizanta Studio')}</small></div></div>
-        <h2>Foto jualan & testimoni jadi <em>rapi, aman, dan siap posting</em></h2>
-        <p>Pasang watermark anti maling, bikin frame testimoni cantik, dan simpan template sendiri. Semua dari browser.</p>
-        <div class="gshow" aria-hidden="true">
+        <h2>${KASIR ? 'Rekap jualan jadi <em>rapi, jelas, dan tidak tertukar</em>' : 'Foto jualan & testimoni jadi <em>rapi, aman, dan siap posting</em>'}</h2>
+        <p>${KASIR ? 'Catat order, stok, harga, dan refund. Pengingat perpanjangan langsung ke pembeli. Tiap akun punya rekap sendiri, datanya tidak pernah tercampur.' : 'Pasang watermark anti maling, bikin frame testimoni cantik, dan simpan template sendiri. Semua dari browser.'}</p>
+        ${KASIR ? '' : `<div class="gshow" aria-hidden="true">
           <div class="mock m2"><div class="mph"><div class="mtile">${mockRows}</div></div><div class="mcap">PROMO 50%</div></div>
           <div class="mock m1"><div class="mph"><div class="msun"></div><div class="mtile">${mockRows}</div></div><div class="mcap">TESTIMONI ★★★★★</div></div>
           <i class="spark s1">✦</i><i class="spark s2">♡</i>
-        </div>
-        <ul class="gfeat"><li>🛡️ Anti maling</li><li>🖼️ Frame testimoni</li><li>📦 Banyak foto + ZIP</li><li>☁️ Template tersimpan di akun</li></ul>
+        </div>`}
+        <ul class="gfeat">${KASIR ? '<li>🧾 Rekap jualan</li><li>📦 Stok & harga</li><li>⏰ Pengingat perpanjangan</li><li>💸 Hitung refund</li>' : '<li>🛡️ Anti maling</li><li>🖼️ Frame testimoni</li><li>📦 Banyak foto + ZIP</li><li>☁️ Template tersimpan di akun</li>'}</ul>
       </aside>
       <section class="gcard">
         <div class="gmark sm2">🎀</div>
@@ -76,6 +76,8 @@ const Auth = (() => {
     <button class="mx" data-close aria-label="Tutup">✕</button><div class="av big" id="accAv"></div><h3 id="accN"></h3><p id="accS" class="pill"></p><p id="accD" class="gsub"></p>
     <button class="btn pri wide" data-plans type="button" id="accUp">👑 Lihat paket Premium</button>
     <a class="btn wide" id="accWa" target="_blank" rel="noopener"></a>
+    <a class="btn wide" id="accTk" href="index.html">🧾 Kasir & Rekap Toko</a>
+    <a class="btn wide" id="accWm" href="watermark.html">🎀 Watermark Studio</a>
     <a class="btn wide" id="accAdm" href="admin.html" hidden>Buka Panel Admin</a>
     <button class="btn wide" id="accOut" type="button">Keluar</button>
     <div class="mcred">${credits}</div>
@@ -92,7 +94,7 @@ const Auth = (() => {
     mode = m; err('');
     document.querySelectorAll('[data-gm]').forEach(b => b.classList.toggle('on', b.dataset.gm == m));
     show('#gp2w', m == 'reg'); show('#gstr', m == 'reg'); Q('#gsub').textContent = m == 'reg' ? 'Buat akun gratis' : 'Masuk';
-    Q('#gh').textContent = m == 'reg' ? 'Buat akun baru' : 'Selamat datang'; Q('#gsub2').textContent = m == 'reg' ? 'Gratis, tanpa kartu. Langsung bisa pakai.' : 'Masuk untuk mulai bikin watermark';
+    Q('#gh').textContent = m == 'reg' ? 'Buat akun baru' : 'Selamat datang'; Q('#gsub2').textContent = m == 'reg' ? 'Gratis, tanpa kartu. Langsung bisa pakai.' : (KASIR ? 'Masuk untuk membuka kasir & rekap tokomu' : 'Masuk untuk mulai bikin watermark');
     Q('#gp').autocomplete = m == 'reg' ? 'new-password' : 'current-password';
   };
   function gate(state, msg) { // 'load' | 'form' | 'retry' | 'off'
@@ -166,7 +168,7 @@ const Auth = (() => {
     Q('#accD').textContent = U.role == 'premium' && p && U.premiumUntil < 4e12 ? `Aktif sampai ${fmtDate(U.premiumUntil)}` : U.expired ? `Premium habis sejak ${fmtDate(U.premiumUntil)}` : p ? 'Semua fitur terbuka' : 'Fitur dasar aktif';
     Q('#accUp').textContent = p ? '👑 Perpanjang premium' : '👑 Lihat paket Premium'; Q('#accUp').hidden = U.role == 'admin';
     const w = Q('#accWa'); w.textContent = 'Chat admin WhatsApp'; w.href = wa(waTxt(p ? 'Mau perpanjang premium.' : ''));
-    Q('#accAdm').hidden = !isAdmin(); Q('#acc').hidden = false;
+    Q('#accAdm').hidden = !isAdmin(); Q('#accTk').hidden = KASIR; Q('#accWm').hidden = !KASIR; Q('#acc').hidden = false;
   }
 
   function plans() {
@@ -177,6 +179,9 @@ const Auth = (() => {
   async function call(action, data) { // panggil server dengan token akun ini
     const r = await A.call({action, token: getTok(), ...(data || {})});
     if (!r.ok && r.code == 'session') logout(r.error);
+    // server lama (belum deploy Code.gs v7) menjawab aksi template dengan 'Member tidak ditemukan.'
+    if (!r.ok && /^(tpl|rec)_/.test(action) && (r.code == 'unknown' || r.error == 'Member tidak ditemukan.' || r.error == 'Khusus admin.'))
+      return {ok: false, code: 'outdated', error: 'Server belum diperbarui ke versi terbaru. Admin: tempel Code.gs terbaru di Apps Script lalu Deploy → Manage deployments → Edit → New version.'};
     return r;
   }
   function strength(p) {
