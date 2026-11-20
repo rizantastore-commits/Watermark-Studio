@@ -79,7 +79,7 @@ const Auth = (() => {
     <a class="btn wide" id="accTk" href="index.html">🧾 Kasir & Rekap Toko</a>
     <a class="btn wide" id="accWm" href="watermark.html">🎀 Watermark Studio</a>
     <a class="btn wide" id="accAdm" href="admin.html" hidden>Buka Panel Admin</a>
-    <button class="btn wide" id="accOut" type="button">Keluar</button>
+    <div class="accrow"><button class="btn" id="accSet" type="button">⚙️ Pengaturan</button><button class="btn" id="accOut" type="button">Keluar</button></div>
     <div class="mcred">${credits}</div>
   </div></div>`);
   const hb = Q('.hb');
@@ -119,9 +119,28 @@ const Auth = (() => {
     document.querySelectorAll('[data-g]').forEach(b => { const g = GR.find(x => x[0] == b.dataset.g); b.classList.toggle('lk', !!g && g[3].every(locked)); });
   }
 
+  /* ---------- tema tersimpan di akun (sheet Users, kolom theme) ---------- */
+  let thTimer = 0;
+  const thJson = s => JSON.stringify({p: s.p, c: s.p == 'custom' ? s.c : null, f: s.f});
+  function saveTheme(st) { // ditunda 0,7 dtk supaya menggeser warna tidak mengirim ratusan permintaan
+    clearTimeout(thTimer);
+    thTimer = setTimeout(async () => {
+      thTimer = 0; if (!U) return;
+      const d = thJson(st), r = await call('acct_theme', {data: d});
+      if (r.ok && U) U.theme = d;
+    }, 700);
+  }
+  function syncTheme() { // tema akun dipakai di perangkat ini; kalau akun belum punya, kirim tema perangkat ini
+    const T = window.WM_THEME; if (!T || !U || thTimer) return;
+    let srv = null; try { srv = U.theme ? JSON.parse(U.theme) : null; } catch (e) {}
+    if (srv) { if (thJson(srv) !== thJson(T.state)) T.adopt(srv); }
+    else if (!T.isDefault()) saveTheme(T.state);
+  }
+  if (window.WM_THEME) WM_THEME.onSave = st => { if (U) saveTheme(st); };
+
   function setUser(u, extra) {
     U = u; if (extra && extra.now) off = extra.now - Date.now(); if (extra && extra.cfg) CFG = {...CFG, ...extra.cfg};
-    paint();
+    syncTheme(); paint();
   }
   function enter(r) {
     setUser(r.user, r); if (r.token) setTok(r.token); gate('off');
@@ -148,7 +167,7 @@ const Auth = (() => {
     Q('#gp').value = ''; Q('#gp2').value = ''; enter(r);
   }
   async function logout(msg) {
-    const t = getTok(); setTok(''); if (t) A.logout(t); U = null; lastP = null; Q('#acc').hidden = true; Q('#plans').hidden = true; if (typeof window.WM_ON_LOGOUT == 'function') window.WM_ON_LOGOUT(); paint(); setMode('login'); gate('form', msg || '');
+    const t = getTok(); setTok(''); if (t) A.logout(t); clearTimeout(thTimer); thTimer = 0; if (window.WM_THEME) WM_THEME.clearLocal(); U = null; lastP = null; Q('#acc').hidden = true; Q('#plans').hidden = true; if (window.WM_SETTINGS) WM_SETTINGS.close(); if (typeof window.WM_ON_LOGOUT == 'function') window.WM_ON_LOGOUT(); paint(); setMode('login'); gate('form', msg || '');
   }
   async function refresh() {
     const t = getTok(); if (!t || !U) return;
@@ -180,9 +199,19 @@ const Auth = (() => {
     const r = await A.call({action, token: getTok(), ...(data || {})});
     if (!r.ok && r.code == 'session') logout(r.error);
     // server lama (belum deploy Code.gs v7) menjawab aksi template dengan 'Member tidak ditemukan.'
-    if (!r.ok && /^(tpl|rec)_/.test(action) && (r.code == 'unknown' || r.error == 'Member tidak ditemukan.' || r.error == 'Khusus admin.'))
+    if (!r.ok && /^(tpl|rec|acct)_/.test(action) && (r.code == 'unknown' || r.error == 'Member tidak ditemukan.' || r.error == 'Khusus admin.'))
       return {ok: false, code: 'outdated', error: 'Server belum diperbarui ke versi terbaru. Admin: tempel Code.gs terbaru di Apps Script lalu Deploy → Manage deployments → Edit → New version.'};
     return r;
+  }
+  async function updateAccount(d) { // ganti nama dan/atau password (wajib password lama)
+    const old = U ? U.username : '';
+    const r = await call('acct_update', d);
+    if (!r.ok) return r;
+    if (r.token) setTok(r.token); // password diganti: perangkat ini tetap masuk, perangkat lain keluar
+    if (r.user && r.user.username !== old) ['wm_rec_', 'wm_rfset_', 'wm_t_'].forEach(k => { // pindahkan cache lokal ke nama baru
+      try { const v = localStorage.getItem(k + old); if (v !== null) { localStorage.setItem(k + r.user.username, v); localStorage.removeItem(k + old); } } catch (e) {}
+    });
+    setUser(r.user, r); return r;
   }
   function strength(p) {
     let n = 0; if (p.length >= 6) n++; if (p.length >= 9 && /[A-Za-z]/.test(p) && /\d/.test(p)) n++; if (p.length >= 11 && /[^A-Za-z0-9]/.test(p) || p.length >= 14) n++;
@@ -226,5 +255,5 @@ const Auth = (() => {
   setInterval(refresh, 5 * 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
   window.addEventListener('load', check);
-  return {isPremium, isAdmin, locked, onTab, upsell, call, plans, user: () => U, fmtDate, wa, now, logout, esc, get cfg() { return CFG; }};
+  return {isPremium, isAdmin, locked, onTab, upsell, call, updateAccount, plans, user: () => U, fmtDate, wa, now, logout, esc, get cfg() { return CFG; }};
 })();

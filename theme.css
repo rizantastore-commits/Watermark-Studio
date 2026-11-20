@@ -1,0 +1,89 @@
+/* ===== Tema & pengaturan (dimuat paling akhir supaya bisa menimpa warna bawaan) ===== */
+
+/* font pilihan member (opsi <option> dibiarkan agar pratinjau font watermark tetap jalan) */
+html[data-font] *:not(option){font-family:var(--ff)!important}
+
+/* warna yang ikut tema (dulu pink tetap) */
+.blob.b1{background:var(--b1,#ffa6cc)}
+.blob.b2{background:var(--b2,#ffc9db)}
+:focus-visible{outline-color:var(--ring,rgba(255,79,154,.4))}
+input:focus,select:focus,textarea:focus{border-color:var(--p)!important;box-shadow:0 0 0 4px var(--ring,rgba(255,79,154,.18))!important}
+/* teks di atas tombol/aksen: putih, atau gelap kalau aksennya terang */
+.btn.pri,.seg button.on,.pill.on,.av,.tabs button.on,.subs button.on,.chips button.on,.pos button.on,.th b,#toast,.upg,.badge.pr,.mico,.gmark{color:var(--onp,#fff)}
+.btn.pri .i{color:var(--onp,#fff)}
+.seg button.on{box-shadow:0 2px 0 var(--pdk,#e0407f)}
+
+/* ===== Jendela pengaturan: bottom sheet di HP supaya perubahan tema kelihatan di belakangnya ===== */
+#set{background:rgba(0,0,0,.28);backdrop-filter:none;-webkit-backdrop-filter:none}
+.mcard.wset{padding:0;gap:0;overflow:hidden;display:flex;flex-direction:column;text-align:left;width:min(460px,100%);max-height:min(86dvh,760px)}
+.wset .sth{display:grid;gap:12px;padding:18px 18px 10px;flex:none}
+.wset .sth h3{text-align:left;padding-right:44px}
+.wset .stb{display:grid;gap:14px;align-content:start;padding:6px 18px calc(20px + env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.wset .stb::-webkit-scrollbar{width:7px}.wset .stb::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.wset section{display:grid;gap:14px;align-content:start}
+.wset section[hidden]{display:none}
+.wset .sgrp{display:grid;gap:8px}
+.wset h4{margin:0;font-size:14px}
+.wset .f input[type=text],.wset .f input[type=password]{font-size:16px;height:46px;padding:0 14px}
+.wset .f select{height:46px;font-size:16px;width:100%}
+.wset small{line-height:1.4}
+
+/* template tema */
+.tp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tpb{position:relative;display:grid;justify-items:center;gap:5px;padding:8px 4px 7px;min-width:0;font:600 12px/1.2 Fredoka,Nunito,sans-serif;color:var(--ink);background:var(--soft);border:2.5px solid var(--line);border-radius:18px;cursor:pointer;transition:transform .15s,border-color .2s}
+.tpb:active{transform:scale(.96)}
+.tpb i{width:34px;height:34px;border-radius:50%;border:2.5px solid var(--line);display:block}
+.tpb span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tpb[aria-pressed="true"]{border-color:var(--p);box-shadow:0 0 0 3px var(--ring,rgba(255,79,154,.25))}
+.tpb[aria-pressed="true"]::after{content:"✓";position:absolute;top:-7px;right:-4px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--onp,#fff);background:var(--p)}
+
+/* warna sendiri */
+.tcr{display:grid;grid-template-columns:minmax(0,1fr) 46px 108px;gap:8px;align-items:center}
+.tcr>span{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tcr input[type=color]{width:46px;height:46px;padding:3px;border-radius:50%}
+.tcr input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.tcr input[type=color]::-webkit-color-swatch{border:0;border-radius:50%}
+.tcr input[type=color]::-moz-color-swatch{border:0;border-radius:50%}
+.tcr .hx{width:100%;height:46px;padding:0 8px;font-size:14px;font-weight:700;text-align:center;text-transform:lowercase;border-radius:14px;border:2.5px solid var(--line);background:var(--solid);color:var(--ink)}
+.tcn{padding:8px 12px;border-radius:14px;font-size:13px;font-weight:800;background:var(--soft);color:var(--mut)}
+.tcn:empty{display:none}
+.tcn.warn{background:#fff1c9;color:#7a5200}
+.tcn.bad{background:#ffe1e8;color:#b0204d}
+.tcn.ok{color:var(--pd)}
+
+/* akun */
+.sac{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;background:var(--soft);border:2px solid var(--line)}
+.sac .av{width:44px;height:44px;font-size:20px;flex:none}
+.sac div{min-width:0}.sac b{display:block;font:600 16px Fredoka,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sac small{display:block}
+#sForm{display:grid;gap:12px}
+#sForm .f>span em{font-style:normal;color:var(--mut);font-weight:700}
+#sForm .f>span b{background:none;padding:0;color:var(--pd)}
+.sdiv{height:0;border-top:2px dashed var(--line);margin:2px 0}
+.wset .str{margin-top:-4px}
+.accrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* semua kartu jendela boleh di-scroll di layar pendek */
+.mcard:not(.st){max-height:calc(100dvh - 40px);overflow-y:auto}
+
+@media(max-width:640px){
+  #set{place-items:end center;padding:0}
+  .mcard.wset{width:100%;border-radius:26px 26px 0 0;border-bottom:0;max-height:80dvh;animation:sheet .3s cubic-bezier(.3,1.2,.5,1)}
+  .tp{gap:7px}
+}
+@keyframes sheet{from{transform:translateY(40px);opacity:0}}
+
+/* header admin & kasir tetap muat di HP kecil (tombol tema menambah 1 ikon) */
+@media(max-width:560px){
+  .atop{gap:6px;padding:8px 10px}
+  .atop .ttl{flex:1 1 0;min-width:0}
+  .atop .ttl h1{font-size:17px}
+  .atop .ttl p{display:none}
+  .atop .gmark.sm{width:38px;height:38px;font-size:19px}
+  .atop .ib{width:36px;height:36px;flex:none}
+  .atop .btn{height:38px;padding:0 10px;font-size:13px;flex:none}
+  .tk-hm{display:none}
+}
+
+/* kolom halaman admin/kasir boleh menyusut (sebelumnya melebar di layar 320px sehingga bisa digeser ke samping) */
+.adm{grid-template-columns:minmax(0,1fr)}

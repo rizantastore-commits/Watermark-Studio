@@ -429,9 +429,8 @@
     }
     restoring = false; cache(); split(); render(); toast(`${ok} catatan dipulihkan ✓`);
   }
-  const themeNow = () => document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const paintTheme = () => { const b = Q('#tkth'); if (b) b.textContent = themeNow() == 'dark' ? '☀️' : '🌙'; };
-  function flipTheme() { const t = themeNow() == 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = t; try { localStorage.setItem('wm_th', t); } catch (e) {} paintTheme(); }
+  const paintTheme = () => {};
+  function flipTheme() { if (window.WM_SETTINGS) WM_SETTINGS.open('tema'); } // tema diatur di settings.js
 
   /* ---------- contoh tampilan untuk akun gratis (data fiktif, tidak dikirim ke server) ---------- */
   let DM = null, DF = 'all', DQ = '', DCLICK = 0;

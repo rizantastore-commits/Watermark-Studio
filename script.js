@@ -692,11 +692,8 @@ function copyImg() {
     try { await navigator.clipboard.write([new ClipboardItem({'image/png': b})]); toast('Gambar disalin ke clipboard'); } catch (e) { toast('Gagal menyalin gambar'); }
   }, 'image/png');
 }
-function toggleTheme() {
-  const d = document.documentElement, dark = (d.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) == 'dark';
-  d.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('wm_th', d.dataset.theme); } catch (e) {} themeIcon();
-}
-function themeIcon() { const d = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); $('#th').innerHTML = ic(d == 'dark' ? 'sun' : 'moon'); }
+function toggleTheme() { if (window.WM_SETTINGS) WM_SETTINGS.open('tema'); } // tema diatur di settings.js
+function themeIcon() {}
 const ACT = {
   dup: () => { if (CUR < 0) return; if (ITEMS.length >= MAXI) return toast(`Maksimal ${MAXI} testi sekali kerja`); stash(); ITEMS.splice(CUR + 1, 0, {...ITEMS[CUR], id: ++UID}); pickItem(CUR + 1); toast('Testi diduplikat'); },
   clr: () => { if (ITEMS.length && confirm('Hapus semua foto & testi di daftar?')) { ITEMS = []; CUR = -1; I.photo = null; PID = ++PIDN; HS = [JSON.stringify(S)]; HI = 0; hbtn(); upd(); drawList(); } },
@@ -803,7 +800,6 @@ cv.addEventListener('pointerup', () => { if (drag) { drag = 0; save(); } });
 /* ================= MULAI ================= */
 try {
   const s = localStorage.getItem('wm_s'); if (s) merge(S, JSON.parse(s));
-  const th = localStorage.getItem('wm_th'); if (th) document.documentElement.dataset.theme = th;
 } catch (e) {}
 themeIcon(); tab('list'); pre(); loadAll(); drawList();
 HS = [JSON.stringify(S)]; HI = 0; hbtn();

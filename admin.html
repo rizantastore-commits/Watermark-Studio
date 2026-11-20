@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="theme.css">
+<script src="theme.js"></script>
 </head>
 <body class="gated adminpg">
 <div class="blob b1"></div><div class="blob b2"></div>
@@ -17,6 +19,7 @@
   <header class="atop">
     <div class="gmark sm">🎀</div>
     <div class="ttl"><h1>Panel Admin</h1><p>Watermark Studio · by Rizanta Studio</p></div>
+    <button class="ib" type="button" data-set="tema" aria-label="Tema & pengaturan" title="Tema & pengaturan">🎨</button>
     <a class="btn" href="index.html">← Kasir</a>
     <button class="btn" id="out" type="button">Keluar</button>
   </header>
@@ -40,6 +43,7 @@
 <script>window.WM_PAGE = 'admin';</script>
 <script src="auth.js"></script>
 <script src="admin.js"></script>
+<script src="settings.js"></script>
 <script>(()=>{const c=WM_CONFIG.CREDITS||{};document.getElementById("acred").innerHTML=`Dibuat dengan 💖 oleh <b>${c.brand||""}</b>${c.dev?` · Dev <a href="${c.link||"#"}" target="_blank" rel="noopener">${c.dev}</a>`:""}`})()</script>
 </body>
 </html>

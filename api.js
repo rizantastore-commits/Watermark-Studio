@@ -24,7 +24,7 @@ window.WM_API = (() => {
   const pub = (u, n) => ({
     username: u.username, premium: prem(u, n), role: u.role === 'premium' && !prem(u, n) ? 'free' : u.role,
     premiumUntil: u.premiumUntil || 0, expired: u.role !== 'admin' && !prem(u, n) && u.premiumUntil > 0,
-    status: u.status, createdAt: u.createdAt, lastLogin: u.lastLogin, note: u.note || ''
+    status: u.status, createdAt: u.createdAt, lastLogin: u.lastLogin, note: u.note || '', theme: u.theme || ''
   });
   const cfgOf = () => ({waNumber: C.WA_NUMBER, waText: C.WA_TEXT, registerOpen: true});
   const tok = () => Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
@@ -69,6 +69,22 @@ window.WM_API = (() => {
       i >= 0 ? a.recs[i] = o : a.recs.push(o); store(d); return OK();
     }
     if (act == 'rec_delete') { a.recs = (a.recs || []).filter(x => x.id != r.id); store(d); return OK(); }
+    if (act == 'acct_theme') {
+      let o; try { o = JSON.parse(r.data); } catch (e) { return ER('Data tema tidak valid.'); }
+      if (!o || typeof o.p != 'string' || typeof o.f != 'string') return ER('Data tema tidak valid.');
+      a.theme = JSON.stringify({p: o.p, c: o.p == 'custom' ? o.c : null, f: o.f}); store(d); return OK();
+    }
+    if (act == 'acct_update') {
+      if (a.pass !== r.password) return ER('Password saat ini salah.', 'wrongpass');
+      let nn = String(r.newUsername || '').trim(); const np = String(r.newPassword || '');
+      if (nn === a.username) nn = '';
+      if (!nn && !np) return ER('Belum ada yang diubah.');
+      if (nn) { const e = valid(nn, 'xxxxxx'); if (e) return ER(e); const o = find(d, nn); if (o && o !== a) return ER('Nama pengguna sudah dipakai, coba yang lain.'); }
+      if (np) { if (np.length < 6) return ER('Password baru minimal 6 karakter.'); if (np === r.password) return ER('Password baru harus beda dari password saat ini.'); }
+      if (nn) a.username = nn;
+      if (np) { a.pass = np; a.token = tok(); }
+      store(d); return OK({token: a.token, user: pub(a, n)});
+    }
     if (act == 'tpl_delete') { a.tpls = (a.tpls || []).filter(t => t.n != r.name); store(d); return OK(); }
     if (a.role != 'admin') return ER('Khusus admin.', 'forbidden');
     if (act == 'admin_list') return OK({users: d.users.map(u => pub(u, n))});

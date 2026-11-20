@@ -72,3 +72,16 @@ Tidak ada perubahan di `Code.gs`, jadi **tidak perlu deploy ulang Apps Script**.
 - Laporan: **grafik tren 6 bulan** (omzet + laba) dan tombol **salin ringkasan** bulan (siap tempel ke WA).
 - Tab baru **Alat**: pelanggan teratas (total belanja, tombol WA), daftar jatuh tempo 7 hari (bisa disalin), **backup & pulihkan** semua data ke file JSON (maksimal 500 catatan sekali pulihkan; isi file divalidasi dulu).
 - Tombol **tema terang/gelap** di header kasir.
+
+
+## Update v11 (tema sendiri, ganti nama & password)
+**Wajib deploy ulang Apps Script** karena ada aksi baru (`acct_update`):
+1. Buka Apps Script, **ganti seluruh isi Code.gs** dengan versi baru → Save.
+2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
+3. Upload SEMUA file ini ke hosting (timpa yang lama): `index.html`, `watermark.html`, `admin.html`, `script.js`, `toko.js`, `toko.css`, `auth.js`, `api.js`, dan 3 file BARU: `theme.js`, `theme.css`, `settings.js`.
+
+**Menu Pengaturan** (tombol 🎨 di header tiap halaman, atau tombol ⚙️ Pengaturan di jendela akun). Di HP tampil sebagai lembar dari bawah, jadi perubahan tema langsung kelihatan di belakangnya.
+- **Tema**: 12 template (Otomatis ikut mode HP, Pink Manis/Malam, Mint, Langit Biru, Lavender, Persik, Kopi Susu, Hitam Putih, Malam Biru, Hutan Malam, Plum Malam), **warna sendiri** (teks, latar, aksen) dan **10 pilihan font**. Warna lain (kotak, garis, bayangan, tombol) dihitung otomatis dari 3 warna itu. Kalau teks susah dibaca, muncul peringatan, dan kombinasi yang benar-benar tidak terbaca tidak diterapkan. Pilihan **tersimpan di akun** (sheet `Users`, kolom baru `theme`, dibuat otomatis saat tema pertama disimpan), jadi di perangkat mana pun tema akun itu ikut. Tiap akun punya tema sendiri dan tidak saling memengaruhi. Perangkat juga menyimpan salinan lokal (`wm_theme`) supaya halaman tidak berkedip; saat keluar akun, salinan lokal dihapus agar tema tidak terbawa ke akun lain di perangkat yang sama.
+- **Akun**: ganti nama pengguna dan/atau password. **Password saat ini wajib diisi** untuk setiap perubahan. Salah 5x → dikunci 5 menit. Ganti nama otomatis memindahkan rekap, produk, dan template ke nama baru (sheet `Records` dan `Templates`). Ganti password membuat perangkat lain otomatis keluar, perangkat yang dipakai tetap masuk.
+
+Perbaikan tampilan HP kecil (≤360px): halaman Admin dan Kasir tidak lagi bisa digeser ke samping.

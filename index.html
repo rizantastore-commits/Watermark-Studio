@@ -11,7 +11,8 @@
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="admin.css">
 <link rel="stylesheet" href="toko.css">
-<script>try{var t=localStorage.getItem("wm_th");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="theme.css">
+<script src="theme.js"></script>
 </head>
 <body class="gated adminpg tokopg">
 <div class="blob b1"></div><div class="blob b2"></div>
@@ -19,7 +20,7 @@
   <header class="atop">
     <div class="gmark sm">🧾</div>
     <div class="ttl"><h1>Kasir & Rekap Toko</h1><p>Data khusus akunmu · Rizanta Studio</p></div>
-    <div class="hb"><button class="ib" id="tkth" type="button" aria-label="Ganti tema" title="Ganti tema (terang/gelap)">🌙</button></div>
+    <div class="hb"><button class="ib" id="tkth" type="button" aria-label="Tema & pengaturan" title="Tema & pengaturan">🎨</button></div>
     <a class="btn" href="watermark.html" aria-label="Buka Watermark Studio" title="Watermark Studio">🎀<span class="tk-hm"> Watermark</span></a>
   </header>
 
@@ -213,6 +214,7 @@
 <script>window.WM_PAGE = 'toko';</script>
 <script src="auth.js"></script>
 <script src="toko.js"></script>
+<script src="settings.js"></script>
 <script>(()=>{const c=WM_CONFIG.CREDITS||{};document.getElementById("acred").innerHTML=`Dibuat dengan 💖 oleh <b>${c.brand||""}</b>${c.dev?` · Dev <a href="${c.link||"#"}" target="_blank" rel="noopener">${c.dev}</a>`:""}`})()</script>
 </body>
 </html>
