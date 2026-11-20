@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff5fa2">
+<title>Watermark Studio · Rizanta Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;700;800&family=Pacifico&family=Lobster&family=Bangers&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Montserrat:wght@700&family=Playfair+Display:wght@700&family=Baloo+2:wght@700&family=Permanent+Marker&family=Oswald:wght@600&family=Chewy&family=Righteous&family=Satisfy&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div>
+
+<div class="app">
+  <header class="top">
+    <div class="mark" id="hLogo"></div>
+    <div class="ttl"><h1>Watermark Studio</h1><p>Rizanta Store</p></div>
+    <div class="hb">
+      <button class="ib" id="un" data-i="undo" aria-label="Undo (Ctrl+Z)" title="Undo (Ctrl+Z)" disabled></button>
+      <button class="ib" id="re" data-i="redo" aria-label="Redo (Ctrl+Y)" title="Redo (Ctrl+Y)" disabled></button>
+      <button class="ib" id="th" aria-label="Ganti tema"></button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="cv"><canvas id="cv"></canvas></div>
+    <div class="bar">
+      <label class="btn" title="Pilih foto"><span data-i="camera"></span><em>Foto</em><input type="file" id="photo" accept="image/*" hidden></label>
+      <button class="btn" id="pv" title="Preview layar penuh"><span data-i="eye"></span><em>Preview</em></button>
+      <select id="fmt" aria-label="Format file"><option value="png">PNG</option><option value="jpeg">JPG</option><option value="webp">WebP</option></select>
+      <button class="btn pri" id="dl"><span data-i="download"></span><em>Download</em></button>
+      <button class="btn" id="cp" hidden title="Salin ke clipboard"><span data-i="copy"></span><em>Salin</em></button>
+      <button class="btn" id="sh" hidden title="Bagikan"><span data-i="share"></span></button>
+    </div>
+  </main>
+
+  <nav class="tabs" id="tabs"></nav>
+  <section class="secs" id="secs"><div class="subs" id="subs"></div><div class="panes" id="panes"></div></section>
+</div>
+
+<div id="toast" role="status"></div>
+<script src="script.js"></script>
+</body>
+</html>
