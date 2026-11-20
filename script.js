@@ -24,9 +24,9 @@ const ic = n => `<svg class="i" viewBox="0 0 24 24"><path d="${IC[n]}"/></svg>`;
 /* ================= DATA & KONSTANTA ================= */
 const clone = o => JSON.parse(JSON.stringify(o));
 const DEF = {
-  text:  {on:true, value:'Rizanta Store', font:'Fredoka', pos:'br', size:6, color:'#ffffff', opacity:80, rot:0, shadow:true, stroke:false, strokeColor:'#000000'},
+  text:  {on:true, value:'Rizanta Studio', font:'Fredoka', pos:'br', size:6, color:'#ffffff', opacity:80, rot:0, shadow:true, stroke:false, strokeColor:'#000000'},
   badge: {on:false, value:'PROMO 50%', pos:'tr', size:7, bg:'#ff5fa2', color:'#ffffff', rot:0, opacity:100},
-  tile:  {on:false, value:'Rizanta Store', font:'Fredoka', cols:3, rows:5, size:5, spread:100, rot:-30, ox:0, oy:0, color:'#ffffff', opacity:30, stagger:true},
+  tile:  {on:false, value:'Rizanta Studio', font:'Fredoka', cols:3, rows:5, size:5, spread:100, rot:-30, ox:0, oy:0, color:'#ffffff', opacity:30, stagger:true},
   logo:  {on:false, src:'', pos:'tl', size:16, opacity:90},
   frame: {on:false, layout:'polaroid', theme:'pink', shape:'rect', size:'4:5', deco:'dots', title:'TESTIMONI', name:'Kak Rina',
           review:'Admin ramah, proses cepat, akun langsung aktif. Recommended banget!', stars:5, font:'Fredoka', accent:'#ff7eb6',
@@ -128,7 +128,7 @@ const TABS = [
   ['mascot', 'Maskot', 'smile', [C('mascot.on', 'Tampilkan maskot'), chips('mascot.emoji', ['🐰', '🐱', '🐻', '🎀', '🌸', '🍓', '🧸', '🍒', '💖', '⭐'].map(e => [e, e]), 'em'),
     FB('fMas', 'upload', 'Upload maskot sendiri'), R('mascot.size', 'Ukuran', 5, 80), R('mascot.x', 'Posisi kiri / kanan', 0, 100), R('mascot.y', 'Posisi atas / bawah', 0, 100),
     R('mascot.opacity', 'Opacity', 10, 100), C('mascot.flip', 'Balik arah (mirror)'), C('mascot.bob', 'Maskot goyang (animasi)'), B('xMas', 'trash', 'Hapus maskot upload')]],
-  ['tpl', 'Template', 'save', ['<small>Pilih template, lalu ubah sesukamu. Logo store ikut terpasang otomatis.</small>', H('Template bawaan'), '<div class="pre" id="pre"></div>',
+  ['tpl', 'Template', 'save', ['<small>Pilih template, lalu ubah sesukamu. Template buatanmu tersimpan di akun, jadi tetap ada kalau login dari HP atau perangkat lain.</small>', H('Template bawaan'), '<div class="pre" id="pre"></div>',
     H('Template kamu'), '<label class="f"><span>Nama template</span><input type="text" id="tn" placeholder="mis. Template Netflix"></label>',
     B('ts', 'save', 'Simpan pengaturan ini', 'pri'), '<div class="tpls" id="tl"></div>', B('rs', 'trash', 'Reset semua')]]
 ];
@@ -147,7 +147,7 @@ const tab = k => {
   document.querySelectorAll('.sec').forEach(e => e.classList.toggle('on', e.id == 's-' + k));
   document.querySelectorAll('[data-tab]').forEach(e => e.classList.toggle('on', e.dataset.tab == k));
   document.querySelectorAll('[data-g]').forEach(e => e.classList.toggle('on', e.dataset.g == g[0]));
-  $('#panes').scrollTop = 0;
+  $('#panes').scrollTop = 0; Auth.onTab();
 };
 const grp = g => tab(curSub[g] || GR.find(x => x[0] == g)[3][0]);
 
@@ -165,7 +165,18 @@ function sync() {
 }
 const upd = () => { sync(); draw(); save(); lab(); pend = null; };
 const save = () => { stash(); hpush(); try { localStorage.setItem('wm_s', JSON.stringify(S)); } catch (e) { toast('Penyimpanan browser penuh, logo besar tidak tersimpan'); } };
-const saveT = () => { try { localStorage.setItem('wm_t', JSON.stringify(TP)); } catch (e) { toast('Template tidak bisa disimpan, penyimpanan penuh'); } };
+const tkey = () => 'wm_t_' + ((Auth.user() || {}).username || '');
+const saveT = () => { try { localStorage.setItem(tkey(), JSON.stringify(TP)); } catch (e) {} }; // cache lokal; data utama di Google Sheets (per akun)
+async function loadTpl() { // ambil template milik akun ini dari server
+  try { TP = JSON.parse(localStorage.getItem(tkey()) || '[]'); } catch (e) { TP = []; } renderTpl();
+  try { // template lama (versi sebelum sync) dipindah ke akun, sekali saja
+    const old = JSON.parse(localStorage.getItem('wm_t') || '[]');
+    if (old.length && Auth.isPremium()) { for (const t of old) await Auth.call('tpl_save', {name: t.n, data: JSON.stringify(t.s)}); localStorage.removeItem('wm_t'); }
+  } catch (e) {}
+  const r = await Auth.call('tpl_list'); if (r.ok) { TP = r.templates; saveT(); renderTpl(); }
+}
+window.WM_ON_AUTH = () => loadTpl();
+window.WM_ON_LOGOUT = () => { TP = []; renderTpl(); };
 /* riwayat undo / redo */
 const hbtn = () => { $('#un').disabled = HI < 1; $('#re').disabled = HI >= HS.length - 1; };
 function hnow() { const j = JSON.stringify(S); if (HS[HI] === j) return; HS = HS.slice(0, HI + 1); HS.push(j); if (HS.length > 30) HS.shift(); HI = HS.length - 1; hbtn(); }
@@ -342,7 +353,13 @@ function drawMascot(c, W, H) {
   else { c.font = `${w}px sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(m.emoji, 0, 0); }
   c.restore();
 }
-function draw(t) {
+function draw(t) { // akun gratis: fitur premium tidak ikut digambar
+  if (Auth.isPremium()) return drawRaw(t);
+  const b = [S.tile.on, S.frame.on, S.cframe.on, S.mascot.on, S.filter];
+  S.tile.on = S.frame.on = S.cframe.on = S.mascot.on = false; S.filter = DEF.filter;
+  try { return drawRaw(t); } finally { [S.tile.on, S.frame.on, S.cframe.on, S.mascot.on, S.filter] = b; }
+}
+function drawRaw(t) {
   t = t instanceof HTMLCanvasElement ? t : cv; // bisa menggambar ke canvas lain (untuk export)
   const F = S.frame, p = I.photo; let W, H;
   const U = useCF();
@@ -481,6 +498,7 @@ function newItem(img, n, first) {
 }
 async function addPhotos(files) {
   files = files.filter(f => f && f.type.startsWith('image/')); if (!files.length) return toast('Pilih file gambar ya');
+  if (!Auth.isPremium()) { if (files.length > 1) { toast('Akun gratis: 1 foto saja, foto pertama dipakai'); Auth.upsell('Banyak foto sekaligus'); } files = files.slice(0, 1); ITEMS = []; CUR = -1; } // gratis = 1 foto
   const room = MAXI - ITEMS.length; if (room <= 0) return toast(`Maksimal ${MAXI} testi sekali kerja`);
   const skip = Math.max(0, files.length - room); files = files.slice(0, room); stash();
   const first = ITEMS.length; let ok = 0, bad = 0;
@@ -620,7 +638,8 @@ function renderTpl() {
 }
 function saveTpl() {
   const n = $('#tn').value.trim() || 'Template ' + (TP.length + 1), d = {n, s: clone(S)}, i = TP.findIndex(t => t.n == n);
-  i >= 0 ? TP[i] = d : TP.push(d); saveT(); renderTpl(); toast('Template tersimpan'); burst();
+  i >= 0 ? TP[i] = d : TP.push(d); saveT(); renderTpl(); toast('Menyimpan ke akun…');
+  Auth.call('tpl_save', {name: n, data: JSON.stringify(d.s)}).then(r => { toast(r.ok ? 'Template tersimpan di akunmu ☁️' : r.error); if (r.ok) burst(); else loadTpl(); });
 }
 function loadAll() { [S.text.font, S.tile.font, S.frame.font, S.info.font].forEach(fl); loadImg('logo', S.logo.src); loadImg('mas', S.mascot.src); if (CF.orig) punch(1); upd(); renderTpl(); }
 
@@ -717,7 +736,7 @@ document.addEventListener('click', e => {
   if (d.fp != null) { Object.assign(S.filter, DEF.filter, FP[d.fp][1]); pop(); return upd(); }
   if (d.pre != null) return applyPre(+d.pre);
   if (d.use != null) { S = clone(DEF); merge(S, TP[d.use].s); keepTxt(); loadAll(); pop(); burst(); return toast('Template dipakai'); }
-  if (d.del != null) { TP.splice(d.del, 1); saveT(); return renderTpl(); }
+  if (d.del != null) { const nm = TP[d.del].n; TP.splice(d.del, 1); saveT(); renderTpl(); Auth.call('tpl_delete', {name: nm}).then(r => { if (!r.ok) { toast(r.error); loadTpl(); } }); return; }
   if (d.set) {
     set(d.set, d.val); pop();
     if (d.set.startsWith('info.')) S.info.on = true;
@@ -784,7 +803,6 @@ cv.addEventListener('pointerup', () => { if (drag) { drag = 0; save(); } });
 /* ================= MULAI ================= */
 try {
   const s = localStorage.getItem('wm_s'); if (s) merge(S, JSON.parse(s));
-  TP = JSON.parse(localStorage.getItem('wm_t') || '[]');
   const th = localStorage.getItem('wm_th'); if (th) document.documentElement.dataset.theme = th;
 } catch (e) {}
 themeIcon(); tab('list'); pre(); loadAll(); drawList();
@@ -793,4 +811,4 @@ try { idb('get', 'cf').then(v => { if (v) loadCF(new Blob([v.buf], {type: v.type
 if (navigator.canShare) $('#sh').hidden = false;
 try { $('#shAll').hidden = !(navigator.canShare && navigator.canShare({files: [new File(['x'], 'a.png', {type: 'image/png'})]})); } catch (e) { $('#shAll').hidden = true; }
 if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) $('#cp').hidden = false;
-(function loop() { if (S.mascot.on && S.mascot.bob && !drag) draw(); requestAnimationFrame(loop); })();
+(function loop() { if (S.mascot.on && S.mascot.bob && !drag && Auth.isPremium()) draw(); requestAnimationFrame(loop); })();
