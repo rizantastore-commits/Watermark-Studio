@@ -21,14 +21,14 @@ const Auth = (() => {
 
   /* ---------- tampilan ---------- */
   const CR = C.CREDITS || {};
-  const credits = `Dibuat dengan 💖 oleh <b>${esc(CR.brand || 'Rizanta Studio')}</b>${CR.dev ? ` · Dev <a href="${esc(CR.link || '#')}" target="_blank" rel="noopener">${esc(CR.dev)}</a>` : ''}`;
-  const mockRows = Array.from({length: 9}, () => '<span>Rizanta Studio</span><span>Rizanta Studio</span><span>Rizanta Studio</span>').join('');
+  const credits = `Dibuat dengan 💖 oleh <b>${esc(CR.brand || 'ReyVion')}</b>${CR.dev ? ` · Dev <a href="${esc(CR.link || '#')}" target="_blank" rel="noopener">${esc(CR.dev)}</a>` : ''}`;
+  const mockRows = Array.from({length: 9}, () => '<span>ReyVion</span><span>ReyVion</span><span>ReyVion</span>').join('');
   document.body.insertAdjacentHTML('beforeend', `
   <div id="gate" class="gate">
     <i class="fl f1">♡</i><i class="fl f2">✦</i><i class="fl f3">✿</i><i class="fl f4">♡</i>
     <div class="gwrap">
       <aside class="ghero">
-        <div class="gbrand"><span class="gmark">🎀</span><div><b>Watermark Studio</b><small>by ${esc(CR.brand || 'Rizanta Studio')}</small></div></div>
+        <div class="gbrand"><span class="gmark">🎀</span><div><b>ReyVion</b><small>Watermark &amp; Kasir Toko</small></div></div>
         <h2>${KASIR ? 'Rekap jualan jadi <em>rapi, jelas, dan tidak tertukar</em>' : 'Foto jualan & testimoni jadi <em>rapi, aman, dan siap posting</em>'}</h2>
         <p>${KASIR ? 'Catat order, stok, harga, dan refund. Pengingat perpanjangan langsung ke pembeli. Tiap akun punya rekap sendiri, datanya tidak pernah tercampur.' : 'Pasang watermark anti maling, bikin frame testimoni cantik, dan simpan template sendiri. Semua dari browser.'}</p>
         ${KASIR ? '' : `<div class="gshow" aria-hidden="true">
@@ -77,7 +77,7 @@ const Auth = (() => {
     <button class="btn pri wide" data-plans type="button" id="accUp">👑 Lihat paket Premium</button>
     <a class="btn wide" id="accWa" target="_blank" rel="noopener"></a>
     <a class="btn wide" id="accTk" href="index.html">🧾 Kasir & Rekap Toko</a>
-    <a class="btn wide" id="accWm" href="watermark.html">🎀 Watermark Studio</a>
+    <a class="btn wide" id="accWm" href="watermark.html">🎀 Watermark</a>
     <a class="btn wide" id="accAdm" href="admin.html" hidden>Buka Panel Admin</a>
     <div class="accrow"><button class="btn" id="accSet" type="button">⚙️ Pengaturan</button><button class="btn" id="accOut" type="button">Keluar</button></div>
     <div class="mcred">${credits}</div>

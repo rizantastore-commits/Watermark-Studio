@@ -88,7 +88,7 @@
   function stats() { Q('#stats').innerHTML = statsHtml(R, P, X); }
   function remind() {
     const ls = R.filter(due).sort((a, b) => left(a) - left(b)), el = Q('#remind');
-    document.title = (ls.length ? `(${ls.length}) ` : '') + 'Kasir & Rekap Toko · Rizanta Studio';
+    document.title = (ls.length ? `(${ls.length}) ` : '') + 'Kasir & Rekap Toko · ReyVion';
     el.hidden = !ls.length; if (!ls.length) return;
     el.innerHTML = remindHtml(ls);
   }
@@ -577,7 +577,7 @@
   document.addEventListener('change', e => { if (e.target.id == 'srt') { SRT = e.target.value; renderRekap(); } if (e.target.id == 'rstF') { restore(e.target.files[0]); e.target.value = ''; } });
   paintTheme();
   window.WM_ON_AUTH = () => { lockedNow = null; lockCheck(); };
-  window.WM_ON_LOGOUT = () => { ALL = []; split(); lockedNow = null; Q('#panel').hidden = true; Q('#lk').hidden = true; document.title = 'Kasir & Rekap Toko · Rizanta Studio'; };
+  window.WM_ON_LOGOUT = () => { ALL = []; split(); lockedNow = null; Q('#panel').hidden = true; Q('#lk').hidden = true; document.title = 'Kasir & Rekap Toko · ReyVion'; };
   setInterval(lockCheck, 10000);
   setInterval(() => { if (!Q('#panel').hidden && !modalOpen()) render(); }, 60000);   // ganti hari -> sisa durasi ikut berubah
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Auth.user() && !Q('#panel').hidden && !modalOpen()) load(); });

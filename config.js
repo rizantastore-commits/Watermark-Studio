@@ -4,13 +4,13 @@ window.WM_CONFIG = {
   // Kosong = MODE DEMO (akun disimpan di browser saja, buat coba-coba).
   API_URL: 'https://script.google.com/macros/s/AKfycbwzZxJ8fWj8q1J32NWcRqpRbCHierWf5zfJ_5ri_ur2Vxbncs-azG10gBcs-7VRePvO8Q/exec',
 
-  // Nomor WhatsApp Rizanta Studio (format 62, tanpa + atau spasi).
+  // Nomor WhatsApp ReyVion (format 62, tanpa + atau spasi).
   // Nomor ini juga bisa diganti dari Google Sheets (sheet "Config" -> wa_number), jadi tidak perlu upload ulang.
   WA_NUMBER: '628979420338',
-  WA_TEXT: 'Halo kak Rizanta Studio, aku mau upgrade Premium Watermark Studio.',
+  WA_TEXT: 'Halo kak ReyVion, aku mau upgrade Premium.',
 
   // Credits (tampil di halaman login, menu akun, dan menu premium)
-  CREDITS: {brand: 'Rizanta Studio', dev: 'Rizanta_V', link: 'https://instagram.com/Zntaaa_V'},
+  CREDITS: {brand: 'ReyVion', dev: 'Rizanta_V', link: 'https://instagram.com/Zntaaa_V'},
 
   // Paket premium di menu "Premium". GANTI harga sesuai harga jualmu. days:0 = seumur hidup.
   PLANS: [

@@ -1,7 +1,7 @@
 # Pasang sistem login & premium (± 10 menit)
 
 ## 1. Google Sheets + Apps Script
-1. Buat Google Sheets baru (nama bebas, mis. "Database Watermark Studio").
+1. Buat Google Sheets baru (nama bebas, mis. "Database ReyVion").
 2. Menu **Extensions → Apps Script**. Hapus isi default, tempel seluruh isi `apps-script/Code.gs`, **Save**.
 3. Pilih fungsi **setup** di dropdown → **Run** → izinkan akses. Ini membuat sheet `Users` dan `Config`.
 4. **Deploy → New deployment → Web app**
@@ -14,7 +14,7 @@
 ## 2. Hubungkan ke web
 Buka `config.js`:
 - `API_URL` → tempel URL `/exec` tadi
-- `WA_NUMBER` → nomor WhatsApp Rizanta Studio (format `62812…`)
+- `WA_NUMBER` → nomor WhatsApp ReyVion (format `62812…`)
 
 Nomor WA & pesan juga bisa diganti kapan saja di sheet **Config** (tanpa upload ulang).
 
@@ -37,7 +37,7 @@ Kalau `API_URL` dikosongkan, web jalan di **mode demo** (data di browser). Admin
 1. Buka Apps Script, **ganti seluruh isi Code.gs** dengan versi baru → Save.
 2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
 3. Sheet baru **Templates** dibuat otomatis saat template pertama disimpan. Jangan diedit manual.
-4. Di sheet **Config**, ubah `wa_text` jadi "Halo kak Rizanta Studio, ..." kalau masih tertulis Rizanta Store.
+4. Di sheet **Config**, ubah `wa_text` jadi "Halo kak ReyVion, ..." kalau masih tertulis nama lama.
 5. Harga paket diatur di `config.js` → `PLANS`.
 
 ## Update v9 (Kasir jadi halaman utama + produk, stok, laporan)

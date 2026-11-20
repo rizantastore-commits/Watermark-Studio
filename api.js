@@ -46,7 +46,7 @@ window.WM_API = (() => {
     if (act == 'login') {
       const u = find(d, r.username);
       if (!u || u.pass !== r.password) return ER('Username atau password salah.');
-      if (u.status != 'active') return ER('Akun kamu dinonaktifkan. Hubungi admin Rizanta Studio.');
+      if (u.status != 'active') return ER('Akun kamu dinonaktifkan. Hubungi admin ReyVion.');
       u.token = tok(); u.lastLogin = n; store(d); return OK({token: u.token, user: pub(u, n)});
     }
     if (act == 'me') { const u = me(); return u ? OK({user: pub(u, n)}) : ER('Sesi berakhir, silakan masuk lagi.', 'session'); }

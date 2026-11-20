@@ -24,9 +24,9 @@ const ic = n => `<svg class="i" viewBox="0 0 24 24"><path d="${IC[n]}"/></svg>`;
 /* ================= DATA & KONSTANTA ================= */
 const clone = o => JSON.parse(JSON.stringify(o));
 const DEF = {
-  text:  {on:true, value:'Rizanta Studio', font:'Fredoka', pos:'br', size:6, color:'#ffffff', opacity:80, rot:0, shadow:true, stroke:false, strokeColor:'#000000'},
+  text:  {on:true, value:'ReyVion', font:'Fredoka', pos:'br', size:6, color:'#ffffff', opacity:80, rot:0, shadow:true, stroke:false, strokeColor:'#000000'},
   badge: {on:false, value:'PROMO 50%', pos:'tr', size:7, bg:'#ff5fa2', color:'#ffffff', rot:0, opacity:100},
-  tile:  {on:false, value:'Rizanta Studio', font:'Fredoka', cols:3, rows:5, size:5, spread:100, rot:-30, ox:0, oy:0, color:'#ffffff', opacity:30, stagger:true},
+  tile:  {on:false, value:'ReyVion', font:'Fredoka', cols:3, rows:5, size:5, spread:100, rot:-30, ox:0, oy:0, color:'#ffffff', opacity:30, stagger:true},
   logo:  {on:false, src:'', pos:'tl', size:16, opacity:90},
   frame: {on:false, layout:'polaroid', theme:'pink', shape:'rect', size:'4:5', deco:'dots', title:'TESTIMONI', name:'Kak Rina',
           review:'Admin ramah, proses cepat, akun langsung aktif. Recommended banget!', stars:5, font:'Fredoka', accent:'#ff7eb6',
