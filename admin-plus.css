@@ -1,0 +1,113 @@
+/* ===== admin-plus.css (v21) — menu bawah, ringkasan, aksi massal, log, jendela geser dari bawah di HP ===== */
+html{scroll-padding-top:calc(76px + env(safe-area-inset-top,0px))}
+body.adminpg{--bnh:64px}
+.tab{display:grid;gap:14px;align-content:start;min-width:0}
+.tab[hidden]{display:none}
+.tab>*{min-width:0}
+
+/* ---- menu tab: di layar lebar = baris tab di atas, di HP = menu bawah ---- */
+.bnav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px;background:var(--panel);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--chunk)}
+.bnav button{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 8px;font:600 14px Fredoka,Nunito,sans-serif;color:var(--mut);background:transparent;border:0;border-radius:16px;cursor:pointer}
+.bnav button i{font-style:normal;font-size:18px}
+.bnav button.on{color:#fff;background:linear-gradient(135deg,var(--p),var(--p2));box-shadow:0 3px 0 #e0407f}
+.bnav em{position:absolute;top:2px;right:6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;font:700 11px/18px Fredoka,sans-serif;font-style:normal;text-align:center;color:#fff;background:#e0384f}
+.bnav [hidden]{display:none}
+
+/* ---- ringkasan ---- */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;align-items:start}
+.dc{display:grid;gap:10px;padding:16px;background:var(--panel);border:2.5px solid var(--line);border-radius:24px;box-shadow:var(--chunk);min-width:0}
+.dc h4{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:15px;color:var(--pd);margin:0}
+.dc h4 em{font:700 12px Nunito,sans-serif;font-style:normal;color:var(--mut)}
+.dnone{margin:0;padding:10px 0;color:var(--mut);font-size:13px;text-align:center}
+.bars{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;align-items:end;height:120px;padding-top:16px}
+.bars i{position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-style:normal}
+.bars i::before{content:"";position:absolute;left:0;right:0;bottom:16px;height:calc((100% - 16px) * var(--h));min-height:4px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,var(--p2),var(--p))}
+.bars i b{position:absolute;left:0;right:0;bottom:calc(18px + (100% - 16px) * var(--h));text-align:center;font:700 10px Fredoka,sans-serif;color:var(--pd)}
+.bars i s{position:absolute;bottom:0;left:0;right:0;text-align:center;text-decoration:none;font:700 10px Nunito,sans-serif;color:var(--mut)}
+.mini-r{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:2px dashed var(--line)}
+.mini-r:first-of-type{border-top:0}
+.mini-r>div{flex:1;min-width:0}
+.mini-r b{display:block;font:600 14.5px Fredoka,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-r small{display:block;font-size:12px;line-height:1.3}
+.mini-r small b{display:inline;font-size:inherit;color:#1f9d55}
+.mini-r .btn{height:36px;padding:0 12px;flex:none}
+.mav{flex:none;line-height:0}.mav .av{width:38px;height:38px;font-size:17px}
+
+/* ---- daftar member ---- */
+.a-box.sticky{position:sticky;top:calc(6px + env(safe-area-inset-top,0px));z-index:5;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.mrow.mm{position:relative}
+.mm-ck{position:absolute;top:8px;right:8px;width:44px;height:44px;display:grid;place-items:center;cursor:pointer;z-index:1}
+.mm-ck input{width:22px;height:22px;accent-color:var(--p);margin:0}
+.mm-top .mi{padding-right:34px}
+.bulk{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--bnh) + 14px + env(safe-area-inset-bottom,0px));z-index:40;width:min(560px,calc(100% - 24px));display:grid;gap:8px;padding:12px;background:var(--solid);border:2.5px solid var(--p);border-radius:22px;box-shadow:0 14px 34px -10px rgba(224,64,127,.6)}
+.bk-h{display:flex;align-items:center;gap:8px}.bk-h b{flex:1;font:600 15px Fredoka,sans-serif;color:var(--pd)}
+.bk-a{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.bulk .btn{height:40px;padding:0 8px;font-size:12.5px}
+body.hasbulk .adm{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+
+/* ---- log aktivitas ---- */
+.loglist{display:grid;gap:8px}
+.lg{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;background:var(--panel);border:2.5px solid var(--line);border-radius:18px}
+.lg.bad{border-color:#f3a3b3;background:#fff1f3}
+:root[data-theme="dark"] .lg.bad{background:#4a1c2b}
+.lgi{flex:none;font-size:18px;line-height:1.4}
+.lg>div{flex:1;min-width:0;line-height:1.4;overflow-wrap:anywhere}
+.lg small{display:block}
+.lg time{flex:none;font-size:11.5px;font-weight:800;color:var(--mut);white-space:nowrap}
+#lflt{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#lflt::-webkit-scrollbar{display:none}#lflt button{flex:none;white-space:nowrap}
+#lflt em{font-style:normal;opacity:.65;margin-left:6px;font-size:.85em}
+
+/* ---- pengaturan ---- */
+.setbox{gap:14px;text-align:left}
+.setbox h3{margin:6px 0 0;font:700 17px Fredoka,sans-serif;color:var(--pd)}
+.setbox input[type=text],.setbox input[type=tel]{width:100%;height:46px;padding:0 14px;border-radius:16px;font:700 14px Nunito,sans-serif;color:var(--ink);background:var(--solid);border:2.5px solid var(--line)}
+.chk input{width:24px;height:24px;accent-color:var(--p)}
+.shortcuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.shortcuts .btn{text-decoration:none}
+
+/* ---- rincian pemakaian ---- */
+.usage{display:flex;flex-wrap:wrap;gap:6px}
+.usage>span{padding:6px 11px;border-radius:99px;background:var(--soft);font-size:12.5px;font-weight:700;color:var(--mut)}
+.usage b{color:var(--pd)}
+.ed input[type=text],.ed input[type=number],.ed input[type=password],.ed input:not([type]){width:100%}
+#askf input{width:100%;height:46px;padding:0 14px;border-radius:16px;font:700 14px Nunito,sans-serif;color:var(--ink);background:var(--solid);border:2.5px solid var(--line)}
+#askf{text-align:left;gap:12px}
+
+/* ===== HP: menu bawah, jendela geser dari bawah, sentuhan lebih besar ===== */
+@media(max-width:700px){
+  body.adminpg{padding-bottom:calc(var(--bnh) + 18px + env(safe-area-inset-bottom,0px))}
+  .bnav{position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:50;border-radius:24px;box-shadow:0 10px 30px -8px rgba(224,64,127,.55)}
+  .bnav button{flex-direction:column;gap:1px;height:50px;font-size:11.5px}
+  .bnav button i{font-size:19px;line-height:1}
+  .bnav em{top:1px;right:calc(50% - 26px)}
+  #toast{bottom:calc(var(--bnh) + 26px + env(safe-area-inset-bottom,0px))}
+  .a-box.sticky{top:calc(4px + env(safe-area-inset-top,0px))}
+  .dgrid{grid-template-columns:minmax(0,1fr)}
+  .mm-act .btn{height:46px}
+  .mini-r .btn{height:40px}
+  .lg{padding:10px 12px}
+  .shortcuts{grid-template-columns:1fr 1fr}
+  /* jendela Atur / isian: naik dari bawah seperti aplikasi, bisa di-scroll, aman dari poni & tombol home */
+  .mdl.sheet{place-items:end center;padding:0}
+  .mdl.sheet .mcard{width:100%;max-width:none;border-radius:28px 28px 0 0;max-height:92vh;max-height:92dvh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px));animation:sheetup .28s cubic-bezier(.2,.9,.3,1)}
+  .mdl.sheet .mcard::before{content:"";justify-self:center;width:44px;height:5px;border-radius:99px;background:var(--line);margin:-10px 0 4px}
+  .mdl.sheet .mx{width:40px;height:40px}
+}
+@keyframes sheetup{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
+@media(max-width:360px){.bnav button{font-size:10.5px}.bk-a{grid-template-columns:1fr 1fr}.bulk .btn{height:42px}}
+@media(min-width:701px){.bulk{bottom:20px}}
+@media(prefers-reduced-motion:reduce){.mdl.sheet .mcard{animation:none}}
+
+/* ---- perbaikan: kotak alat tidak boleh melebar keluar layar, sticky hanya di layar lebar ---- */
+.a-box>*,.a-fl>*,.tools>*,.bulk>*{min-width:0}
+.dc h4::before,.setbox h3::before{display:none!important}
+.bk-h .btn{height:38px;padding:0 12px;font-size:13px}
+.bk-a .btn{padding:0 4px;font-size:12px;white-space:normal;line-height:1.15;text-align:center}
+@media(max-width:700px){
+  .a-box.sticky{position:static}
+  body:not(.tokopg) .st{padding:11px 14px}
+  body:not(.tokopg) .st b{font-size:22px}
+  body:not(.tokopg) .st span{font-size:12px}
+  body:not(.tokopg) .st i{font-size:18px;top:9px}
+}

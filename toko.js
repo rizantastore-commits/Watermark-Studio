@@ -1,11 +1,11 @@
 'use strict';
 /* Kasir & Rekap Toko: rekap jualan, produk & stok, pengeluaran, laporan, refund.
-   Semua data per akun (Google Sheets via Apps Script, sheet "Records"). Jenis catatan: tanpa t = penjualan, t:'p' = produk, t:'x' = pengeluaran. */
+   Semua data per akun (Google Sheets via Apps Script, sheet milik member "Rec_<username>"). Jenis catatan: tanpa t = penjualan, t:'p' = produk, t:'x' = pengeluaran. */
 (() => {
   const Q = s => document.querySelector(s), A = window.WM_API, C = window.WM_CONFIG, S = C.STORE || {}, E = Auth.esc, DAY = 864e5;
   const RMS = S.REMIND_DAYS || [1, 3, 7], DURS = S.DURATIONS || [7, 14, 30, 60, 90, 180, 365], XCAT = ['Iklan', 'Operasional', 'Fee / Admin', 'Lainnya'];
   const DL = {30: '1 bulan', 60: '2 bulan', 90: '3 bulan', 180: '6 bulan', 365: '1 tahun'};
-  let LG = null, ALL = [], R = [], P = [], X = [], QCFG = null, CL = [], WT = null; // semua catatan | penjualan | produk | pengeluaran | konfigurasi QRIS | klaim | template pesan
+  let LG = null, ALL = [], R = [], P = [], X = [], QCFG = null, CL = [], WT = null, AK = [], EACC = ''; // AK = akun simpanan (t:'a'); EACC = akun simpanan yang dipilih di form penjualan | semua catatan | penjualan | produk | pengeluaran | konfigurasi QRIS | klaim | template pesan
   let CF = 'all', CQS = '', CE = null, NT = null, WPDIRTY = false, WPLAST = null; const OPEN = new Set(); // klaim: filter, cari, edit | nota aktif | form pesan | kartu yang dibuka
   let FLT = 'all', QS = '', EDIT = null, EPID = '', EDAYS = 30, ERM = [], RN = null, RDAYS = 30, RRM = [], PE = null, XE = null;
   let RFREC = null, RFRES = null, RFMAN = false, lockedNow = null, VIEW = 'kasir', SRT = 'due';
@@ -28,7 +28,7 @@
   const dlab = d => DL[d] || d + ' hari';
   const key = s => String(s || '').trim().toLowerCase();
   const ckey = () => 'wm_rec_' + ((Auth.user() || {}).username || '');
-  const modalOpen = () => ['#em', '#rn', '#pm', '#xm', '#cm', '#nt'].some(s => !Q(s).hidden);
+  const modalOpen = () => ['#em', '#rn', '#pm', '#xm', '#cm', '#nt', '#am'].some(s => !Q(s).hidden);
 
   /* ---------- status penjualan ---------- */
   const left = r => diff(today(), r.end);
@@ -40,7 +40,7 @@
   const low = p => (+p.stock || 0) <= (p.min == null ? 3 : +p.min);
 
   /* ---------- simpan / muat ---------- */
-  const split = () => { R = ALL.filter(x => !x.t); P = ALL.filter(x => x.t == 'p'); X = ALL.filter(x => x.t == 'x'); QCFG = ALL.find(x => x.t == 'q') || null; CL = ALL.filter(x => x.t == 'c'); WT = ALL.find(x => x.t == 'w') || null; LG = ALL.find(x => x.t == 'l') || null; };
+  const split = () => { R = ALL.filter(x => !x.t); P = ALL.filter(x => x.t == 'p'); X = ALL.filter(x => x.t == 'x'); QCFG = ALL.find(x => x.t == 'q') || null; CL = ALL.filter(x => x.t == 'c'); WT = ALL.find(x => x.t == 'w') || null; LG = ALL.find(x => x.t == 'l') || null; AK = ALL.filter(x => x.t == 'a'); };
   const cache = () => { try { localStorage.setItem(ckey(), JSON.stringify(ALL)); } catch (e) {} };
   const upsert = rec => { const i = ALL.findIndex(x => x.id == rec.id); i < 0 ? ALL.push(rec) : ALL[i] = rec; };
   function showErr(m) { const e = Q('#tkErr'); e.textContent = m || ''; e.hidden = !m; }
@@ -143,6 +143,7 @@
     const st = +p.stock <= 0 ? 'ex' : low(p) ? 'soon' : 'ok', sd = sold(p, RR);
     return `<article class="tk-rec ${st}"><div class="tk-h"><strong>${E(p.name)}</strong><span class="badge ${st}">${+p.stock <= 0 ? 'Stok habis' : 'Stok ' + p.stock}</span></div>
       ${p.cat ? `<small>🏷️ ${E(p.cat)}</small>` : ''}
+      ${window.Akun ? Akun.line(p) : ''}
       <div class="tk-tiers">${(p.tiers || []).map(t => `<span class="tk-tier">${dlab(t.d)}<b>${rp(t.price)}</b>${p.cost ? `<em>laba ${rp(t.price - p.cost)}</em>` : ''}</span>`).join('') || '<small>Belum ada paket harga</small>'}</div>
       <div class="tk-grid"><span>Modal / akun<b>${rp(p.cost)}</b></span><span>Terjual<b>${sd.n}× · ${rp(sd.omz)}</b></span></div>
       ${p.note ? `<small>${E(p.note)}</small>` : ''}
@@ -224,10 +225,11 @@
   }
   function editor(r, pre) {
     EDIT = r || null; const d = r || pre || {app: '', email: '', buyer: '', wa: '', price: '', cost: '', orderDate: today(), days: 30, rm: [RMS.includes(3) ? 3 : RMS[0]], note: ''};
-    EDAYS = +d.days || 30; ERM = [...(d.rm || [])]; EPID = d.pid || '';
+    EDAYS = +d.days || 30; ERM = [...(d.rm || [])]; EPID = d.pid || ''; EACC = '';
     Q('#em .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${r ? 'Edit catatan' : 'Catat penjualan'}</h3>
     ${P.length ? `<label class="f"><span>Pilih dari produk (opsional)</span><select id="eProd"><option value="">— ketik manual —</option>${P.map(p => `<option value="${p.id}" ${EPID == p.id ? 'selected' : ''}>${E(p.name)} · stok ${+p.stock || 0}</option>`).join('')}</select></label>` : ''}
     <div class="chips" id="eTiers" ${EPID && (P.find(p => p.id == EPID) || {tiers: []}).tiers.length ? '' : 'hidden'}>${tierChips(P.find(p => p.id == EPID))}</div>
+    ${!r && AK.some(a => Akun.free(a) > 0) ? `<label class="f"><span>Ambil dari akun simpanan (opsional)</span><select id="eAcc"><option value="">— tidak —</option>${AK.filter(a => Akun.free(a) > 0).map(a => `<option value="${E(a.id)}">${E(a.app)} · ${E(a.email)}${(a.profs || []).length ? ' · ' + (a.profs.filter(q => !q.u).length) + ' profil kosong' : ''}</option>`).join('')}</select></label>` : ''}
     <label class="f"><span>Nama aplikasi / produk</span><input type="text" id="eApp" list="appl" maxlength="60" placeholder="mis. Netflix Premium" value="${E(d.app)}"></label>
     <label class="f"><span>Email / akun yang dijual</span><input type="text" id="eEmail" maxlength="80" placeholder="mis. akun01@gmail.com" value="${E(d.email || '')}"></label>
     <div class="row2"><label class="f"><span>Nama pembeli</span><input type="text" id="eBuyer" maxlength="40" value="${E(d.buyer || '')}"></label>
@@ -250,6 +252,13 @@
     t.innerHTML = tierChips(p); t.hidden = !(p && p.tiers && p.tiers.length); Q('#eStkW').hidden = !p || !!EDIT;
     if (p) { Q('#eApp').value = p.name; Q('#eCost').value = p.cost || ''; if (p.tiers && p.tiers.length === 1) useTier('e', p.tiers[0]); }
   }
+  function pickAcc(id) {
+    EACC = id || ''; const a = AK.find(x => x.id == id); if (!a) return;
+    const ps = Q('#eProd'); if (a.pid && ps && P.some(p => p.id == a.pid)) { ps.value = a.pid; pickProd(a.pid); }
+    if (Q('#eStk')) Q('#eStk').checked = false; // stok produk diatur lewat akun simpanan
+    Q('#eApp').value = a.app; Q('#eEmail').value = a.email || ''; if (a.cost && !num('eCost')) Q('#eCost').value = a.cost;
+    const fp = (a.profs || []).find(q => !q.u); if (fp && !v('eNote')) Q('#eNote').value = `Profil: ${fp.n}${fp.p ? ' · PIN ' + fp.p : ''}`;
+  }
   function useTier(m, t) { setDur(m, t.d); Q('#' + (m == 'e' ? 'ePrice' : 'rPrice')).value = t.price; }
   function syncEnd() { if (!EDIT || !EDIT.renewals) { const o = v('eOrd'); if (o && Q('#eEnd')) Q('#eEnd').value = addD(o, EDAYS); } }
   function saveEd() {
@@ -262,9 +271,11 @@
     if (!EDIT) rec.hist.push({d: ord, days: EDAYS, price, cost});
     else if (!rec.renewals && rec.hist.length == 1) rec.hist[0] = {d: ord, days: EDAYS, price, cost};
     const p = !EDIT && EPID && Q('#eStk') && Q('#eStk').checked ? P.find(x => x.id == EPID) : null;
+    const acc = !EDIT && EACC ? AK.find(x => x.id == EACC) : null;
     Q('#em').hidden = true;
     persist(rec).then(ok => {
       if (!ok) return; toast('Tersimpan ✓');
+      if (acc) { const ps = (acc.profs || []).map(q => ({...q})), i = ps.findIndex(q => !q.u); if (i >= 0) Object.assign(ps[i], {u: rec.buyer || 'Terjual', s: ord, d: EDAYS, e: end, w: rec.wa || undefined}); persist({...acc, profs: ps, status: ps.length ? acc.status : 'used'}); } // status akun dengan profil dihitung dari slot
       if (p) { const ns = Math.max(0, (+p.stock || 0) - 1); persist({...p, stock: ns}); if (ns <= (p.min == null ? 3 : +p.min)) setTimeout(() => toast(`Stok ${p.name} tinggal ${ns}`), 1500); }
     });
   }
@@ -423,6 +434,9 @@
     if (!x || typeof x != 'object') return null; const id = T1(x.id, 40).replace(/[^\w-]/g, ''); if (!id) return null;
     if (x.t == 'p') return x.name ? {t: 'p', id, name: T1(x.name, 60), cat: T1(x.cat, 30), cost: N0(x.cost), stock: Math.floor(N0(x.stock)), min: Math.floor(N0(x.min)), note: T1(x.note, 200), created: N0(x.created) || Date.now(),
       tiers: A1(x.tiers).slice(0, 8).map(t => ({d: Math.floor(N0(t && t.d)), price: N0(t && t.price)})).filter(t => t.d > 0)} : null;
+    if (x.t == 'a') return x.app ? {t: 'a', id, pid: x.pid ? T1(x.pid, 40) : undefined, app: T1(x.app, 60), email: T1(x.email, 80), pass: T1(x.pass, 80), holder: T1(x.holder, 40), hw: T1(x.hw, 20), st: D1(x.st), days: Math.floor(N0(x.days)) || undefined, exp: D1(x.exp), rm: x.rm == null ? undefined : Math.min(60, Math.floor(N0(x.rm))), rmDone: D1(x.rmDone) || null, cost: N0(x.cost),
+      status: ['ready', 'used', 'issue', 'dead'].includes(x.status) ? x.status : 'ready', note: T1(x.note, 200), created: N0(x.created) || Date.now(),
+      profs: A1(x.profs).slice(0, 10).map(q => { const o = {n: T1(q && q.n, 20), p: T1(q && q.p, 8), u: T1(q && q.u, 30)}; if (o.u && q) { if (D1(q.s)) o.s = D1(q.s); if (D1(q.e)) o.e = D1(q.e); if (N0(q.d) > 0) o.d = Math.floor(N0(q.d)); if (q.w) o.w = T1(q.w, 20); } return o; })} : null;
     if (x.t == 'c') return x.buyer && D1(x.date) ? {t: 'c', id, rid: T1(x.rid, 40), buyer: T1(x.buyer, 40), wa: T1(x.wa, 20), app: T1(x.app, 60), date: D1(x.date), kind: ['komplain', 'garansi', 'ganti'].includes(x.kind) ? x.kind : 'komplain',
       status: ['baru', 'proses', 'selesai'].includes(x.status) ? x.status : 'baru', issue: T1(x.issue, 300), fix: T1(x.fix, 200), oldAcc: T1(x.oldAcc, 80), newAcc: T1(x.newAcc, 80), doneAt: D1(x.doneAt) || undefined, created: N0(x.created) || Date.now()} : null;
     if (x.t == 'l') return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(x.img || '') && x.img.length < 7500 ? {t: 'l', id, img: x.img} : null;
@@ -1038,7 +1052,7 @@
 
   /* ---------- umum ---------- */
   function render() {
-    stats(); remind(); lowstk(); renderRekap(); renderProd(); renderLap(); renderAlat(); renderQR(); renderKlaim(); renderPesan(); if (window.Kasir) Kasir.render();
+    stats(); remind(); lowstk(); renderRekap(); renderProd(); renderLap(); renderAlat(); renderQR(); renderKlaim(); renderPesan(); if (window.Kasir) Kasir.render(); if (window.Akun) Akun.render();
     const hq = Q('#hubQr'); if (hq) hq.textContent = QCFG && QCFG.raw ? '✅ Aktif · ' + (QCFG.merch || 'tersimpan') : 'Belum diatur · upload QRIS tokomu';
   }
   const VIEWS = ['kasir', 'rekap', 'prod', 'lap', 'klaim', 'more', 'refund', 'qris', 'pesan', 'alat'], SUBV = ['refund', 'qris', 'pesan', 'alat']; // sub-halaman ikut menyalakan tab "Lainnya"
@@ -1046,7 +1060,7 @@
     VIEW = k; VIEWS.forEach(x => Q('#v-' + x).hidden = x != k);
     const tab = SUBV.includes(k) ? 'more' : k;
     document.querySelectorAll('#vt button').forEach(b => b.classList.toggle('on', b.dataset.v == tab));
-    if (k == 'refund') calc(); if (k == 'pesan') renderPesan(); stats(); remind(); lowstk();
+    if (k == 'refund') calc(); if (k == 'pesan') renderPesan(); stats(); remind(); lowstk(); if (window.Akun) Akun.render();
   }
   function dlCsv(rows, name) {
     const q = x => '"' + String(x ?? '').replace(/"/g, '""') + '"';
@@ -1172,7 +1186,7 @@
     if (id === 'qrAmt' || id === 'qrNote' || id === 'qrFeeVal') updateQRCalcUI();
   });
   document.addEventListener('change', e => {
-    const id = e.target.id; if (id == 'rFrom') rPrev(); if (id == 'eProd') pickProd(e.target.value);
+    const id = e.target.id; if (id == 'rFrom') rPrev(); if (id == 'eProd') pickProd(e.target.value); if (id == 'eAcc') pickAcc(e.target.value);
     if (id == 'cSale') cPickSale(e.target.value); if (id == 'cKind') Q('#cSwap').hidden = e.target.value != 'ganti'; if (id == 'ntEm' || id == 'ntNote') paintNota();
     if (id == 'lapM') renderLap(); if (id == 'rfFT') { saveSet(); calc(); }
   });
@@ -1203,5 +1217,5 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Auth.user() && !Q('#panel').hidden && !modalOpen()) load(); });
   /* jembatan untuk kasir.js (modul kasir) */
   window.TK = {get R() { return R; }, get P() { return P; }, get WT() { return WT; }, get LG() { return LG; }, get QCFG() { return QCFG; },
-    persist, remove, rp, fd, today, addD, uid, fill, waNum, shopName, buildDynamicQRIS, drawRoundRect, saveBlob, setView, tplOf, toast, RMS};
+    get AK() { return AK; }, persist, remove, rp, fd, today, addD, uid, fill, waNum, shopName, buildDynamicQRIS, drawRoundRect, saveBlob, setView, tplOf, toast, RMS};
 })();

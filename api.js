@@ -24,9 +24,9 @@ window.WM_API = (() => {
   const pub = (u, n) => ({
     username: u.username, premium: prem(u, n), role: u.role === 'premium' && !prem(u, n) ? 'free' : u.role,
     premiumUntil: u.premiumUntil || 0, expired: u.role !== 'admin' && !prem(u, n) && u.premiumUntil > 0,
-    status: u.status, createdAt: u.createdAt, lastLogin: u.lastLogin, note: u.note || '', theme: u.theme || '', profile: u.profile || ''
+    status: u.status, createdAt: u.createdAt, lastLogin: u.lastLogin, lastSeen: u.lastSeen || u.lastLogin || 0, note: u.note || '', theme: u.theme || '', profile: u.profile || ''
   });
-  const cfgOf = () => ({waNumber: C.WA_NUMBER, waText: C.WA_TEXT, registerOpen: true});
+  let DCFG = null; const cfgOf = () => ({waNumber: C.WA_NUMBER, waText: C.WA_TEXT, registerOpen: true, ...(DCFG || {})});
   const tok = () => Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
   const find = (d, name) => d.users.find(u => u.username.toLowerCase() == String(name || '').trim().toLowerCase());
   const OK = (x = {}) => ({ok: true, now: Date.now(), cfg: cfgOf(), ...x});
@@ -34,22 +34,23 @@ window.WM_API = (() => {
   const valid = (n, p) => !/^[A-Za-z0-9_.]{3,20}$/.test(n) ? 'Username 3-20 karakter: huruf, angka, titik, atau underscore.' : String(p).length < 6 ? 'Password minimal 6 karakter.' : '';
 
   function demo(r) {
-    const d = load(), n = Date.now(), act = r.action;
+    const d = load(); DCFG = d.cfg && d.cfg.waNumber ? d.cfg : null; const n = Date.now(), act = r.action;
+    const L = (who, a, tg, det) => { (d.log = d.log || []).push({time: n, actor: who, action: a, target: tg || '', detail: det || ''}); if (d.log.length > 500) d.log.shift(); };
     const me = () => d.users.find(u => u.token && u.token === r.token && u.status == 'active');
     if (act == 'config') return OK();
     if (act == 'register') {
       const e = valid(r.username, r.password); if (e) return ER(e);
       if (find(d, r.username)) return ER('Username sudah dipakai, coba yang lain.');
       const u = {username: r.username.trim(), pass: r.password, role: 'free', premiumUntil: 0, status: 'active', createdAt: n, lastLogin: n, token: tok(), note: ''};
-      d.users.push(u); store(d); return OK({token: u.token, user: pub(u, n)});
+      d.users.push(u); L(u.username, 'register', u.username); store(d); return OK({token: u.token, user: pub(u, n)});
     }
     if (act == 'login') {
       const u = find(d, r.username);
-      if (!u || u.pass !== r.password) return ER('Username atau password salah.');
+      if (!u || u.pass !== r.password) { L(String(r.username || ''), 'login_fail', String(r.username || '')); store(d); return ER('Username atau password salah.'); }
       if (u.status != 'active') return ER('Akun kamu dinonaktifkan. Hubungi admin ReyVion.');
-      u.token = tok(); u.lastLogin = n; store(d); return OK({token: u.token, user: pub(u, n)});
+      u.token = tok(); u.lastLogin = n; u.lastSeen = n; L(u.username, 'login', u.username); store(d); return OK({token: u.token, user: pub(u, n)});
     }
-    if (act == 'me') { const u = me(); return u ? OK({user: pub(u, n)}) : ER('Sesi berakhir, silakan masuk lagi.', 'session'); }
+    if (act == 'me') { const u = me(); if (u) { u.lastSeen = n; store(d); } return u ? OK({user: pub(u, n)}) : ER('Sesi berakhir, silakan masuk lagi.', 'session'); }
     if (act == 'logout') { const u = me(); if (u) { u.token = ''; store(d); } return OK(); }
     const a = me(); if (!a) return ER('Sesi berakhir, silakan masuk lagi.', 'session');
     if (act == 'tpl_list') return OK({templates: a.tpls || []});
@@ -96,6 +97,22 @@ window.WM_API = (() => {
     if (act == 'tpl_delete') { a.tpls = (a.tpls || []).filter(t => t.n != r.name); store(d); return OK(); }
     if (a.role != 'admin') return ER('Khusus admin.', 'forbidden');
     if (act == 'admin_list') return OK({users: d.users.map(u => pub(u, n))});
+    if (act == 'admin_log') return OK({logs: (d.log || []).slice(-(+r.limit || 200)).reverse()});
+    if (act == 'admin_usage') { const o = {}; d.users.forEach(u => { o[u.username.toLowerCase()] = {rec: (u.recs || []).length, last: 0, tpl: (u.tpls || []).length}; }); return OK({usage: o}); }
+    if (act == 'admin_member') { const u = find(d, r.username), t = {}; (u && u.recs || []).forEach(x => { const k = x.t || 'penjualan'; t[k] = (t[k] || 0) + 1; }); return OK({data: {types: t, total: (u && u.recs || []).length, last: 0, tpls: (u && u.tpls || []).map(x => x.n)}}); }
+    if (act == 'admin_cfg') {
+      if (r.set) { d.cfg = {waNumber: String(r.waNumber || '').replace(/\D/g, ''), waText: String(r.waText || ''), registerOpen: r.registerOpen !== false}; if (d.cfg.waNumber.length < 8) return ER('Nomor WhatsApp tidak valid (contoh 62812xxxx).'); L(a.username, 'cfg', '', 'pendaftaran ' + (d.cfg.registerOpen ? 'dibuka' : 'ditutup')); store(d); }
+      return OK({cfg: {...cfgOf(), ...(d.cfg || {})}});
+    }
+    if (act == 'admin_bulk') {
+      const op = r.op, days = Math.min(Math.max(Math.floor(+r.days) || 0, 0), 3650); let done = 0;
+      if (!['extend', 'free', 'suspend', 'activate'].includes(op)) return ER('Aksi massal tidak valid.');
+      if (op == 'extend' && !days) return ER('Jumlah hari belum diisi.');
+      (r.usernames || []).forEach(nm => { const x = find(d, nm); if (!x || x.role == 'admin' || x == a) return;
+        if (op == 'extend') { const b = x.role == 'premium' && x.premiumUntil > n ? x.premiumUntil : n; if (b >= LIFETIME) return; x.role = 'premium'; x.premiumUntil = Math.min(b + days * DAY, LIFETIME); }
+        else if (op == 'free') { x.role = 'free'; x.premiumUntil = 0; } else if (op == 'suspend') { x.status = 'suspended'; x.token = ''; } else x.status = 'active'; done++; });
+      L(a.username, 'bulk_' + op, (r.usernames || []).length + ' member', 'berhasil ' + done); store(d); return OK({done});
+    }
     if (act == 'admin_create') {
       const e = valid(r.username, r.password); if (e) return ER(e);
       if (find(d, r.username)) return ER('Username sudah dipakai.');
@@ -109,10 +126,11 @@ window.WM_API = (() => {
       if (r.role == 'premium' && !(r.premiumUntil > n)) return ER('Durasi premium belum diisi.');
       u.role = r.role; u.premiumUntil = r.role == 'premium' ? +r.premiumUntil : (r.role == 'free' ? 0 : u.premiumUntil);
       u.status = r.status == 'suspended' ? 'suspended' : 'active'; u.note = String(r.note || '').slice(0, 200);
-      if (u.status != 'active') u.token = ''; store(d); return OK({user: pub(u, n)});
+      if (u.status != 'active') u.token = ''; L(a.username, 'admin_update', u.username, u.role + ' · ' + u.status); store(d); return OK({user: pub(u, n)});
     }
-    if (act == 'admin_reset') { if (String(r.password).length < 6) return ER('Password minimal 6 karakter.'); u.pass = r.password; u.token = ''; store(d); return OK(); }
-    if (act == 'admin_delete') { if (u.username == a.username) return ER('Tidak bisa menghapus akun sendiri.'); d.users = d.users.filter(x => x !== u); store(d); return OK(); }
+    if (act == 'admin_kick') { if (u == a) return ER('Tidak bisa mengeluarkan akun sendiri.'); u.token = ''; L(a.username, 'admin_kick', u.username); store(d); return OK(); }
+    if (act == 'admin_reset') { if (String(r.password).length < 6) return ER('Password minimal 6 karakter.'); u.pass = r.password; u.token = ''; L(a.username, 'admin_reset', u.username); store(d); return OK(); }
+    if (act == 'admin_delete') { if (u.username == a.username) return ER('Tidak bisa menghapus akun sendiri.'); d.users = d.users.filter(x => x !== u); L(a.username, 'admin_delete', u.username); store(d); return OK(); }
     return ER('Aksi tidak dikenal.');
   }
 

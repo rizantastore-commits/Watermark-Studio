@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="admin.css">
 <link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="ios-fix.css">
+<link rel="stylesheet" href="admin-plus.css">
 <script src="theme.js"></script>
 </head>
 <body class="gated adminpg">
@@ -18,31 +20,61 @@
 <div class="adm" id="adm">
   <header class="atop">
     <div class="gmark sm">🎀</div>
-    <div class="ttl"><h1>Panel Admin</h1><p>ReyVion</p></div>
-    <button class="ib" type="button" data-opts="tema" aria-label="Tema & pengaturan" title="Tema & pengaturan">🎨</button>
-    <a class="btn" href="index.html">← Kasir</a>
-    <button class="btn" id="out" type="button">Keluar</button>
+    <div class="ttl"><h1>Panel Admin</h1><p>Pantau &amp; kelola semua akses · ReyVion</p></div>
+    <div class="atop-acts">
+      <button class="ib" type="button" data-opts="tema" aria-label="Tema & pengaturan" title="Tema & pengaturan">🎨</button>
+      <a class="btn" href="index.html" aria-label="Ke kasir" title="Ke kasir">🧾<span class="hl"> Kasir</span></a>
+      <button class="btn" id="out" type="button" aria-label="Keluar" title="Keluar">⎋<span class="hl"> Keluar</span></button>
+    </div>
   </header>
   <div id="denied" class="gcard" hidden><div class="mico">⛔</div><h3>Khusus admin</h3><p class="gsub">Akun ini bukan admin. Masuk dengan akun admin untuk membuka panel.</p><a class="btn pri wide" href="index.html">Kembali ke kasir</a><button class="btn wide" id="out2" type="button">Ganti akun</button></div>
   <main id="panel" hidden>
-    <div class="stats" id="stats"></div>
-    <div class="tools">
-      <input type="search" id="q" placeholder="Cari username…" aria-label="Cari username">
-      <button class="btn pri" id="add" type="button">+ Member</button>
-      <button class="btn" id="rf" type="button">↻</button>
-    </div>
-    <div class="chips" id="flt"></div>
-    <div id="list" class="mlist"></div>
+    <nav class="bnav" id="bnav" aria-label="Menu admin">
+      <button type="button" data-tab="dash" class="on"><i>📊</i><span>Ringkasan</span></button>
+      <button type="button" data-tab="mem"><i>👥</i><span>Member</span><em id="nbMem" hidden></em></button>
+      <button type="button" data-tab="log"><i>🛰️</i><span>Aktivitas</span></button>
+      <button type="button" data-tab="set"><i>⚙️</i><span>Pengaturan</span></button>
+    </nav>
+    <section class="tab on" id="t-dash">
+      <div class="stats" id="stats"></div>
+      <div class="mm-alert" id="alertbar" hidden></div>
+      <div class="dgrid" id="dash"></div>
+    </section>
+    <section class="tab" id="t-mem" hidden>
+      <div class="a-box sticky">
+        <div class="tools">
+          <input type="search" id="q" placeholder="Cari username, nama, atau catatan…" aria-label="Cari member">
+          <button class="btn pri" id="add" type="button">+ Member</button>
+          <button class="btn" id="rf" type="button" aria-label="Muat ulang" title="Muat ulang">↻</button>
+          <button class="btn" id="xcsv" type="button" aria-label="Unduh daftar member (CSV)" title="Unduh daftar member (CSV)">⬇</button>
+        </div>
+        <div class="a-fl">
+          <div class="chips" id="flt"></div>
+          <select id="asrt" aria-label="Urutkan member"><option value="new">↕ Terbaru daftar</option><option value="login">↕ Terakhir masuk</option><option value="seen">↕ Terakhir aktif</option><option value="due">↕ Premium habis duluan</option><option value="name">↕ Nama A–Z</option></select>
+        </div>
+      </div>
+      <div class="a-count" id="acount"></div>
+      <div id="list" class="mlist"></div>
+      <button class="btn wide" id="more" type="button" hidden>Tampilkan lebih banyak</button>
+      <div class="bulk" id="bulk" hidden></div>
+    </section>
+    <section class="tab" id="t-log" hidden>
+      <div class="a-box"><div class="chips" id="lflt"></div></div>
+      <div id="loglist" class="loglist"></div>
+    </section>
+    <section class="tab" id="t-set" hidden><div id="setbox" class="a-box setbox"></div></section>
   </main>
   <footer class="gcred" id="acred"></footer>
 </div>
 <div id="toast" role="status"></div>
-<div class="mdl" id="em" hidden><div class="mcard ed"></div></div>
+<div class="mdl sheet" id="em" hidden><div class="mcard ed"></div></div>
+<div class="mdl sheet" id="ask" hidden><form class="mcard ed" id="askf" autocomplete="off"></form></div>
 <script src="config.js"></script>
 <script src="api.js"></script>
 <script>window.WM_PAGE = 'admin';</script>
 <script src="auth.js"></script>
 <script src="admin.js"></script>
+<script src="admin-plus.js"></script>
 <script src="settings.js"></script>
 <script>(()=>{const c=WM_CONFIG.CREDITS||{};document.getElementById("acred").innerHTML=`Dibuat dengan 💖 oleh <b>${c.brand||""}</b>${c.dev?` · Dev <a href="${c.link||"#"}" target="_blank" rel="noopener">${c.dev}</a>`:""}`})()</script>
 </body>

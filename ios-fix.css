@@ -1,0 +1,61 @@
+/* ===== ios-fix.css — perbaikan tata letak khusus iOS Safari/Chrome iOS (dimuat paling akhir) ===== */
+
+/* iOS membesarkan teks sendiri saat layar diputar */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+/* iOS Safari butuh prefix -webkit- untuk backdrop-filter, kalau tidak panel jadi tembus/polos */
+.atop,.pv-hero{-webkit-backdrop-filter:blur(12px)}
+.mdl{-webkit-backdrop-filter:blur(4px)}
+
+/* Tab kasir: ada 6 tombol tapi grid cuma 5 kolom, jadi "Lainnya" jatuh sendirian ke baris kedua */
+#vt{grid-template-columns:repeat(6,minmax(0,1fr))}
+@media(max-width:640px){#vt{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:360px){#vt{grid-template-columns:repeat(6,minmax(0,1fr))}#vt button{font-size:9.5px}}
+
+/* Di layar sentuh, :hover "nyangkut" setelah ditap (tombol tetap terangkat) — matikan efek hover */
+@media(hover:none){
+  .btn:hover{transform:none;box-shadow:var(--chunk)}
+  .btn.pri:hover{box-shadow:var(--chunkp)}
+  .tk-tile:hover{transform:none;box-shadow:var(--chunk)}
+  .btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+  .btn.pri:active{box-shadow:0 1px 0 #e0407f}
+  .tk-tile:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+}
+button,.btn,a,input,select,textarea{touch-action:manipulation}
+
+/* Cegah halaman bisa digeser ke samping tanpa mengganggu sticky */
+@supports (overflow:clip){.adm{overflow-x:clip}}
+
+/* ---------- Khusus iOS (Android tidak tersentuh) ---------- */
+@supports (-webkit-touch-callout:none){
+  /* 1) Font input <16px bikin iOS auto-zoom saat fokus, layout jadi geser/kepotong */
+  html body input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),
+  html body textarea,
+  html body select{font-size:16px!important}
+
+  /* 2) Buang gaya bawaan iOS (bayangan dalam, sudut membulat sendiri) */
+  html body input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]):not([type=button]):not([type=submit]),
+  html body textarea{-webkit-appearance:none;appearance:none;border-radius:16px}
+  html body button{-webkit-appearance:none;appearance:none}
+  input[type=search]::-webkit-search-decoration,
+  input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
+
+  /* 3) Input tanggal di iOS punya lebar bawaan sendiri sehingga melebar keluar kolom */
+  .tokopg input[type=date]{-webkit-appearance:none;appearance:none;display:block;width:100%;min-width:0;max-width:100%;height:46px;line-height:normal;text-align:left}
+  .tokopg input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.3em;margin:0}
+  .tokopg input[type=date]::-webkit-datetime-edit{padding:0}
+
+  /* 4) Tab kasir menempel di bawah poni/status bar, kolom ikut safe area saat landscape */
+  #vt{top:calc(8px + env(safe-area-inset-top,0px))}
+  .adm{padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+
+  /* 5) Tinggi jendela popup: 100vh iOS termasuk area toolbar Safari */
+  .ed,.pcard,#ks-rc .mcard{max-height:calc(100dvh - 40px)}
+  .mcard{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+
+  /* 6) Blur raksasa yang bergerak di latar sering glitch di iOS — ringankan */
+  .blob{filter:blur(56px);will-change:transform;-webkit-backface-visibility:hidden}
+
+  /* 7) Tinggi minimum halaman mengikuti layar yang terlihat */
+  body.adminpg{min-height:100vh;min-height:100dvh}
+}

@@ -1,0 +1,57 @@
+/* ===== Akun Simpanan (tim FH) ===== */
+#p-cat,#p-acc{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+#p-cat[hidden],#p-acc[hidden]{display:none}
+
+.ak-sub{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;background:var(--solid);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--chunk)}
+.ak-sub button{height:46px;padding:0 8px;border:0;border-radius:18px;background:none;color:var(--mut);font:600 14px Fredoka,Nunito,sans-serif;cursor:pointer;transition:background .2s,color .2s}
+.ak-sub button.on{color:#fff;background:linear-gradient(135deg,var(--p),var(--p2));box-shadow:var(--chunkp)}
+
+.ak-sum .st{position:relative;overflow:hidden}
+.ak-sum .st i{position:absolute;right:10px;top:8px;font-style:normal;font-size:20px;opacity:.9}
+.ak-rep{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.ak-rep .btn{height:auto;min-height:44px;padding:8px 12px;white-space:normal;text-align:center;line-height:1.2}
+
+/* kartu akun */
+.tk-rec.ak{gap:10px}
+.ak-cred{display:grid;gap:6px;padding:10px 12px;border-radius:16px;background:var(--soft);border:2px solid var(--line)}
+.ak-cred>div{display:flex;align-items:center;gap:8px;min-width:0}
+.ak-cred span{flex:none}
+.ak-cred b{flex:1;min-width:0;font:700 13.5px Nunito,sans-serif;overflow-wrap:anywhere;word-break:break-all}
+.ak-pw{font-family:ui-monospace,Menlo,monospace!important;letter-spacing:.02em}
+.ak-i{flex:none;width:36px;height:36px;display:grid;place-items:center;padding:0;border-radius:12px;border:2px solid var(--line);background:var(--solid);color:var(--pd);font-size:15px;line-height:1;cursor:pointer}
+.ak-i:active{transform:scale(.92)}
+.ak-sl{display:grid;gap:6px}
+.ak-pfs{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.ak-pf{display:grid;grid-template-columns:minmax(0,1.2fr) auto minmax(0,1fr);gap:8px;align-items:center;padding:7px 10px;border-radius:14px;border:2px dashed var(--line);font-size:12.5px;font-weight:800}
+.ak-pf.on{border-style:solid;background:var(--soft)}
+.ak-pf .ak-pn,.ak-pf em{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-pf code{padding:1px 8px;border-radius:8px;background:var(--solid);border:1.5px solid var(--line);font-size:12px;letter-spacing:.08em}
+.ak-pf em{font-style:normal;text-align:right;color:var(--mut)}
+.ak-pf.on em{color:var(--pd)}
+
+/* editor */
+.ak-prow{display:grid;grid-template-columns:minmax(0,1fr) 96px 44px;gap:8px;align-items:center;padding:10px;border-radius:18px;background:var(--soft);border:2px solid var(--line)}
+.ak-prow .pu{grid-column:1/3}
+.ak-prow .btn{grid-column:3;grid-row:1/3;height:100%;min-height:44px;padding:0}
+.ak-padd{display:flex;flex-wrap:wrap;gap:8px}
+.ak-padd .btn{flex:1 1 auto}
+
+@media(max-width:400px){.ak-pf{grid-template-columns:minmax(0,1fr) auto}.ak-pf em{grid-column:1/-1;text-align:left}}
+
+/* jendela akun: jarak antar isi lebih lega */
+.tokopg .ed{gap:12px}
+
+/* ===== v20: masa aktif, pemakai per profil, pengingat marker ===== */
+.ak-pfs li{list-style:none}
+button.ak-pf{width:100%;text-align:left;font-family:inherit;color:inherit;background:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+button.ak-pf.on{background:var(--soft)}
+button.ak-pf:active{transform:scale(.99)}
+.ak-pf small{grid-column:1/-1;font-size:11.5px;font-weight:700;color:var(--mut)}
+.ak-pf.free small{opacity:.8}
+.ak-pf.soon{border-style:solid;border-color:#f2b84b;background:rgba(242,184,75,.18)}
+.ak-pf.ex{border-style:solid;border-color:#e8707e;background:rgba(232,112,126,.15)}
+.ak-warn{font-weight:800;color:#b9770e}
+.ak-bd{font-style:normal;display:inline-block;min-width:18px;padding:0 6px;margin-left:4px;border-radius:99px;background:#e8707e;color:#fff;font-size:11px;line-height:18px}
+#akRemind,#akAlert{margin:0}
+#akRemind b,#akAlert b{display:block}
+.tokopg .ed .prev{font-weight:800;font-size:13px}

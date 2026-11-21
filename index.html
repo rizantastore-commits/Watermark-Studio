@@ -13,6 +13,8 @@
 <link rel="stylesheet" href="toko.css">
 <link rel="stylesheet" href="kasir.css">
 <link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="akun.css">
+<link rel="stylesheet" href="ios-fix.css">
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script src="theme.js"></script>
@@ -127,6 +129,7 @@
       <button type="button" data-v="more"><span class="ic">☰</span><span class="lb">Lainnya</span></button>
     </nav>
     <div class="tk-rm" id="remind" hidden></div>
+    <div class="tk-rm" id="akAlert" hidden></div>
     <div class="stats" id="stats"></div>
     <div class="tk-rm tk-low" id="lowstk" hidden></div>
 
@@ -146,12 +149,35 @@
     </section>
 
     <section id="v-prod" hidden>
-      <div class="tools">
-        <button class="btn pri" id="addp" type="button">+ Produk</button>
-        <button class="btn" id="pcopy" type="button">📋 Salin daftar harga</button>
+      <nav class="ak-sub" id="psw" aria-label="Produk atau akun simpanan">
+        <button type="button" data-ps="cat" class="on">📦 Katalog</button>
+        <button type="button" data-ps="acc">🔐 Akun Simpanan</button>
+      </nav>
+      <div id="p-cat">
+        <div class="tools">
+          <button class="btn pri" id="addp" type="button">+ Produk</button>
+          <button class="btn" id="pcopy" type="button">📋 Salin daftar harga</button>
+        </div>
+        <small class="tk-hint">Isi produk sekali (modal, paket harga, stok). Saat mencatat penjualan tinggal pilih produknya: harga terisi otomatis dan stok berkurang sendiri.</small>
+        <div id="plist" class="tk-list"></div>
       </div>
-      <small class="tk-hint">Isi produk sekali (modal, paket harga, stok). Saat mencatat penjualan tinggal pilih produknya: harga terisi otomatis dan stok berkurang sendiri.</small>
-      <div id="plist" class="tk-list"></div>
+      <div id="p-acc" hidden>
+        <small class="tk-hint">Catat akun yang kamu simpan: email, password, masa aktif (tanggal mulai + durasi), dan siapa yang memakai tiap profil beserta durasinya. Dapat pengingat untuk minta laporan ke marker sebelum masa akun habis.</small>
+        <div class="stats ak-sum" id="akSum"></div>
+        <div class="tools">
+          <input type="search" id="akQ" placeholder="Cari email, produk, pemegang, profil…" aria-label="Cari akun simpanan">
+          <button class="btn pri" id="akAdd" type="button">+ Akun</button>
+          <button class="btn" id="akCsv" type="button" title="Unduh CSV" aria-label="Unduh CSV">⬇</button>
+        </div>
+        <div class="tk-fl">
+          <div class="chips" id="akFlt"></div>
+          <select id="akSrt" aria-label="Urutkan akun"><option value="new">↕ Terbaru</option><option value="app">↕ Produk A–Z</option><option value="due">↕ Segera berakhir</option><option value="holder">↕ Pemegang</option></select>
+        </div>
+        <div class="tk-rm" id="akRemind" hidden></div>
+        <div class="ak-rep"><button class="btn" id="akRep" type="button">📋 Salin laporan untuk marker</button><button class="btn" id="akRepFull" type="button">🔐 Laporan lengkap + password</button></div>
+        <div id="akList" class="tk-list"></div>
+        <datalist id="akHl"></datalist>
+      </div>
     </section>
 
     <section id="v-lap" hidden>
@@ -300,6 +326,7 @@
 
     <section id="v-more" hidden>
       <div class="tk-hub">
+        <button type="button" class="tk-tile" data-akgo="1"><i>🔐</i><b>Akun Simpanan</b><span>Email, password, profil &amp; PIN, laporan ke marker</span></button>
         <button type="button" class="tk-tile" data-v="refund"><i>💸</i><b>Hitung Refund</b><span>Sisa hari, potongan admin, garansi penuh</span></button>
         <button type="button" class="tk-tile" data-v="qris"><i>📲</i><b>QRIS Dinamis</b><span id="hubQr">Gambar QRIS sesuai nominal tagihan</span></button>
         <button type="button" class="tk-tile" data-v="pesan"><i>💬</i><b>Pesan &amp; Nota</b><span>Template WA per akun, nama toko, teks nota</span></button>
@@ -353,12 +380,14 @@
 <div class="mdl" id="xm" hidden><div class="mcard ed"></div></div>
 <div class="mdl" id="cm" hidden><div class="mcard ed"></div></div>
 <div class="mdl" id="nt" hidden><div class="mcard ed"></div></div>
+<div class="mdl" id="am" hidden><div class="mcard ed"></div></div>
 <script src="config.js"></script>
 <script src="api.js"></script>
 <script>window.WM_PAGE = 'toko';</script>
 <script src="auth.js"></script>
 <script src="toko.js"></script>
 <script src="kasir.js"></script>
+<script src="akun.js"></script>
 <script src="settings.js"></script>
 <script>(()=>{const c=WM_CONFIG.CREDITS||{};document.getElementById("acred").innerHTML=`Dibuat dengan 💖 oleh <b>${c.brand||""}</b>${c.dev?` · Dev <a href="${c.link||"#"}" target="_blank" rel="noopener">${c.dev}</a>`:""}`})()</script>
 </body>

@@ -124,3 +124,42 @@ Tiap item yang terjual tetap jadi catatan penjualan biasa, jadi Rekap, pengingat
 
 ### Tambahan v18: Invoice tagihan → Nota LUNAS
 Di panel pembayaran ada tombol **🧾 Buat invoice & QR tagihan**. Isinya gambar invoice (logo, nama toko, no. HP, rincian pesanan, total, status *Menunggu pembayaran*, dan QR QRIS sesuai nominal) yang bisa dikirim ke WA, disalin, atau diunduh PNG. Setelah pembeli bayar, tekan **✓ Sudah dibayar · Tandai LUNAS**: transaksi tersimpan dan muncul **Nota LUNAS** dengan nomor yang sama dengan invoicenya. Upload ulang `kasir.js` saja.
+
+## v19 — Panel admin baru & Akun Simpanan (tim FH)
+- **Panel admin** (`admin.html`): kartu member lebih lega, filter dengan hitungan, urutkan, bar sisa premium, tombol cepat "+30 hari", banner premium segera habis, unduh daftar member (CSV).
+- **Akun Simpanan** (`akun.js`, `akun.css`): di tab *Produk* → *🔐 Akun Simpanan*. Catat email, password, status, pemegang/marker, tgl berakhir, modal, dan daftar profil (nama + PIN + dipakai oleh). Salin data akun, laporan untuk marker, CSV.
+- Data tersimpan sebagai catatan tipe `a` di sheet Records (tidak perlu ubah / deploy ulang Code.gs). Ikut backup & pulihkan.
+
+## Update v20 — Akun Simpanan: masa aktif, pemakai per profil, pengingat marker, 1 sheet per member
+**WAJIB deploy ulang Apps Script** (Code.gs berubah):
+1. Buka Apps Script, **ganti seluruh isi Code.gs** dengan versi baru → Save.
+2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
+3. Upload (timpa): `akun.js`, `akun.css`, `toko.js`, `index.html`.
+
+**Data per member = 1 sheet sendiri.** Setiap member punya sheet bernama `Rec_<username>` (mis. `Rec_budi`), dibuat otomatis saat member itu pertama menyimpan data. Kolom: `id | tipe | data | updatedAt`. Kolom `tipe` berisi penjualan / produk / pengeluaran / akun / klaim / qris / template / logo / kasir, jadi gampang difilter di Sheets.
+- **Data lama aman.** Sheet gabungan `Records` dipindah otomatis ke sheet member masing-masing, tepat saat member itu membuka kasir atau menyimpan data. Tidak perlu aksi manual. Setelah semua member sempat login sekali, sheet `Records` kosong dan boleh dihapus.
+- Ganti nama pengguna → sheet ikut diganti namanya. Hapus member (admin) → sheet-nya ikut dihapus.
+- Jangan mengubah kolom `data` secara manual (isinya JSON).
+
+**Akun Simpanan (tab Produk → 🔐 Akun Simpanan)**
+- **Masa aktif akun:** isi *Tanggal aktif*, pilih durasi (7 hari, 1 bulan, 2 bulan, 3 bulan, 6 bulan, 1 tahun, atau isi hari sendiri), *Tanggal berakhir* terisi otomatis dan masih bisa diubah. 1 bulan = 30 hari.
+- **Pengingat minta laporan ke marker:** pilih H-1 / H-3 / H-5 / H-7 atau isi hari sendiri (bawaan H-3, bisa "Tanpa"). Saat masa akun tinggal sekian hari, muncul banner di tab Akun Simpanan (dan ringkasannya di Rekap, plus angka merah di tab). Tombol **WA** membuka chat ke marker dengan pesan siap kirim (isi *WA marker* di akun); kalau nomor kosong, pesan disalin. **Sudah** menyembunyikan pengingat untuk masa aktif itu; kalau tanggal berakhir diperpanjang, pengingat muncul lagi otomatis.
+- **Terpakai per profil, bukan per akun:** ketuk sebuah profil di kartu akun → isi *Dipakai oleh*, *WA pemakai* (opsional), *tanggal mulai* dan durasi. Tersedia tombol **Perpanjang** (sambung dari tgl berakhir) dan **Kosongkan profil**. Status akun dihitung otomatis: Tersedia (semua kosong), Sebagian terpakai, atau Penuh. Bermasalah / Mati tetap diatur manual. Profil yang segera habis tampil di banner, dengan tombol WA ke pemakai kalau nomornya diisi.
+- Saat mencatat penjualan dengan "Ambil dari akun simpanan", profil kosong pertama terisi otomatis lengkap dengan tanggal mulai dan durasi penjualan itu.
+- Laporan untuk marker dan CSV sekarang memuat tgl aktif, tgl berakhir, serta pemakai + masa pakai tiap profil.
+- Opsional di `config.js`: `AKUN: {DURATIONS: [[7,'7 hari'],[30,'1 bulan']], REMIND_DAYS: [1,3,5,7], DEFAULT_REMIND: 3, WA_MARKER: 'Halo kak {marker}, akun {app} ({email}) {status}. ...'}`. Kode pesan: `{marker} {app} {email} {status} {tgl} {sisa}`.
+
+## Update v21 — Panel admin baru: pantau semua akses + rapi di HP
+**WAJIB deploy ulang Apps Script** (Code.gs berubah):
+1. Buka Apps Script, **ganti seluruh isi Code.gs** dengan versi baru → Save.
+2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
+3. Upload (timpa): `admin.html`, `admin.js`, `api.js`, dan 2 file BARU: `admin-plus.js`, `admin-plus.css`.
+4. Sheet baru **Log** dan kolom baru **lastSeen** (sheet Users) dibuat otomatis. Jangan diedit manual.
+
+**4 tab di panel admin** (menu bawah di HP, baris tab di komputer):
+- **📊 Ringkasan**: 8 angka (total, premium, gratis, habis ≤7 hari, online sekarang, aktif 24 jam, daftar 24 jam, nonaktif), grafik pendaftar 14 hari, daftar premium segera habis (tombol +30 hr), member aktif terbaru, pemakai kasir terbanyak.
+- **👥 Member**: cari (username/nama/catatan), filter, urutkan (termasuk terakhir aktif), **centang beberapa member → aksi massal** (tambah premium N hari, jadikan gratis, nonaktifkan, aktifkan). Kartu menampilkan aktif terakhir + jumlah catatan kasir & template. Jendela **Atur** kini punya rincian pemakaian (catatan per jenis, template, waktu masuk), **Paksa keluar** dari semua perangkat, dan reset password lewat formulir (bukan kotak prompt).
+- **🛰️ Aktivitas**: log masuk, gagal masuk (percobaan salah password), pendaftaran, ganti nama/password, dan semua aksi admin. Disimpan di sheet `Log` (maks. 3000 baris, yang lama dibuang otomatis).
+- **⚙️ Pengaturan**: nomor WhatsApp, pesan WA awal, buka/tutup pendaftaran. Tersimpan di sheet `Config`, berlaku langsung tanpa upload ulang.
+
+Catatan: "online" = membuka web dalam 15 menit terakhir (dicatat maksimal tiap 5 menit supaya Sheets tidak boros tulis). Kalau tab Aktivitas/Pengaturan menampilkan pesan "Code.gs belum diperbarui", berarti langkah deploy di atas belum dilakukan.
