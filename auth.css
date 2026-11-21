@@ -123,3 +123,18 @@ a.btn{text-decoration:none}
 .plnote{text-align:center;line-height:1.4}
 
 a.ib{text-decoration:none;font-size:18px;line-height:1}
+
+/* foto & kartu profil akun */
+.av.img{padding:0;overflow:hidden;background:var(--soft)}
+.av img{width:100%;height:100%;object-fit:cover;display:block}
+.pfc{position:relative;text-align:center;border-radius:22px;border:2px solid var(--line);background:var(--panel,#fff);overflow:hidden;padding-bottom:14px;margin:0 0 12px}
+.pfcv{height:68px}.pfc.mini .pfcv{height:44px}
+.pfc .av.big{margin:-34px auto 0;position:relative;font-size:30px}
+.pfn{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px;padding:0 12px}
+.pfn b{font:600 19px Fredoka,sans-serif;word-break:break-word}
+.pfb{font-style:normal;font:700 10px/16px Fredoka,sans-serif;padding:0 8px;border-radius:99px;color:#fff;background:var(--pd)}.pfb.ad{background:#6a4c93}
+.pfu{display:block;color:var(--mut)}
+.pfs{display:inline-block;margin-top:7px;padding:3px 12px;border-radius:99px;background:var(--soft);border:2px solid var(--line);font-size:12.5px;font-weight:700;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pfbio{margin:8px 16px 0;font-size:13px;line-height:1.4;word-break:break-word}
+.pfig{display:block;margin-top:6px;color:var(--mut)}
+.mrow .mpf{color:var(--pd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

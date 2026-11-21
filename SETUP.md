@@ -106,3 +106,21 @@ Perbaikan tampilan HP kecil (≤360px): halaman Admin dan Kasir tidak lagi bisa 
 Tidak ada perubahan di `Code.gs`. Upload `script.js` saja (timpa yang lama).
 - **Logo dan maskot bisa digeser langsung** di preview pakai mouse atau jari. Posisinya tidak melompat ke pointer (titik pegangnya tetap), dan muncul garis bantu pink saat tepat di tengah (otomatis menempel). Tombol **Pusatkan logo / maskot** ada di tab masing-masing. Memilih salah satu dari 9 posisi preset akan mengembalikan logo ke mode preset.
 - **Posisi tengah mengikuti foto saat pakai frame.** Teks, badge, logo, maskot, dan watermark Penuh sekarang mengacu ke area foto testimoni, jadi "tengah" benar-benar di tengah foto, bukan tengah kanvas (yang bergeser karena ada judul dan nama di frame). Kalau mau seperti dulu, pilih **Acuan posisi → Seluruh gambar** di tab Logo atau Maskot.
+
+
+## Update v18 (Kasir beneran: keranjang → QRIS sesuai nominal → nota → riwayat)
+**Tidak perlu deploy ulang Apps Script.** Semua tersimpan di sheet `Records` yang sudah ada. Upload (timpa): `index.html`, `toko.js`, `config.js` (tidak berubah), dan 2 file BARU: `kasir.js`, `kasir.css`.
+
+Tab pertama di kasir sekarang **🛒 Kasir** (jadi halaman utama), isinya 3 bagian:
+- **Kasir**: ketuk produk (atau ketik nama aplikasi, harga, durasi) → masuk pesanan. Tiap item bisa diubah harga, durasi, tanggal mulai, dan akun. Isi nama/WA pembeli (opsional), diskon (opsional). Total dihitung otomatis. Pilih metode bayar:
+  - **QRIS**: QR langsung muncul di bawah total, nominalnya otomatis sesuai total (pakai QRIS yang diatur di Lainnya → QRIS Dinamis).
+  - **Tunai**: isi uang diterima, kembalian dihitung.
+  - **Transfer**: konfirmasi manual.
+  Tekan **Selesai** → transaksi tersimpan, stok produk berkurang, nomor nota dibuat (INVyymmdd-001), dan nota PNG langsung muncul (kirim WA / salin / unduh).
+- **Riwayat**: semua transaksi kasir (filter hari ini / 7 hari / bulan ini / semua, cari, total per metode bayar, cetak ulang nota, unduh CSV).
+- **Toko**: nama toko, no. HP, alamat/IG, **logo** (di-crop bulat & dikecilkan otomatis), teks bawah nota, dengan pratinjau nota langsung.
+
+Tiap item yang terjual tetap jadi catatan penjualan biasa, jadi Rekap, pengingat perpanjangan, Laporan, Refund, dan Klaim ikut jalan otomatis. Backup/pulihkan ikut membawa logo & profil toko.
+
+### Tambahan v18: Invoice tagihan → Nota LUNAS
+Di panel pembayaran ada tombol **🧾 Buat invoice & QR tagihan**. Isinya gambar invoice (logo, nama toko, no. HP, rincian pesanan, total, status *Menunggu pembayaran*, dan QR QRIS sesuai nominal) yang bisa dikirim ke WA, disalin, atau diunduh PNG. Setelah pembeli bayar, tekan **✓ Sudah dibayar · Tandai LUNAS**: transaksi tersimpan dan muncul **Nota LUNAS** dengan nomor yang sama dengan invoicenya. Upload ulang `kasir.js` saja.

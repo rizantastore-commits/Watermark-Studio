@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="auth.css">
 <link rel="stylesheet" href="admin.css">
 <link rel="stylesheet" href="toko.css">
+<link rel="stylesheet" href="kasir.css">
 <link rel="stylesheet" href="theme.css">
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
@@ -118,7 +119,8 @@
   <main id="panel" hidden>
     <div class="tk-err" id="tkErr" hidden></div>
     <nav class="seg tk-seg" id="vt" aria-label="Menu kasir">
-      <button type="button" data-v="rekap" class="on"><span class="ic">📒</span><span class="lb">Rekap</span></button>
+      <button type="button" data-v="kasir" class="on"><span class="ic">🛒</span><span class="lb">Kasir</span></button>
+      <button type="button" data-v="rekap"><span class="ic">📒</span><span class="lb">Rekap</span></button>
       <button type="button" data-v="prod"><span class="ic">📦</span><span class="lb">Produk</span></button>
       <button type="button" data-v="lap"><span class="ic">📊</span><span class="lb">Laporan</span></button>
       <button type="button" data-v="klaim"><span class="ic">🛡️</span><span class="lb">Klaim</span><i class="tk-dot" id="klDot" hidden></i></button>
@@ -128,7 +130,9 @@
     <div class="stats" id="stats"></div>
     <div class="tk-rm tk-low" id="lowstk" hidden></div>
 
-    <section id="v-rekap">
+    <section id="v-kasir"></section>
+
+    <section id="v-rekap" hidden>
       <div class="tools">
         <input type="search" id="q" placeholder="Cari aplikasi, email, pembeli…" aria-label="Cari">
         <button class="btn pri" id="add" type="button">+ Catat</button>
@@ -354,6 +358,7 @@
 <script>window.WM_PAGE = 'toko';</script>
 <script src="auth.js"></script>
 <script src="toko.js"></script>
+<script src="kasir.js"></script>
 <script src="settings.js"></script>
 <script>(()=>{const c=WM_CONFIG.CREDITS||{};document.getElementById("acred").innerHTML=`Dibuat dengan 💖 oleh <b>${c.brand||""}</b>${c.dev?` · Dev <a href="${c.link||"#"}" target="_blank" rel="noopener">${c.dev}</a>`:""}`})()</script>
 </body>

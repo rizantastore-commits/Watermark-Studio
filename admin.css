@@ -28,4 +28,5 @@ body.adminpg{overflow:visible;overscroll-behavior:auto;height:auto;min-height:10
 .ed h4{font-size:13px;color:var(--mut);margin:4px 0 0}
 .prev{padding:9px 12px;border-radius:14px;background:var(--soft);font-weight:800;color:var(--pd);font-size:13px}
 .danger{color:#c0264f!important}
-@media(max-width:560px){.atop .btn{padding:0 10px;font-size:13px}.mrow{grid-template-columns:1fr auto}.mrow .av{display:none}}
+@media(max-width:560px){.atop .btn{padding:0 10px;font-size:13px}.mrow{grid-template-columns:auto 1fr auto;gap:8px}}
+.mrow .av{width:44px;height:44px;font-size:20px;flex:none}

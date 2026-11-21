@@ -1,0 +1,54 @@
+/* Kasir (POS) */
+.ks-tabs{grid-template-columns:repeat(3,1fr)!important;max-width:460px!important;margin:0 0 12px}
+.ks-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-items:start}
+.ks-main{display:grid;gap:14px;min-width:0}
+.ks-main .tk-card,.ks-side .tk-card,#ks-shop .tk-card{max-width:none}
+.ks-side{position:sticky;top:76px}
+.ks-prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.ks-prod{display:grid;gap:2px;text-align:left;padding:10px 12px;border-radius:18px;border:2px solid var(--line);background:var(--soft);color:var(--ink);cursor:pointer;font:inherit}
+.ks-prod b{font:600 14px Fredoka,sans-serif;line-height:1.2}.ks-prod small{color:var(--mut);font-size:11.5px}.ks-prod i{font-style:normal;font-size:11px;font-weight:800;color:var(--pd)}
+.ks-prod:active{transform:scale(.97)}.ks-prod.out{opacity:.55}.ks-prod.out i{color:#c0392b}
+.ks-tiers{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border-radius:16px;background:var(--soft);border:2px dashed var(--line)}
+.ks-tiers small{width:100%;color:var(--mut)}
+.ks-tiers button{padding:8px 12px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--ink);font-weight:800;cursor:pointer}
+.ks-add{display:grid;grid-template-columns:minmax(0,1fr) 96px 64px auto;gap:6px}
+.ks-add input{min-width:0}
+.ks-it{display:grid;gap:8px;padding:12px;border-radius:18px;border:2px solid var(--line);background:var(--soft);margin-bottom:10px}
+.ks-it:last-child{margin-bottom:0}
+.ks-ith{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ks-itg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ks-end{color:var(--mut)}
+.ks-empty{padding:22px}
+.ks-pay{gap:10px}
+.ks-pay .ln{display:flex;justify-content:space-between;font-size:14px}
+.ks-disc{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px}.ks-disc input{width:130px;text-align:right}
+.ks-total{display:grid;text-align:center;padding:12px;border-radius:20px;background:var(--soft);border:2px solid var(--line)}
+.ks-total small{color:var(--mut);font-weight:800;letter-spacing:.06em;font-size:11px}
+.ks-total b{font:700 34px Fredoka,sans-serif;color:var(--pd);line-height:1.15;word-break:break-all}
+.ks-method{grid-template-columns:repeat(3,1fr)!important;max-width:none!important}.ks-method button{font-size:13px;padding:0 4px}
+.ks-qwait{text-align:center}
+.ks-pvw{max-width:340px;margin-top:10px}
+#ksPvCard small{color:var(--mut)}
+.ks-done{min-height:50px;font-size:16px}.ks-done:disabled{opacity:.5}
+#ksChg.neg{color:#c0392b}
+.ks-logo{display:flex;align-items:center;gap:14px}
+.ks-lg{width:76px;height:76px;border-radius:50%;background:var(--soft);border:2.5px solid var(--line);display:grid;place-items:center;font-size:30px;overflow:hidden;flex:none}
+.ks-lg img{width:100%;height:100%;object-fit:cover}
+.ks-lgb{display:flex;flex-wrap:wrap;gap:8px}
+.ks-hr{display:grid;gap:4px}.ks-hrh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ks-hrm{color:var(--mut);font-size:13px}.ks-hri{font-size:13px}
+.ks-hrf{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px}.ks-hrf b{font:700 18px Fredoka,sans-serif;color:var(--pd)}
+#ks-rc .mcard{max-height:92vh;overflow:auto}
+@media(max-width:860px){.ks-grid{grid-template-columns:1fr}.ks-side{position:static}}
+@media(max-width:560px){.ks-itg{grid-template-columns:repeat(2,minmax(0,1fr))}.ks-add{grid-template-columns:minmax(0,1fr) 90px}.ks-add .btn{grid-column:1/-1}.ks-add input:nth-child(3){grid-column:2}}
+
+/* Tampilan invoice */
+.ks-ivg{display:grid;gap:6px;margin-top:10px}.ks-ivg>span{font-weight:800;font-size:13px;color:var(--mut)}
+.ks-ch{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ks-ch button{padding:7px 12px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--ink);font:700 13px Nunito,sans-serif;cursor:pointer}
+.ks-ch button.on{background:var(--pd);border-color:var(--pd);color:#fff}
+.ks-ch input[type=color]{width:46px;height:36px;padding:2px;border-radius:12px;border:2px solid var(--line);background:var(--panel);cursor:pointer}
+.ks-ivb{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ks-pvs{position:sticky;top:76px}.ks-pvm{margin:8px 0 4px}
+#ks-shop .ks-pvw{max-width:340px}
+@media(max-width:860px){.ks-pvs{position:static}}

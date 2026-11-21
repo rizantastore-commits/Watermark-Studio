@@ -12,7 +12,7 @@ window.WM_SETTINGS = (() => {
     <div class="sth">
       <button class="mx" data-close type="button" aria-label="Tutup">✕</button>
       <h3 id="stT">⚙️ Pengaturan</h3>
-      <div class="seg" id="stTabs"><button type="button" data-st="tema" class="on">🎨 Tema</button><button type="button" data-st="akun">👤 Akun</button></div>
+      <div class="seg" id="stTabs" style="grid-template-columns:repeat(3,1fr)"><button type="button" data-st="tema" class="on">🎨 Tema</button><button type="button" data-st="profil">🪪 Profil</button><button type="button" data-st="akun">👤 Akun</button></div>
     </div>
     <div class="stb">
       <section id="stTema">
@@ -24,6 +24,20 @@ window.WM_SETTINGS = (() => {
         </div>
         <label class="f"><span>Font</span><select id="tFont">${T.FONTS.map(f => `<option value="${f.id}">${esc(f.n)}</option>`).join('')}</select></label>
         <button class="btn wide" id="tReset" type="button">↺ Kembalikan ke bawaan</button>
+      </section>
+      <section id="stProfil" hidden>
+        <div id="pfPv"></div>
+        <div class="pfed">
+          <div class="ks-ch pfph"><label class="btn pri" style="cursor:pointer">📷 Upload foto<input type="file" id="pfFile" accept="image/*" hidden></label><button class="btn" id="pfDelAv" type="button">Hapus foto</button></div>
+          <label class="f"><span>✏️ Nama tampilan</span><input id="pfDn" type="text" maxlength="30" placeholder="mis. Rey Store" autocomplete="off"></label>
+          <label class="f"><span>💬 Status singkat</span><input id="pfSt" type="text" maxlength="24" placeholder="mis. ✨ buka order 24 jam" autocomplete="off"></label>
+          <label class="f"><span>📝 Bio</span><input id="pfBio" type="text" maxlength="120" placeholder="ceritain tokomu dikit…" autocomplete="off"></label>
+          <label class="f"><span>📸 Instagram <em>tanpa @</em></span><input id="pfIg" type="text" maxlength="30" placeholder="username_ig" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
+          <div class="sgrp"><h4>Warna sampul</h4><div class="ks-ch" id="pfCv"></div></div>
+          <div class="gerr" id="pfErr" role="alert"></div>
+          <button class="btn pri wide big" id="pfSave" type="button">💾 Simpan profil</button>
+          <small>Profil kamu bisa dilihat admin ReyVion. Jangan isi data rahasia ya.</small>
+        </div>
       </section>
       <section id="stAkun" hidden>
         <div class="sac"><div class="av" id="sAv"></div><div><b id="sName"></b><small id="sRole"></small></div></div>
@@ -49,12 +63,12 @@ window.WM_SETTINGS = (() => {
   /* ---------- tab ---------- */
   function showTab(t) {
     const U = me();
-    if (t == 'akun' && !U) t = 'tema';
+    if ((t == 'akun' || t == 'profil') && !U) t = 'tema';
     tab = t; Q('#stTabs').hidden = !U;
     document.querySelectorAll('[data-st]').forEach(b => b.classList.toggle('on', b.dataset.st == t));
-    Q('#stTema').hidden = t != 'tema'; Q('#stAkun').hidden = t != 'akun';
+    Q('#stTema').hidden = t != 'tema'; Q('#stAkun').hidden = t != 'akun'; Q('#stProfil').hidden = t != 'profil';
     Q('.stb').scrollTop = 0;
-    t == 'tema' ? paintTema() : paintAkun();
+    t == 'tema' ? paintTema() : t == 'profil' ? paintProfil() : paintAkun();
   }
   function open(t) {
     const acc = Q('#acc'); if (acc) acc.hidden = true;
@@ -121,16 +135,47 @@ window.WM_SETTINGS = (() => {
     if (typeof toast == 'function') toast(msg);
   }
 
+  /* ---------- profil ---------- */
+  let PF = {};
+  const pfUser = () => ({...me(), profile: JSON.stringify(PF)});
+  function pfPaint(light) { Q('#pfPv').innerHTML = Auth.profCard(pfUser()); if (light) return;
+    Q('#pfCv').innerHTML = Object.keys(Auth.COVERS).map(k => `<button type="button" data-pfcv="${k}" class="${PF.cv == k ? 'on' : ''}"><i style="background:${Auth.COVERS[k][0]}"></i>${k}</button>`).join('') + `<input type="color" id="pfCvC" value="${/^#[0-9a-f]{6}$/i.test(PF.cv || '') ? PF.cv : '#ff7eb6'}" aria-label="Warna sampul sendiri"><button type="button" data-pfcv="" class="${!PF.cv ? 'on' : ''}">ikut tema</button>`; }
+  function paintProfil() {
+    if (!me()) return; PF = {...Auth.profOf(me())}; Q('#pfErr').textContent = ''; Q('#pfErr').classList.remove('on');
+    Q('#pfDn').value = PF.dn || ''; Q('#pfSt').value = PF.st || ''; Q('#pfBio').value = PF.bio || ''; Q('#pfIg').value = PF.ig || ''; pfPaint();
+  }
+  function avatarFromFile(f) {
+    const im = new Image(), u = URL.createObjectURL(f);
+    im.onload = () => { URL.revokeObjectURL(u); const s = Math.min(im.width, im.height), sx = (im.width - s) / 2, sy = (im.height - s) / 2; let out = '';
+      for (const px of [112, 96, 80, 64]) { const c = document.createElement('canvas'); c.width = c.height = px; const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, px, px); x.drawImage(im, sx, sy, s, s, 0, 0, px, px);
+        for (const q of [.85, .7, .55, .4]) { const d = c.toDataURL('image/jpeg', q); if (d.length < 8500) { out = d; break; } } if (out) break; }
+      if (!out) return toastMsg('Foto terlalu rumit, coba foto lain');
+      PF.av = out; pfPaint(); };
+    im.onerror = () => toastMsg('File itu bukan gambar yang valid'); im.src = u;
+  }
+  const toastMsg = m => { if (typeof toast == 'function') toast(m); };
+  async function saveProfil() {
+    if (busy) return; busy = true; const b = Q('#pfSave'), t0 = b.textContent; b.disabled = true; b.textContent = 'Menyimpan…';
+    const r = await Auth.saveProfile({dn: PF.dn || '', st: PF.st || '', bio: PF.bio || '', ig: PF.ig || '', cv: PF.cv || '', av: PF.av || ''});
+    busy = false; b.disabled = false; b.textContent = t0;
+    if (!r.ok) { if (r.code != 'session') { Q('#pfErr').textContent = r.error; Q('#pfErr').classList.add('on'); } return; }
+    Q('#pfErr').classList.remove('on'); paintProfil(); toastMsg('Profil tersimpan ✓');
+  }
+
   /* ---------- event ---------- */
   document.addEventListener('click', e => {
     const t = e.target;
     const o = t.closest('[data-opts]'); if (o) { e.preventDefault(); return open(o.dataset.opts || 'tema'); }
     if (t.closest('#accSet')) return open('tema');
+    if (t.closest('#accEd')) return open('profil');
     if (!set.contains(t)) return;
     const s = t.closest('[data-st]'); if (s) return showTab(s.dataset.st);
     if (t.closest('#tUnl')) return Auth.upsell('Warna atur sendiri');
     const p = t.closest('.tpb'); if (p) { T.set({p: p.dataset.p, c: null}); return paintTema(); }
     if (t.closest('#tReset')) { T.reset(); return paintTema(); }
+    const cv = t.closest('[data-pfcv]'); if (cv) { PF.cv = cv.dataset.pfcv; return pfPaint(); }
+    if (t.closest('#pfDelAv')) { PF.av = ''; return pfPaint(); }
+    if (t.closest('#pfSave')) return saveProfil();
     if (t.closest('#sEye')) { const h = Q('#sNp').type == 'password'; ['#sNp', '#sNp2', '#sOp'].forEach(x => { Q(x).type = h ? 'text' : 'password'; }); }
   });
   set.addEventListener('input', e => {
@@ -138,9 +183,11 @@ window.WM_SETTINGS = (() => {
     if (t.dataset.c) { Q(`[data-h="${t.dataset.c}"]`).value = t.value; return fromFields(); }
     if (t.dataset.h) { if (hexOk(t.value) || /^#?[0-9a-f]{0,6}$/i.test(t.value)) { if (hexOk(t.value)) fromFields(t); } return; }
     if (t.id == 'tFont') { T.set({f: t.value}); return; }
+    if (t.id == 'pfCvC') { PF.cv = t.value; return pfPaint(true); }
+    if (t.id == 'pfDn' || t.id == 'pfSt' || t.id == 'pfBio' || t.id == 'pfIg') { const k = {pfDn: 'dn', pfSt: 'st', pfBio: 'bio', pfIg: 'ig'}[t.id]; PF[k] = k == 'ig' ? t.value.replace(/[^A-Za-z0-9_.]/g, '') : t.value; return pfPaint(true); }
     if (t.id == 'sNp') { strength(t.value); Q('#sNp2w').hidden = !t.value; }
   });
-  set.addEventListener('change', e => { const t = e.target; if (t.dataset.h && !hexOk(t.value)) t.value = Q(`[data-c="${t.dataset.h}"]`).value; }); // kode hex rusak -> kembali ke warna terakhir yang valid
+  set.addEventListener('change', e => { const t = e.target; if (t.id == 'pfFile') { const f = t.files[0]; t.value = ''; if (f) avatarFromFile(f); return; } if (t.dataset.h && !hexOk(t.value)) t.value = Q(`[data-c="${t.dataset.h}"]`).value; }); // kode hex rusak -> kembali ke warna terakhir yang valid
   T.onLock = () => { if (!set.hidden && tab == 'tema') paintTema(); }; // status premium berubah saat jendela terbuka
   Q('#sForm').addEventListener('submit', save);
   document.addEventListener('keydown', e => { if (e.key == 'Escape' && !set.hidden) close(); });

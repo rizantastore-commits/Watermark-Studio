@@ -12,17 +12,18 @@
   const FILTERS = [['all', 'Semua'], ['pr', 'Premium'], ['fr', 'Gratis'], ['ex', 'Habis'], ['soon', 'Segera habis'], ['sp', 'Nonaktif'], ['ad', 'Admin']];
   const match = u => FLT == 'all' || (FLT == 'soon' ? u.premium && u.role == 'premium' && u.premiumUntil < Auth.now() + 7 * DAY : stat(u) == FLT);
 
+  const pfLine = u => { const f = Auth.profOf(u), t = [Auth.dispName(u) != u.username ? '✏️ ' + Auth.dispName(u) : '', f.st, f.bio].filter(Boolean).join(' · '); return t ? `<small class="mpf">${E(t)}</small>` : ''; };
   function render() {
     const n = Auth.now(), pr = USERS.filter(u => u.premium && u.role == 'premium').length;
     Q('#stats').innerHTML = [[USERS.length, 'Total member'], [pr, 'Premium aktif'], [USERS.filter(u => u.role == 'free' && u.status == 'active').length, 'Gratis'],
       [USERS.filter(u => u.role == 'premium' && u.premium && u.premiumUntil < n + 7 * DAY).length, 'Habis ≤ 7 hari'], [USERS.filter(u => u.createdAt > n - DAY).length, 'Daftar 24 jam']]
       .map(([v, l]) => `<div class="st"><b>${v}</b><span>${l}</span></div>`).join('');
     Q('#flt').innerHTML = FILTERS.map(([k, l]) => `<button data-f="${k}" class="${FLT == k ? 'on' : ''}">${l}</button>`).join('');
-    const ls = USERS.filter(u => match(u) && u.username.toLowerCase().includes(QS)).sort((a, b) => b.createdAt - a.createdAt);
+    const ls = USERS.filter(u => match(u) && (u.username + ' ' + Auth.dispName(u)).toLowerCase().includes(QS)).sort((a, b) => b.createdAt - a.createdAt);
     Q('#list').innerHTML = ls.map(u => {
       const s = stat(u), lb = {sp: 'Nonaktif', ad: 'Admin', pr: 'Premium', ex: 'Habis', fr: 'Gratis'}[s];
       const info = u.role == 'admin' ? 'Akses penuh' : u.premium ? (u.premiumUntil >= 4e12 ? 'Seumur hidup' : `Sampai ${fd(u.premiumUntil)} · ${daysLeft(u)} hari lagi`) : u.expired ? `Habis ${fd(u.premiumUntil)}` : 'Fitur dasar';
-      return `<div class="mrow"><div class="av">${E(u.username[0].toUpperCase())}</div><div class="mi"><strong>${E(u.username)}<span class="badge ${s}">${lb}</span></strong><small>${info}</small><small>Daftar ${fd(u.createdAt)}${u.lastLogin ? ' · masuk ' + fd(u.lastLogin) : ''}${u.note ? ' · ' + E(u.note) : ''}</small></div><button class="btn" data-ed="${E(u.username)}">Atur</button></div>`;
+      return `<div class="mrow">${Auth.avatar(u)}<div class="mi"><strong>${E(u.username)}<span class="badge ${s}">${lb}</span></strong><small>${info}</small>${pfLine(u)}<small>Daftar ${fd(u.createdAt)}${u.lastLogin ? ' · masuk ' + fd(u.lastLogin) : ''}${u.note ? ' · ' + E(u.note) : ''}</small></div><button class="btn" data-ed="${E(u.username)}">Atur</button></div>`;
     }).join('') || '<div class="empty">Belum ada member yang cocok.</div>';
   }
 
@@ -41,7 +42,7 @@
   }
   function editor(u) {
     EDIT = u; DUR = null; const self = u.username == Auth.user().username;
-    Q('.ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${E(u.username)}</h3>
+    Q('.ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>Profil member</h3>${Auth.profCard(u)}
     <small>Daftar ${fd(u.createdAt)} · ${u.premium && u.role == 'premium' ? 'Premium sampai ' + (u.premiumUntil >= 4e12 ? 'selamanya' : fd(u.premiumUntil)) : u.role == 'admin' ? 'Admin' : 'Gratis'}</small>
     <div class="sec2"><h4>Role</h4><div class="chips" id="erole">${[['free', 'Gratis'], ['premium', 'Premium'], ['admin', 'Admin']].map(([k, l]) => `<button data-role="${k}" class="${(u.role == k ? 'on' : '')}">${l}</button>`).join('')}</div></div>
     <div class="sec2" id="edur"><h4>Durasi premium</h4>

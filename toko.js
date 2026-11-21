@@ -5,10 +5,10 @@
   const Q = s => document.querySelector(s), A = window.WM_API, C = window.WM_CONFIG, S = C.STORE || {}, E = Auth.esc, DAY = 864e5;
   const RMS = S.REMIND_DAYS || [1, 3, 7], DURS = S.DURATIONS || [7, 14, 30, 60, 90, 180, 365], XCAT = ['Iklan', 'Operasional', 'Fee / Admin', 'Lainnya'];
   const DL = {30: '1 bulan', 60: '2 bulan', 90: '3 bulan', 180: '6 bulan', 365: '1 tahun'};
-  let ALL = [], R = [], P = [], X = [], QCFG = null, CL = [], WT = null; // semua catatan | penjualan | produk | pengeluaran | konfigurasi QRIS | klaim | template pesan
+  let LG = null, ALL = [], R = [], P = [], X = [], QCFG = null, CL = [], WT = null; // semua catatan | penjualan | produk | pengeluaran | konfigurasi QRIS | klaim | template pesan
   let CF = 'all', CQS = '', CE = null, NT = null, WPDIRTY = false, WPLAST = null; const OPEN = new Set(); // klaim: filter, cari, edit | nota aktif | form pesan | kartu yang dibuka
   let FLT = 'all', QS = '', EDIT = null, EPID = '', EDAYS = 30, ERM = [], RN = null, RDAYS = 30, RRM = [], PE = null, XE = null;
-  let RFREC = null, RFRES = null, RFMAN = false, lockedNow = null, VIEW = 'rekap', SRT = 'due';
+  let RFREC = null, RFRES = null, RFMAN = false, lockedNow = null, VIEW = 'kasir', SRT = 'due';
 
   let tt; window.toast = m => { const t = Q('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2600); };
 
@@ -40,7 +40,7 @@
   const low = p => (+p.stock || 0) <= (p.min == null ? 3 : +p.min);
 
   /* ---------- simpan / muat ---------- */
-  const split = () => { R = ALL.filter(x => !x.t); P = ALL.filter(x => x.t == 'p'); X = ALL.filter(x => x.t == 'x'); QCFG = ALL.find(x => x.t == 'q') || null; CL = ALL.filter(x => x.t == 'c'); WT = ALL.find(x => x.t == 'w') || null; };
+  const split = () => { R = ALL.filter(x => !x.t); P = ALL.filter(x => x.t == 'p'); X = ALL.filter(x => x.t == 'x'); QCFG = ALL.find(x => x.t == 'q') || null; CL = ALL.filter(x => x.t == 'c'); WT = ALL.find(x => x.t == 'w') || null; LG = ALL.find(x => x.t == 'l') || null; };
   const cache = () => { try { localStorage.setItem(ckey(), JSON.stringify(ALL)); } catch (e) {} };
   const upsert = rec => { const i = ALL.findIndex(x => x.id == rec.id); i < 0 ? ALL.push(rec) : ALL[i] = rec; };
   function showErr(m) { const e = Q('#tkErr'); e.textContent = m || ''; e.hidden = !m; }
@@ -425,12 +425,14 @@
       tiers: A1(x.tiers).slice(0, 8).map(t => ({d: Math.floor(N0(t && t.d)), price: N0(t && t.price)})).filter(t => t.d > 0)} : null;
     if (x.t == 'c') return x.buyer && D1(x.date) ? {t: 'c', id, rid: T1(x.rid, 40), buyer: T1(x.buyer, 40), wa: T1(x.wa, 20), app: T1(x.app, 60), date: D1(x.date), kind: ['komplain', 'garansi', 'ganti'].includes(x.kind) ? x.kind : 'komplain',
       status: ['baru', 'proses', 'selesai'].includes(x.status) ? x.status : 'baru', issue: T1(x.issue, 300), fix: T1(x.fix, 200), oldAcc: T1(x.oldAcc, 80), newAcc: T1(x.newAcc, 80), doneAt: D1(x.doneAt) || undefined, created: N0(x.created) || Date.now()} : null;
-    if (x.t == 'w') return {t: 'w', id, shop: T1(x.shop, 40), foot: T1(x.foot, 140), remind: T1(x.remind, 400), nota: T1(x.nota, 400), claim: T1(x.claim, 400)};
+    if (x.t == 'l') return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(x.img || '') && x.img.length < 7500 ? {t: 'l', id, img: x.img} : null;
+    if (x.t == 'w') return {t: 'w', id, phone: T1(x.phone, 20), addr: T1(x.addr, 120), shop: T1(x.shop, 40), foot: T1(x.foot, 140), remind: T1(x.remind, 400), nota: T1(x.nota, 400), claim: T1(x.claim, 400), iv: x.iv && typeof x.iv == 'object' ? Object.fromEntries(Object.entries(x.iv).slice(0, 16).map(([k, v]) => [T1(k, 12), T1(v, 12)])) : undefined};
     if (x.t == 'q') { const q = validateAndParseQRIS(x.raw); return q.ok ? {t: 'q', id, raw: q.raw, merch: T1(q.merch, 60), city: T1(q.city, 60), presets: A1(x.presets).slice(0, 12).map(p => ({label: T1(p && p.label, 50), amt: N0(p && p.amt)})).filter(p => p.amt > 0)} : null; }
     if (x.t == 'x') return x.label && D1(x.date) ? {t: 'x', id, label: T1(x.label, 80), amount: N0(x.amount), date: D1(x.date), cat: T1(x.cat, 30)} : null;
     if (!x.app || !D1(x.orderDate) || !D1(x.end)) return null;
     return {id, pid: x.pid ? T1(x.pid, 40) : undefined, app: T1(x.app, 60), email: T1(x.email, 80), buyer: T1(x.buyer, 40), wa: T1(x.wa, 20), orderDate: D1(x.orderDate), end: D1(x.end), days: Math.floor(N0(x.days)) || 30,
       price: N0(x.price), cost: N0(x.cost), note: T1(x.note, 200), rm: A1(x.rm).map(Number).filter(n => n > 0 && n <= 365).slice(0, 5), rmDone: x.rmDone == null ? null : N0(x.rmDone),
+      inv: x.inv ? T1(x.inv, 30) : undefined, pay: x.pay ? T1(x.pay, 10) : undefined, dsc: N0(x.dsc) || undefined, cash: N0(x.cash) || undefined, time: x.time ? T1(x.time, 5) : undefined,
       renewals: Math.floor(N0(x.renewals)), created: N0(x.created) || Date.now(), ref: x.ref && D1(x.ref.date) ? {date: D1(x.ref.date), amount: N0(x.ref.amount)} : undefined,
       hist: A1(x.hist).slice(-60).map(h => ({d: D1(h && h.d) || D1(x.orderDate), days: Math.floor(N0(h && h.days)), price: N0(h && h.price), cost: N0(h && h.cost)}))};
   }
@@ -1036,10 +1038,10 @@
 
   /* ---------- umum ---------- */
   function render() {
-    stats(); remind(); lowstk(); renderRekap(); renderProd(); renderLap(); renderAlat(); renderQR(); renderKlaim(); renderPesan();
+    stats(); remind(); lowstk(); renderRekap(); renderProd(); renderLap(); renderAlat(); renderQR(); renderKlaim(); renderPesan(); if (window.Kasir) Kasir.render();
     const hq = Q('#hubQr'); if (hq) hq.textContent = QCFG && QCFG.raw ? '✅ Aktif · ' + (QCFG.merch || 'tersimpan') : 'Belum diatur · upload QRIS tokomu';
   }
-  const VIEWS = ['rekap', 'prod', 'lap', 'klaim', 'more', 'refund', 'qris', 'pesan', 'alat'], SUBV = ['refund', 'qris', 'pesan', 'alat']; // sub-halaman ikut menyalakan tab "Lainnya"
+  const VIEWS = ['kasir', 'rekap', 'prod', 'lap', 'klaim', 'more', 'refund', 'qris', 'pesan', 'alat'], SUBV = ['refund', 'qris', 'pesan', 'alat']; // sub-halaman ikut menyalakan tab "Lainnya"
   function setView(k) {
     VIEW = k; VIEWS.forEach(x => Q('#v-' + x).hidden = x != k);
     const tab = SUBV.includes(k) ? 'more' : k;
@@ -1195,8 +1197,11 @@
   document.addEventListener('focusin', e => { if (/^wp(Remind|Nota|Claim)$/.test(e.target.id)) WPLAST = e.target; });
   paintTheme();
   window.WM_ON_AUTH = () => { lockedNow = null; lockCheck(); };
-  window.WM_ON_LOGOUT = () => { ALL = []; split(); OPEN.clear(); WPDIRTY = false; CQS = ''; CF = 'all'; NT = null; CE = null; ['#cm', '#nt'].forEach(x => Q(x).hidden = true); setView('rekap'); lockedNow = null; Q('#panel').hidden = true; Q('#lk').hidden = true; document.title = 'Kasir & Rekap Toko · ReyVion'; };
+  window.WM_ON_LOGOUT = () => { ALL = []; split(); OPEN.clear(); WPDIRTY = false; CQS = ''; CF = 'all'; NT = null; CE = null; ['#cm', '#nt'].forEach(x => Q(x).hidden = true); setView('kasir'); lockedNow = null; Q('#panel').hidden = true; Q('#lk').hidden = true; document.title = 'Kasir & Rekap Toko · ReyVion'; };
   setInterval(lockCheck, 10000);
   setInterval(() => { if (!Q('#panel').hidden && !modalOpen()) render(); }, 60000);   // ganti hari -> sisa durasi ikut berubah
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Auth.user() && !Q('#panel').hidden && !modalOpen()) load(); });
+  /* jembatan untuk kasir.js (modul kasir) */
+  window.TK = {get R() { return R; }, get P() { return P; }, get WT() { return WT; }, get LG() { return LG; }, get QCFG() { return QCFG; },
+    persist, remove, rp, fd, today, addD, uid, fill, waNum, shopName, buildDynamicQRIS, drawRoundRect, saveBlob, setView, tplOf, toast, RMS};
 })();

@@ -13,6 +13,19 @@ const Auth = (() => {
   const locked = k => !isPremium() && C.PREMIUM_TABS.includes(k);
   const fmtDate = t => new Date(t).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
   const left = () => !U ? '' : U.role == 'admin' ? 'Admin' : !isPremium() ? 'Gratis' : U.premiumUntil >= 4e12 ? 'Premium seumur hidup' : `Premium · ${Math.max(1, Math.ceil((U.premiumUntil - now()) / 864e5))} hari lagi`;
+  /* ---------- profil akun: foto, nama tampilan, bio, sampul, status (u.profile = JSON dari server) ---------- */
+  const COVERS = {pink: ['#ff7eb6', '#ffc2dc'], mint: ['#3fd9a0', '#b4f0d6'], ocean: ['#4a9bf0', '#b5d8fb'], lavender: ['#9a6cf2', '#d9c8fb'], sunset: ['#ff8a3d', '#ffd0a6'], gold: ['#d9ae2c', '#f3e3a2'], night: ['#2b2139', '#6a4c93']};
+  const profOf = u => { try { const o = JSON.parse((u && u.profile) || '{}'); return o && typeof o == 'object' ? o : {}; } catch (e) { return {}; } };
+  const coverCss = cv => { const c = COVERS[cv] || (/^#[0-9a-f]{6}$/i.test(cv || '') ? [cv, cv + 'aa'] : null); return c ? `linear-gradient(135deg,${c[0]},${c[1]})` : 'linear-gradient(135deg,var(--p),var(--p2))'; };
+  const dispName = u => profOf(u).dn || u.username;
+  const avatarSrc = u => { const a = profOf(u).av; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(a || '') ? a : ''; };
+  const avatar = (u, cls) => { const src = avatarSrc(u); return `<span class="av ${cls || ''}${src ? ' img' : ''}">${src ? `<img src="${src}" alt="">` : esc((dispName(u)[0] || '?').toUpperCase())}</span>`; };
+  function profCard(u, o) { // kartu profil: sampul warna + foto + nama + @username + status + bio
+    const f = profOf(u), prem = u.premium != null ? u.premium : (u.role == 'premium' && u.premiumUntil > now()), badge = u.role == 'admin' ? '<i class="pfb ad">Admin</i>' : prem ? '<i class="pfb pr">👑 Premium</i>' : '';
+    return `<div class="pfc${o && o.mini ? ' mini' : ''}"><div class="pfcv" style="background:${coverCss(f.cv)}"></div>${avatar(u, 'big pfav')}
+      <div class="pfn"><b>${esc(dispName(u))}</b>${badge}</div><small class="pfu">@${esc(u.username)}</small>
+      ${f.st ? `<span class="pfs">${esc(f.st)}</span>` : ''}${f.bio ? `<p class="pfbio">${esc(f.bio)}</p>` : ''}${f.ig ? `<small class="pfig">📸 @${esc(f.ig)}</small>` : ''}</div>`;
+  }
   function wa(text) {
     let n = String(CFG.waNumber || C.WA_NUMBER).replace(/\D/g, ''); if (n.startsWith('0')) n = '62' + n.slice(1);
     return `https://wa.me/${n}?text=${encodeURIComponent(text || CFG.waText || '')}`;
@@ -73,12 +86,13 @@ const Auth = (() => {
     <div class="mcred">${credits}</div>
   </div></div>
   <div class="mdl" id="acc" hidden><div class="mcard">
-    <button class="mx" data-close aria-label="Tutup">✕</button><div class="av big" id="accAv"></div><h3 id="accN"></h3><p id="accS" class="pill"></p><p id="accD" class="gsub"></p>
+    <button class="mx" data-close aria-label="Tutup">✕</button><div id="accPf"></div><p id="accS" class="pill"></p><p id="accD" class="gsub"></p>
     <button class="btn pri wide" data-plans type="button" id="accUp">👑 Lihat paket Premium</button>
     <a class="btn wide" id="accWa" target="_blank" rel="noopener"></a>
     <a class="btn wide" id="accTk" href="index.html">🧾 Kasir & Rekap Toko</a>
     <a class="btn wide" id="accWm" href="watermark.html">🎀 Watermark</a>
     <a class="btn wide" id="accAdm" href="admin.html" hidden>Buka Panel Admin</a>
+    <button class="btn wide" id="accEd" type="button">🪪 Edit profil</button>
     <div class="accrow"><button class="btn" id="accSet" type="button">⚙️ Pengaturan</button><button class="btn" id="accOut" type="button">Keluar</button></div>
     <div class="mcred">${credits}</div>
   </div></div>`);
@@ -117,7 +131,7 @@ const Auth = (() => {
   function paint() {
     const p = isPremium(), um = Q('#um');
     const ug = Q('#upg'); if (ug) { ug.hidden = !U; ug.classList.toggle('on', p); ug.querySelector('em').textContent = p ? 'Perpanjang' : 'Premium'; }
-    if (um) { um.hidden = !U; if (U) um.innerHTML = `<span class="av">${esc(U.username[0].toUpperCase())}</span>${p ? '<i class="pro">PRO</i>' : ''}`; }
+    if (um) { um.hidden = !U; if (U) um.innerHTML = `${avatar(U)}${p ? '<i class="pro">PRO</i>' : ''}`; }
     document.querySelectorAll('.sec').forEach(s => s.classList.toggle('lockd', locked(s.id.slice(2))));
     if (window.WM_THEME) WM_THEME.lockCustom(!p); // template tema gratis, warna atur sendiri khusus premium
     onTab();
@@ -193,7 +207,7 @@ const Auth = (() => {
   }
   function account() {
     const p = isPremium();
-    Q('#accAv').textContent = U.username[0].toUpperCase(); Q('#accN').textContent = U.username;
+    Q('#accPf').innerHTML = profCard(U);
     Q('#accS').textContent = left(); Q('#accS').classList.toggle('on', p);
     Q('#accD').textContent = U.role == 'premium' && p && U.premiumUntil < 4e12 ? `Aktif sampai ${fmtDate(U.premiumUntil)}` : U.expired ? `Premium habis sejak ${fmtDate(U.premiumUntil)}` : p ? 'Semua fitur terbuka' : 'Fitur dasar aktif';
     Q('#accUp').textContent = p ? '👑 Perpanjang premium' : '👑 Lihat paket Premium'; Q('#accUp').hidden = U.role == 'admin';
@@ -213,6 +227,10 @@ const Auth = (() => {
     if (!r.ok && /^(tpl|rec|acct)_/.test(action) && (r.code == 'unknown' || r.error == 'Member tidak ditemukan.' || r.error == 'Khusus admin.'))
       return {ok: false, code: 'outdated', error: 'Server belum diperbarui ke versi terbaru. Admin: tempel Code.gs terbaru di Apps Script lalu Deploy → Manage deployments → Edit → New version.'};
     return r;
+  }
+  async function saveProfile(o) { // simpan profil: {dn, bio, st, cv, av, ig}
+    const r = await call('acct_profile', {data: JSON.stringify(o)});
+    if (r.ok && r.user) setUser(r.user, r); return r;
   }
   async function updateAccount(d) { // ganti nama dan/atau password (wajib password lama)
     const old = U ? U.username : '';
@@ -266,5 +284,5 @@ const Auth = (() => {
   setInterval(refresh, 5 * 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
   window.addEventListener('load', check);
-  return {isPremium, isAdmin, locked, onTab, upsell, call, updateAccount, plans, user: () => U, fmtDate, wa, now, logout, esc, get cfg() { return CFG; }};
+  return {isPremium, isAdmin, locked, onTab, upsell, call, updateAccount, saveProfile, profOf, profCard, avatar, dispName, COVERS, plans, user: () => U, fmtDate, wa, now, logout, esc, get cfg() { return CFG; }};
 })();

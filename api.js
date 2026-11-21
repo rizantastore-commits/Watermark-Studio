@@ -24,7 +24,7 @@ window.WM_API = (() => {
   const pub = (u, n) => ({
     username: u.username, premium: prem(u, n), role: u.role === 'premium' && !prem(u, n) ? 'free' : u.role,
     premiumUntil: u.premiumUntil || 0, expired: u.role !== 'admin' && !prem(u, n) && u.premiumUntil > 0,
-    status: u.status, createdAt: u.createdAt, lastLogin: u.lastLogin, note: u.note || '', theme: u.theme || ''
+    status: u.status, createdAt: u.createdAt, lastLogin: u.lastLogin, note: u.note || '', theme: u.theme || '', profile: u.profile || ''
   });
   const cfgOf = () => ({waNumber: C.WA_NUMBER, waText: C.WA_TEXT, registerOpen: true});
   const tok = () => Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
@@ -73,6 +73,14 @@ window.WM_API = (() => {
       let o; try { o = JSON.parse(r.data); } catch (e) { return ER('Data tema tidak valid.'); }
       if (!o || typeof o.p != 'string' || typeof o.f != 'string') return ER('Data tema tidak valid.');
       a.theme = JSON.stringify({p: o.p, c: o.p == 'custom' ? o.c : null, f: o.f}); store(d); return OK();
+    }
+    if (act == 'acct_profile') {
+      let o; try { o = JSON.parse(r.data); } catch (e) { return ER('Data profil tidak valid.'); }
+      if (!o || typeof o != 'object') return ER('Data profil tidak valid.');
+      const av = String(o.av || ''); if (av && (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(av) || av.length > 9000)) return ER('Foto profil tidak valid atau terlalu besar.');
+      const cl = s => String(s || '').replace(/[<>]/g, '').trim();
+      a.profile = JSON.stringify({dn: cl(o.dn).slice(0, 30), bio: cl(o.bio).slice(0, 120), st: cl(o.st).slice(0, 24), cv: /^(#[0-9a-f]{6}|[a-z]{1,12})$/i.test(o.cv || '') ? o.cv : '', av, ig: String(o.ig || '').replace(/[^A-Za-z0-9_.]/g, '').slice(0, 30)});
+      store(d); return OK({user: pub(a, n)});
     }
     if (act == 'acct_update') {
       if (a.pass !== r.password) return ER('Password saat ini salah.', 'wrongpass');

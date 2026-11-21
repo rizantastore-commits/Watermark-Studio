@@ -86,7 +86,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--p)!important;box-shad
 #up,#plans{z-index:130} /* jendela unlock tampil di atas jendela pengaturan */
 
 /* ===== Header: di HP hanya logo + judul (+ undo/redo) + tombol ☰; sisanya masuk menu ===== */
-.top,.atop{position:relative;z-index:30}
+.top,.atop{position:relative;z-index:45} /* harus di atas tab kasir sticky (#vt = 30) supaya menu ☰ tidak tertutup */
 .hmenu{display:contents}
 .hbm{display:none}
 @media(max-width:640px){
@@ -186,3 +186,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--p)!important;box-shad
 .tokopg .row2{align-items:end}
 @media(max-width:640px){.tokopg .row2:has(#qrFeeType){grid-template-columns:1fr}}
 .tokopg .tk-line .btn{justify-self:end;width:auto;min-width:64px}
+
+/* edit profil (tab Profil di Pengaturan) */
+.pfed{display:grid;gap:10px}
+.pfed .ks-ch{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pfed .ks-ch button{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--panel,#fff);color:var(--ink);font:700 13px Nunito,sans-serif;cursor:pointer;text-transform:capitalize}
+.pfed .ks-ch button.on{background:var(--pd);border-color:var(--pd);color:#fff}
+.pfed .ks-ch button i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1.5px solid rgba(255,255,255,.8)}
+.pfed .ks-ch input[type=color]{width:44px;height:34px;padding:2px;border-radius:12px;border:2px solid var(--line);background:var(--panel,#fff);cursor:pointer}
