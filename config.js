@@ -31,7 +31,8 @@ window.WM_CONFIG = {
     ['Frame testimoni & bingkai upload', false, true],
     ['Filter foto & Maskot', false, true],
     ['Template tersimpan di akun (sync device)', false, true],
-    ['Kasir: rekap, produk & stok, laporan, refund, pengingat', false, true]
+    ['Kasir: rekap, produk & stok, laporan, refund, pengingat', false, true],
+    ['Nota PNG, template WA sendiri, catatan klaim & garansi', false, true]
   ],
 
   // Kasir & Rekap Toko (index.html). Data tersimpan per akun di sheet "Records".
@@ -39,8 +40,14 @@ window.WM_CONFIG = {
     PREMIUM_ONLY: true,            // true = khusus premium/admin. Samakan dengan STORE_PREMIUM_ONLY di Code.gs
     REMIND_DAYS: [1, 3, 7],        // pilihan pengingat H-1, H-3, H-7
     DURATIONS: [7, 14, 30, 60, 90, 180, 365],
-    // {nama} {app} {status} otomatis terisi saat klik tombol WA ke pembeli
-    WA_REMIND: 'Halo kak {nama}, {app} kakak {status}. Mau diperpanjang kak? 😊'
+    // Template bawaan pesan WA. Tiap member bisa mengubahnya sendiri di Kasir → Lainnya → Pesan & Nota
+    // (tersimpan di akun masing-masing). Teks di bawah dipakai kalau member belum mengatur sendiri.
+    // Kode yang bisa dipakai: {nama} {app} {status} {tgl} {sisa} {harga} {toko} {email} ({akun} khusus balasan klaim)
+    WA_REMIND: 'Halo kak {nama}, {app} kakak {status}. Mau diperpanjang kak? 😊',
+    WA_NOTA: 'Halo kak {nama}, ini nota pembelian {app} kakak ya 🧾 Aktif sampai {tgl}. Terima kasih sudah belanja di {toko} 💖',
+    WA_CLAIM: 'Halo kak {nama}, kendala {app} kakak sudah kami tangani ya. {akun} Terima kasih sudah sabar menunggu 🙏',
+    NOTA_FOOT: 'Terima kasih sudah belanja 💖 Simpan nota ini sebagai bukti pembelian & garansi.',
+    CLAIM_FLAG: 3                  // pembeli dengan klaim sebanyak ini (atau lebih) diberi tanda 🚩 "sering komplain"
   },
 
   // Tab yang dikunci untuk akun gratis (id tab di script.js)
@@ -54,6 +61,7 @@ window.WM_CONFIG = {
     'Banyak foto sekaligus + Download ZIP',
     'Atur warna tema sendiri (custom)',
     'Simpan template sendiri & template premium',
-    'Kasir & rekap toko: produk & stok, laporan laba, refund, pengingat perpanjangan, backup data'
+    'Kasir & rekap toko: produk & stok, laporan laba, refund, pengingat perpanjangan, backup data',
+    'Nota PNG siap kirim, template pesan WA per akun, catatan klaim & ganti akun'
   ]
 };

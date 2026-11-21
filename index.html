@@ -12,6 +12,8 @@
 <link rel="stylesheet" href="admin.css">
 <link rel="stylesheet" href="toko.css">
 <link rel="stylesheet" href="theme.css">
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script src="theme.js"></script>
 </head>
 <body class="gated adminpg tokopg">
@@ -43,6 +45,10 @@
       <div class="pv-f"><i>📦</i><b>Produk &amp; stok</b><span>Isi produk sekali: modal, paket harga, stok. Saat menjual tinggal pilih produknya, harga terisi otomatis dan stok berkurang sendiri. Ada peringatan stok menipis.</span></div>
       <div class="pv-f"><i>📊</i><b>Laporan &amp; tren</b><span>Omzet, modal, pengeluaran, dan laba bersih tiap bulan, plus produk terlaris dan grafik tren 6 bulan. Bisa diunduh ke CSV atau disalin sebagai ringkasan.</span></div>
       <div class="pv-f"><i>💸</i><b>Hitung refund otomatis</b><span>Harga ÷ durasi × sisa hari − potongan admin. Mendukung garansi refund penuh, lalu rinciannya bisa disalin untuk dikirim ke pembeli.</span></div>
+      <div class="pv-f"><i>📲</i><b>QRIS Dinamis Otomatis</b><span>Upload QRIS statis tokomu sekali (tersimpan aman di akun), masukkan nominal, langsung jadi gambar QRIS siap salin &amp; kirim ke pembeli.</span></div>
+      <div class="pv-f"><i>🧾</i><b>Nota PNG siap kirim</b><span>Satu klik jadi gambar nota rapi berisi nama toko, produk, durasi, tanggal berakhir, dan harga. Tinggal kirim ke WhatsApp pembeli.</span></div>
+      <div class="pv-f"><i>💬</i><b>Template WA sendiri</b><span>Gaya bahasa pesan pengingat, nota, dan balasan klaim diatur per akun, jadi tiap member punya gaya sendiri tanpa upload ulang.</span></div>
+      <div class="pv-f"><i>🛡️</i><b>Catatan klaim &amp; garansi</b><span>Riwayat komplain, klaim garansi, dan ganti akun per pembeli. Pembeli yang sering komplain otomatis ditandai.</span></div>
       <div class="pv-f"><i>👥</i><b>Pelanggan &amp; backup</b><span>Lihat pembeli paling royal, daftar akun jatuh tempo, duplikat catatan, urutkan sesuka hati, dan backup/pulihkan semua data ke file JSON.</span></div>
     </div>
 
@@ -111,16 +117,16 @@
 
   <main id="panel" hidden>
     <div class="tk-err" id="tkErr" hidden></div>
+    <nav class="seg tk-seg" id="vt" aria-label="Menu kasir">
+      <button type="button" data-v="rekap" class="on"><span class="ic">📒</span><span class="lb">Rekap</span></button>
+      <button type="button" data-v="prod"><span class="ic">📦</span><span class="lb">Produk</span></button>
+      <button type="button" data-v="lap"><span class="ic">📊</span><span class="lb">Laporan</span></button>
+      <button type="button" data-v="klaim"><span class="ic">🛡️</span><span class="lb">Klaim</span><i class="tk-dot" id="klDot" hidden></i></button>
+      <button type="button" data-v="more"><span class="ic">☰</span><span class="lb">Lainnya</span></button>
+    </nav>
     <div class="tk-rm" id="remind" hidden></div>
     <div class="stats" id="stats"></div>
     <div class="tk-rm tk-low" id="lowstk" hidden></div>
-    <div class="seg tk-seg" id="vt">
-      <button type="button" data-v="rekap" class="on"><span class="ic">📒</span> Rekap</button>
-      <button type="button" data-v="prod"><span class="ic">📦</span> Produk</button>
-      <button type="button" data-v="lap"><span class="ic">📊</span> Laporan</button>
-      <button type="button" data-v="refund"><span class="ic">💸</span> Refund</button>
-      <button type="button" data-v="alat"><span class="ic">🧰</span> Alat</button>
-    </div>
 
     <section id="v-rekap">
       <div class="tools">
@@ -161,6 +167,7 @@
     </section>
 
     <section id="v-refund" hidden>
+      <button class="btn tk-bk" data-v="more" type="button">← Lainnya</button>
       <div class="tk-card">
         <h3>Hitung Refund</h3>
         <small>Refund = harga ÷ durasi × sisa hari − potongan admin</small>
@@ -174,7 +181,7 @@
           <label class="f"><span>Tgl refund</span><input type="date" id="rfT"></label>
         </div>
         <div class="row2">
-          <label class="f"><span>Hari terpakai (otomatis)</span><input type="number" id="rfU" inputmode="numeric" min="0" placeholder="dihitung dari tanggal"></label>
+          <label class="f"><span>Hari terpakai (otomatis)</span><input type="number" id="rfU" inputmode="numeric" min="0" placeholder="otomatis"></label>
           <label class="f"><span>Garansi refund penuh (hari)</span><input type="number" id="rfG" inputmode="numeric" min="0" placeholder="0 = tidak ada"></label>
         </div>
         <div class="row2">
@@ -190,7 +197,139 @@
       </div>
     </section>
 
+    <section id="v-qris" hidden>
+      <button class="btn tk-bk" data-v="more" type="button">← Lainnya</button>
+      <div class="tk-card wide">
+        <div class="tk-h">
+          <h3>📲 QRIS Dinamis Otomatis</h3>
+          <span class="badge ok" id="qrStatus">Belum diatur</span>
+        </div>
+        <small>Ubah QRIS statis tokomu menjadi QRIS dinamis sesuai nominal tagihan. Tersimpan otomatis di akunmu (tidak tercampur dengan member lain).</small>
+
+        <div id="qrSetupBox" class="qr-setup">
+          <div class="row2">
+            <label class="btn pri" style="cursor:pointer;justify-content:center">
+              <span>📷 Upload Gambar QRIS</span>
+              <input type="file" id="qrFile" accept="image/*" hidden>
+            </label>
+            <button class="btn" id="qrManualBtn" type="button">⌨️ Tempel Kode QRIS</button>
+          </div>
+          <div id="qrManualWrap" hidden style="margin-top:8px">
+            <label class="f"><span>String / Payload QRIS (000201...)</span><input type="text" id="qrRawIn" placeholder="Tempel hasil scan teks QRIS di sini…"></label>
+            <div class="row2" style="margin-top:8px">
+              <button class="btn pri" id="qrRawSave" type="button">Simpan QRIS</button>
+              <button class="btn" id="qrRawCancel" type="button">Batal</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="qrSavedBar" class="prev qr-bar" hidden>
+          <div>
+            <b id="qrMerchName">Merchant QRIS</b>
+            <small id="qrMerchCity" style="display:block">Siap digunakan</small>
+          </div>
+          <div class="qr-bar-acts">
+            <label class="btn" style="cursor:pointer" title="Ganti gambar QRIS">🔄 Ganti<input type="file" id="qrFile2" accept="image/*" hidden></label>
+            <button class="btn danger" id="qrDelCfg" type="button" title="Hapus QRIS dari akun">🗑️</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tk-two" id="qrWork" hidden>
+        <div class="tk-card wide">
+          <h3>💰 Nominal Tagihan</h3>
+          <div class="row2">
+            <label class="f"><span>Nominal (Rp)</span><input type="number" id="qrAmt" inputmode="numeric" min="1" placeholder="mis. 35000"></label>
+            <label class="f"><span>Keterangan / Pembeli (opsional)</span><input type="text" id="qrNote" maxlength="50" placeholder="mis. Netflix 1 Bln - Budi"></label>
+          </div>
+          <div class="chips" id="qrQuick">
+            <button type="button" data-qramt="5000">5rb</button>
+            <button type="button" data-qramt="10000">10rb</button>
+            <button type="button" data-qramt="15000">15rb</button>
+            <button type="button" data-qramt="20000">20rb</button>
+            <button type="button" data-qramt="25000">25rb</button>
+            <button type="button" data-qramt="35000">35rb</button>
+            <button type="button" data-qramt="50000">50rb</button>
+            <button type="button" data-qramt="100000">100rb</button>
+          </div>
+          <div class="row2">
+            <label class="f"><span>Biaya Admin / Layanan</span><select id="qrFeeType"><option value="none">Tanpa biaya tambahan</option><option value="rp">Tambah nominal (Rp)</option><option value="pct">Tambah persen (%)</option></select></label>
+            <label class="f"><span>Nilai biaya</span><input type="number" id="qrFeeVal" inputmode="numeric" min="0" placeholder="0"></label>
+          </div>
+          <div class="tk-out" id="qrCalcOut"></div>
+          <div class="row2">
+            <button class="btn pri" id="qrGenBtn" type="button">✨ Buat Gambar QR</button>
+            <button class="btn" id="qrSavePreset" type="button">⭐ Simpan Preset</button>
+          </div>
+        </div>
+
+        <div class="tk-card wide qr-prev-card">
+          <h3>🖼️ Hasil Gambar QRIS</h3>
+          <div class="qr-canvas-wrap">
+            <canvas id="qrCanvas" width="540" height="680"></canvas>
+          </div>
+          <div class="row2">
+            <button class="btn pri" id="qrCopyImg" type="button">📋 Salin Gambar</button>
+            <button class="btn" id="qrDlImg" type="button">⬇ Unduh PNG</button>
+          </div>
+          <small style="text-align:center">Klik <b>Salin Gambar</b> lalu langsung <b>Paste (Ctrl+V / Tempel)</b> di chat WhatsApp pembeli!</small>
+        </div>
+      </div>
+
+      <div class="tk-card wide" id="qrPresetsCard" hidden>
+        <h3>⭐ Preset Nominal Cepat</h3>
+        <small>Klik preset untuk langsung membuat gambar QRIS tanpa ketik ulang.</small>
+        <div id="qrPresetList" class="tk-list"></div>
+      </div>
+    </section>
+
+    <section id="v-klaim" hidden>
+      <div class="stats" id="klStats"></div>
+      <div class="tools">
+        <input type="search" id="cq" placeholder="Cari pembeli, aplikasi, masalah…" aria-label="Cari klaim">
+        <button class="btn pri" id="addc" type="button">+ Klaim</button>
+      </div>
+      <div class="chips" id="cflt"></div>
+      <div id="clist" class="tk-list"></div>
+      <div class="tk-card wide"><h3>🚩 Pembeli yang sering klaim</h3><small>Pembeli dengan 2 klaim atau lebih. Ditandai merah kalau sudah mencapai batas di <code>CLAIM_FLAG</code>.</small><div id="cTop"></div></div>
+    </section>
+
+    <section id="v-more" hidden>
+      <div class="tk-hub">
+        <button type="button" class="tk-tile" data-v="refund"><i>💸</i><b>Hitung Refund</b><span>Sisa hari, potongan admin, garansi penuh</span></button>
+        <button type="button" class="tk-tile" data-v="qris"><i>📲</i><b>QRIS Dinamis</b><span id="hubQr">Gambar QRIS sesuai nominal tagihan</span></button>
+        <button type="button" class="tk-tile" data-v="pesan"><i>💬</i><b>Pesan &amp; Nota</b><span>Template WA per akun, nama toko, teks nota</span></button>
+        <button type="button" class="tk-tile" data-v="alat"><i>🧰</i><b>Pelanggan &amp; Backup</b><span>Pembeli teratas, jatuh tempo, backup data</span></button>
+      </div>
+    </section>
+
+    <section id="v-pesan" hidden>
+      <button class="btn tk-bk" data-v="more" type="button">← Lainnya</button>
+      <div class="tk-card wide">
+        <h3>🏪 Identitas toko</h3>
+        <small>Dipakai di header nota dan kode <b>{toko}</b> pada template pesan.</small>
+        <label class="f"><span>Nama toko</span><input type="text" id="wpShop" maxlength="40" placeholder="mis. Rizanta Store"></label>
+        <label class="f"><span>Teks di bawah nota</span><input type="text" id="wpFoot" maxlength="140"></label>
+      </div>
+      <div class="tk-card wide">
+        <h3>💬 Template pesan WhatsApp</h3>
+        <small>Tersimpan di akunmu, tiap member bisa punya gaya bahasa sendiri tanpa upload ulang. Ketuk kode untuk menyisipkannya ke kotak yang sedang aktif.</small>
+        <div class="chips tk-vars" id="wpVars"></div>
+        <label class="f"><span>🔔 Pengingat perpanjangan</span><textarea id="wpRemind" rows="3" maxlength="400"></textarea></label>
+        <div class="prev tk-pv" id="wpRemindPv"></div>
+        <label class="f"><span>🧾 Caption saat kirim nota</span><textarea id="wpNota" rows="3" maxlength="400"></textarea></label>
+        <div class="prev tk-pv" id="wpNotaPv"></div>
+        <label class="f"><span>🛡️ Balasan klaim / ganti akun</span><textarea id="wpClaim" rows="3" maxlength="400"></textarea></label>
+        <div class="prev tk-pv" id="wpClaimPv"></div>
+        <div class="row2">
+          <button class="btn pri" id="wpSave" type="button">Simpan pengaturan</button>
+          <button class="btn" id="wpReset" type="button">Kembalikan bawaan</button>
+        </div>
+      </div>
+    </section>
+
     <section id="v-alat" hidden>
+      <button class="btn tk-bk" data-v="more" type="button">← Lainnya</button>
       <div class="tk-card wide"><h3>👥 Pelanggan teratas</h3><small>Diurutkan dari total belanja (sudah dikurangi refund).</small><div id="alCust"></div></div>
       <div class="tk-card wide"><h3>⏰ Jatuh tempo 7 hari ke depan</h3><div id="alDue"></div><button class="btn" id="dueCopy" type="button">📋 Salin daftar</button></div>
       <div class="tk-card wide"><h3>💾 Backup &amp; pulihkan</h3><small>Unduh semua catatan (penjualan, produk, pengeluaran) ke satu file JSON. Simpan di tempat aman, lalu pulihkan kapan saja. Maksimal 500 catatan sekali pulihkan.</small>
@@ -208,6 +347,8 @@
 <div class="mdl" id="rn" hidden><div class="mcard ed"></div></div>
 <div class="mdl" id="pm" hidden><div class="mcard ed"></div></div>
 <div class="mdl" id="xm" hidden><div class="mcard ed"></div></div>
+<div class="mdl" id="cm" hidden><div class="mcard ed"></div></div>
+<div class="mdl" id="nt" hidden><div class="mcard ed"></div></div>
 <script src="config.js"></script>
 <script src="api.js"></script>
 <script>window.WM_PAGE = 'toko';</script>

@@ -105,7 +105,7 @@
 .pv-cta button{height:38px;padding:0 16px;border:0;border-radius:99px;background:#fff;color:var(--pd);font:700 14px Fredoka,sans-serif;cursor:pointer;flex:none}
 
 /* ===== v10: fitur baru kasir ===== */
-#vt{grid-template-columns:repeat(5,1fr);max-width:760px}
+#vt{grid-template-columns:repeat(6,1fr);max-width:860px}
 #vt button{font-size:13px}
 #dvt{grid-template-columns:repeat(4,1fr)}
 #v-alat{display:grid;gap:12px}
@@ -135,3 +135,54 @@
 
 /* HP kecil (≤360px): tab kasir jadi 3 kolom supaya tidak melebar */
 @media(max-width:360px){#vt,#dvt,.tk-seg{grid-template-columns:repeat(3,minmax(0,1fr))}.tk-seg button{padding:0 2px}}
+
+/* ===== v11: QRIS Dinamis per Akun ===== */
+#v-qris{display:grid;gap:12px}
+#v-qris[hidden]{display:none}
+.qr-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.qr-bar-acts{display:flex;gap:6px;align-items:center}
+.qr-bar-acts .btn{height:36px;padding:0 12px;font-size:13px}
+.qr-prev-card{justify-items:center}
+.qr-prev-card h3,.qr-prev-card .row2{width:100%}
+.qr-canvas-wrap{position:relative;width:100%;max-width:290px;margin:0 auto;border-radius:22px;overflow:hidden;box-shadow:0 8px 24px -8px rgba(90,42,71,.25);border:2px solid var(--line);background:#fff}
+.qr-canvas-wrap canvas{position:static!important;inset:auto!important;display:block!important;width:100%!important;height:auto!important;max-width:100%!important;filter:none!important;object-fit:contain}
+@media(max-width:640px){#vt{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.qr-canvas-wrap{max-width:260px}}
+
+/* ===== v16: navigasi lebih rapi, nota PNG, template pesan, klaim ===== */
+#vt{grid-template-columns:repeat(5,minmax(0,1fr));max-width:none;position:sticky;top:8px;z-index:30;gap:4px;padding:5px;background:var(--solid);box-shadow:0 10px 20px -12px rgba(90,42,71,.5)}
+#vt button{position:relative;display:grid;justify-items:center;align-content:center;gap:1px;height:auto;min-height:52px;padding:6px 2px;font-size:12.5px;line-height:1.15}
+#vt .ic{font-size:20px;line-height:1}
+.tk-dot{position:absolute;top:6px;left:calc(50% + 8px);width:10px;height:10px;border-radius:50%;background:#e0407f;border:2px solid var(--solid)}
+#vt button.on .tk-dot{background:#fff;border-color:var(--p)}
+#v-klaim,#v-more,#v-pesan{display:grid;gap:12px}
+.tk-bk{justify-self:start;height:38px;padding:0 14px;font-size:13px}
+.tk-hub{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tk-tile{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;align-items:center;text-align:left;padding:16px;background:var(--panel);border:2.5px solid var(--line);border-radius:24px;box-shadow:var(--chunk);cursor:pointer;color:var(--ink);font:inherit;transition:transform .15s,box-shadow .15s}
+.tk-tile:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--line)}
+.tk-tile:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.tk-tile i{grid-row:1/3;font-style:normal;font-size:32px;line-height:1}
+.tk-tile b{font:600 17px Fredoka,sans-serif;color:var(--pd)}
+.tk-tile span{font-size:12px;line-height:1.4;color:var(--mut);font-weight:700}
+
+/* kartu penjualan: 3 aksi utama + tombol ⋯ untuk sisanya */
+.tk-act .tk-mb{flex:0 0 46px;padding:0;font-size:18px;line-height:1}
+.tk-rec .tk-sec{display:none;padding-top:8px;border-top:2px dashed var(--line)}
+.tk-rec.mo .tk-sec{display:flex}
+.tk-rec.mo .tk-mb{background:var(--soft)}
+.tk-sec .btn{background:var(--soft)}
+.badge.cl{background:#ffe9b8;color:#7a5200;margin-left:4px}
+.badge.cl.hot{background:#ffd1d1;color:#a11}
+
+/* klaim */
+.tk-note{padding:8px 12px;border-radius:14px;background:var(--soft);font-size:13px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
+.tk-wrap b{overflow-wrap:anywhere;font-size:13px}
+.tokopg textarea{resize:vertical;min-height:72px;line-height:1.4;font-family:Nunito,sans-serif}
+
+/* nota & pesan */
+.nt-wrap{max-width:340px}
+.tk-ckrow{display:flex;flex-wrap:wrap;gap:6px 16px}
+.tk-vars button{height:30px;padding:0 10px;font:800 12.5px ui-monospace,Menlo,monospace}
+.tk-pv{font-size:12.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:-4px;font-weight:700}
+.tk-card code{padding:0 6px;border-radius:8px;background:var(--soft);font-size:.9em}
+.tk-hint{display:block}
+@media(max-width:400px){#vt button{font-size:11.5px}#vt .ic{font-size:18px}.tk-hub{grid-template-columns:1fr}}

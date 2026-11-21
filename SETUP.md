@@ -85,3 +85,24 @@ Tidak ada perubahan di `Code.gs`, jadi **tidak perlu deploy ulang Apps Script**.
 - **Akun**: ganti nama pengguna dan/atau password. **Password saat ini wajib diisi** untuk setiap perubahan. Salah 5x → dikunci 5 menit. Ganti nama otomatis memindahkan rekap, produk, dan template ke nama baru (sheet `Records` dan `Templates`). Ganti password membuat perangkat lain otomatis keluar, perangkat yang dipakai tetap masuk.
 
 Perbaikan tampilan HP kecil (≤360px): halaman Admin dan Kasir tidak lagi bisa digeser ke samping.
+
+
+## Update v16 (nota PNG, template WA per member, catatan klaim, kasir dirapikan)
+**Tidak perlu deploy ulang Apps Script** (Code.gs tidak berubah). Semua data baru disimpan di sheet `Records` yang sudah ada. Upload file ini ke hosting (timpa yang lama): `index.html`, `toko.js`, `toko.css`, `theme.css`, `config.js`.
+
+**Tampilan kasir dirapikan**
+- Menu atas jadi 5 tab tetap (menempel di atas saat scroll): Rekap, Produk, Laporan, Klaim, Lainnya. Refund, QRIS, Pesan & Nota, serta Pelanggan & Backup dipindah ke tab **Lainnya** (ada tombol "← Lainnya" untuk kembali).
+- Ringkasan angka dan banner pengingat hanya tampil di Rekap, tidak lagi memenuhi halaman lain.
+- Kartu penjualan: 3 aksi utama (Perpanjang, WA, Nota) + tombol ⋯ untuk QR, Klaim, Refund, Duplikat, Edit.
+
+**1. Nota PNG**: tombol **🧾 Nota** di tiap kartu. Isinya nama toko, produk, durasi, tanggal mulai & berakhir, harga, status lunas, dan teks bawah. Di HP tombol kirim membuka pilihan aplikasi dengan gambar terlampir; di komputer gambar disalin lalu tinggal Paste di chat WA. Email akun dan catatan bisa disembunyikan lewat centang.
+
+**2. Template WA per member**: Lainnya → **Pesan & Nota**. Tiap akun mengatur sendiri template pengingat, caption nota, dan balasan klaim, plus nama toko dan teks bawah nota. Kode yang bisa dipakai: `{nama} {app} {status} {tgl} {sisa} {harga} {toko} {email}` (`{akun}` khusus balasan klaim). Ada pratinjau langsung. Teks di `config.js` (`WA_REMIND`, `WA_NOTA`, `WA_CLAIM`, `NOTA_FOOT`) sekarang jadi bawaan untuk member yang belum mengatur sendiri.
+
+**3. Catatan klaim & garansi**: tab **Klaim**. Catat komplain, klaim garansi, atau ganti akun per pembeli (status Baru / Diproses / Selesai, akun lama → baru; email di catatan penjualan bisa ikut diperbarui). Pembeli yang punya klaim tampil dengan lencana di kartu & daftar pelanggan, dan 🚩 merah kalau mencapai `STORE.CLAIM_FLAG` (bawaan 3). Backup/pulihkan sekarang ikut membawa klaim, template, dan QRIS.
+
+
+## Update v17 (watermark: logo & maskot bisa digeser, posisi tengah pas di frame)
+Tidak ada perubahan di `Code.gs`. Upload `script.js` saja (timpa yang lama).
+- **Logo dan maskot bisa digeser langsung** di preview pakai mouse atau jari. Posisinya tidak melompat ke pointer (titik pegangnya tetap), dan muncul garis bantu pink saat tepat di tengah (otomatis menempel). Tombol **Pusatkan logo / maskot** ada di tab masing-masing. Memilih salah satu dari 9 posisi preset akan mengembalikan logo ke mode preset.
+- **Posisi tengah mengikuti foto saat pakai frame.** Teks, badge, logo, maskot, dan watermark Penuh sekarang mengacu ke area foto testimoni, jadi "tengah" benar-benar di tengah foto, bukan tengah kanvas (yang bergeser karena ada judul dan nama di frame). Kalau mau seperti dulu, pilih **Acuan posisi → Seluruh gambar** di tab Logo atau Maskot.

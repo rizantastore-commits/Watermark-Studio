@@ -27,7 +27,8 @@ const DEF = {
   text:  {on:true, value:'ReyVion', font:'Fredoka', pos:'br', size:6, color:'#ffffff', opacity:80, rot:0, shadow:true, stroke:false, strokeColor:'#000000'},
   badge: {on:false, value:'PROMO 50%', pos:'tr', size:7, bg:'#ff5fa2', color:'#ffffff', rot:0, opacity:100},
   tile:  {on:false, value:'ReyVion', font:'Fredoka', cols:3, rows:5, size:5, spread:100, rot:-30, ox:0, oy:0, color:'#ffffff', opacity:30, stagger:true},
-  logo:  {on:false, src:'', pos:'tl', size:16, opacity:90},
+  logo:  {on:false, src:'', pos:'tl', size:16, opacity:90, x:null, y:null},
+  anc:   {mode:'photo'},
   frame: {on:false, layout:'polaroid', theme:'pink', shape:'rect', size:'4:5', deco:'dots', title:'TESTIMONI', name:'Kak Rina',
           review:'Admin ramah, proses cepat, akun langsung aktif. Recommended banget!', stars:5, font:'Fredoka', accent:'#ff7eb6',
           border:10, card:true, zoom:100, px:0, py:0, fit:'cover'},
@@ -64,7 +65,7 @@ const PRE = [
 
 let CF = {}, pickMode = false, pu = 0;
 const FP = [['Asli',{}],['Hitam putih',{gray:100}],['Sepia',{sepia:70}],['Cerah',{bright:112,contrast:108,sat:125}],['Dramatis',{contrast:140,sat:115,bright:94}],['Lembut',{bright:108,contrast:90,sat:95}]];
-let S = clone(DEF), I = {}, PID = 0, PIDN = 0, ITEMS = [], CUR = -1, UID = 0, busy = false, pend = null, FC = {}, HS = [], HI = -1, ht = 0, TP = [], still = false, WIN = null, drag = 0, lx = 0, ly = 0;
+let S = clone(DEF), I = {}, PID = 0, PIDN = 0, ITEMS = [], CUR = -1, UID = 0, busy = false, pend = null, FC = {}, HS = [], HI = -1, ht = 0, TP = [], still = false, WIN = null, drag = 0, lx = 0, ly = 0, off = [0, 0], HIT = {logo: null, mas: null}, GUIDE = {x: false, y: false};
 const get = p => p.split('.').reduce((o, k) => o[k], S);
 const set = (p, v) => { const a = p.split('.'), l = a.pop(); a.reduce((o, k) => o[k], S)[l] = v; };
 const merge = (t, s) => { for (const k in s) s[k] && typeof s[k] == 'object' ? merge(t[k] = t[k] || {}, s[k]) : t[k] = s[k]; };
@@ -91,15 +92,15 @@ const TABS = [
     H('Isi teks sekaligus'), '<small>Satu baris = satu testi, urut sesuai daftar. Format: <b>Nama | Isi testimoni</b></small>',
     '<label class="f"><textarea rows="5" id="bulk" placeholder="Kak Rina | Admin ramah, akun langsung aktif!&#10;Kak Dito | Fast respon, recommended banget"></textarea></label>', B('bulkGo', 'wand', 'Terapkan ke daftar'),
     H('Simpan semua hasil'), B('zipAll', 'download', 'Download semua (ZIP)', 'pri'), B('eachAll', 'download', 'Download satu-satu'), B('shAll', 'share', 'Bagikan semua')]],
-  ['text', 'Teks', 'type', [C('text.on', 'Aktifkan watermark teks'), T('text.value', 'Nama watermark'), FS('text.font', 'Font'), H('Posisi'), pos('text.pos'),
+  ['text', 'Teks', 'type', [C('text.on', 'Aktifkan watermark teks'), T('text.value', 'Nama watermark'), FS('text.font', 'Font'), H('Posisi'), pos('text.pos'), chips('anc.mode', [['photo', 'Ikut foto (tengah pas)'], ['all', 'Seluruh gambar']]),
     R('text.size', 'Ukuran', 1, 30), K('text.color', 'Warna'), R('text.opacity', 'Opacity (transparan sampai pekat)', 5, 100), R('text.rot', 'Rotasi', -90, 90), C('text.shadow', 'Bayangan teks'), C('text.stroke', 'Garis tepi teks'), K('text.strokeColor', 'Warna garis tepi')]],
-  ['badge', 'Badge', 'tag', [C('badge.on', 'Tampilkan badge promo / harga'), T('badge.value', 'Teks badge (mis. Rp15.000)'), H('Posisi'), pos('badge.pos'),
+  ['badge', 'Badge', 'tag', [C('badge.on', 'Tampilkan badge promo / harga'), T('badge.value', 'Teks badge (mis. Rp15.000)'), H('Posisi'), pos('badge.pos'), chips('anc.mode', [['photo', 'Ikut foto (tengah pas)'], ['all', 'Seluruh gambar']]),
     R('badge.size', 'Ukuran', 2, 20), K('badge.bg', 'Warna badge'), K('badge.color', 'Warna teks'), R('badge.rot', 'Rotasi', -45, 45), R('badge.opacity', 'Opacity', 20, 100)]],
   ['tile', 'Penuh', 'grid', [C('tile.on', 'Aktifkan watermark memenuhi foto'), T('tile.value', 'Tulisan'), FS('tile.font', 'Font'), R('tile.cols', 'Jumlah per baris', 1, 8), R('tile.rows', 'Jumlah baris', 1, 12),
     R('tile.size', 'Ukuran', 1, 15), R('tile.spread', 'Jarak', 40, 160), R('tile.rot', 'Rotasi', -90, 90), R('tile.ox', 'Geser kiri / kanan', -50, 50), R('tile.oy', 'Geser atas / bawah', -50, 50),
     K('tile.color', 'Warna'), R('tile.opacity', 'Opacity', 5, 100), C('tile.stagger', 'Susun selang-seling')]],
   ['logo', 'Logo', 'image', [C('logo.on', 'Tampilkan logo / gambar'), FB('fLogo', 'upload', 'Upload logo store'), '<small>Logo tersimpan otomatis di browser dan langsung terpasang di sesi berikutnya.</small>',
-    H('Posisi'), pos('logo.pos'), R('logo.size', 'Ukuran', 3, 90), R('logo.opacity', 'Opacity', 5, 100), B('xLogo', 'trash', 'Hapus logo')]],
+    H('Posisi'), pos('logo.pos'), '<small>Atau geser langsung logo di preview pakai mouse / jari. Garis pink muncul saat pas di tengah.</small>', B('cLogo', 'grid', 'Pusatkan logo'), H('Acuan posisi'), chips('anc.mode', [['photo', 'Ikut foto (tengah pas)'], ['all', 'Seluruh gambar']]), '<small>Saat pakai frame, "Ikut foto" membuat posisi tengah dan pinggir mengacu ke foto testimoni, jadi pas di tengah.</small>', R('logo.size', 'Ukuran', 3, 90), R('logo.opacity', 'Opacity', 5, 100), B('xLogo', 'trash', 'Hapus logo')]],
   ['frame', 'Frame', 'frame', ['<div class="note curNote"></div>', C('frame.on', 'Pakai frame testimoni'), B('pick', 'camera', 'Ganti foto'), B('goCF', 'upload', 'Pakai bingkai sendiri (upload PNG)'),
     H('Ukuran'), chips('frame.size', [['4:5', '4:5 Feed'], ['1:1', '1:1 Kotak'], ['9:16', '9:16 Story'], ['3:4', '3:4'], ['16:9', '16:9 Banner'], ['4:3', '4:3']]),
     H('Layout'), chips('frame.layout', [['polaroid', 'Polaroid'], ['kartu', 'Kartu'], ['bubble', 'Bubble'], ['full', 'Foto besar']]),
@@ -126,7 +127,7 @@ const TABS = [
     H('Posisi'), chips('info.pos', [['b', 'Bawah'], ['t', 'Atas']]), H('Gaya'), chips('info.style', [['bar', 'Bar penuh'], ['pill', 'Kapsul']]),
     R('info.size', 'Ukuran teks', 20, 80), K('info.bg', 'Warna latar'), K('info.color', 'Warna teks'), R('info.opacity', 'Opacity', 30, 100)]],
   ['mascot', 'Maskot', 'smile', [C('mascot.on', 'Tampilkan maskot'), chips('mascot.emoji', ['🐰', '🐱', '🐻', '🎀', '🌸', '🍓', '🧸', '🍒', '💖', '⭐'].map(e => [e, e]), 'em'),
-    FB('fMas', 'upload', 'Upload maskot sendiri'), R('mascot.size', 'Ukuran', 5, 80), R('mascot.x', 'Posisi kiri / kanan', 0, 100), R('mascot.y', 'Posisi atas / bawah', 0, 100),
+    FB('fMas', 'upload', 'Upload maskot sendiri'), R('mascot.size', 'Ukuran', 5, 80), '<small>Geser langsung maskot di preview pakai mouse / jari. Garis pink muncul saat pas di tengah.</small>', B('cMas', 'grid', 'Pusatkan maskot'), H('Acuan posisi'), chips('anc.mode', [['photo', 'Ikut foto (tengah pas)'], ['all', 'Seluruh gambar']]), '<small>Saat pakai frame, "Ikut foto" membuat posisi tengah dan pinggir mengacu ke foto testimoni, jadi pas di tengah.</small>', R('mascot.x', 'Posisi kiri / kanan', -20, 120), R('mascot.y', 'Posisi atas / bawah', -20, 120),
     R('mascot.opacity', 'Opacity', 10, 100), C('mascot.flip', 'Balik arah (mirror)'), C('mascot.bob', 'Maskot goyang (animasi)'), B('xMas', 'trash', 'Hapus maskot upload')]],
   ['tpl', 'Template', 'save', ['<small>Pilih template, lalu ubah sesukamu. Template buatanmu tersimpan di akun, jadi tetap ada kalau login dari HP atau perangkat lain.</small>', H('Template bawaan'), '<div class="pre" id="pre"></div>',
     H('Template kamu'), '<label class="f"><span>Nama template</span><input type="text" id="tn" placeholder="mis. Template Netflix"></label>',
@@ -161,7 +162,7 @@ function sync() {
   document.querySelectorAll('[data-set]').forEach(e => e.classList.toggle('on', get(e.dataset.set) === e.dataset.val));
   $('#hLogo').innerHTML = S.logo.src ? `<img src="${S.logo.src}" alt="">` : ic('smile');
   document.querySelectorAll('[data-m]').forEach(e => e.hidden = e.dataset.m != S.cframe.mode);
-  cv.style.touchAction = S.mascot.on || S.frame.on || useCF() ? 'none' : 'auto';
+  cv.style.touchAction = S.mascot.on || S.logo.on || S.frame.on || useCF() ? 'none' : 'auto';
 }
 const upd = () => { sync(); draw(); save(); lab(); pend = null; };
 const save = () => { stash(); hpush(); try { localStorage.setItem('wm_s', JSON.stringify(S)); } catch (e) { toast('Penyimpanan browser penuh, logo besar tidak tersimpan'); } };
@@ -300,12 +301,13 @@ function drawFrame(c, W, H) {
   c.font = `400 ${38 * u}px ${ff}`; c.globalAlpha = .85;
   wrap(c, F.review || '', tw_).slice(0, L ? 7 : 3).forEach((t, i) => c.fillText(t, tx, ty + 145 * u + i * 50 * u)); c.globalAlpha = 1;
 }
+const box = (W, H) => S.anc.mode != 'all' && WIN && (S.frame.on || useCF()) ? [WIN.x, WIN.y, WIN.w, WIN.h] : [0, 0, W, H]; // area acuan posisi: foto di dalam frame, atau seluruh gambar
 function drawTile(c, W, H) {
-  const t = S.tile; if (!t.on || !t.value) return;
+  const t = S.tile; if (!t.on || !t.value) return; const [bx, by, bw, bh] = box(W, H);
   c.save(); c.globalAlpha = t.opacity / 100; c.fillStyle = t.color; c.font = `${fw(t.font)} ${W * t.size / 100}px "${t.font}",sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
   for (let r = 0; r < t.rows; r++) for (let k = 0; k < t.cols; k++) {
-    let px = (k + .5) / t.cols * W + (t.stagger && r % 2 ? W / t.cols / 2 : 0), py = (r + .5) / t.rows * H;
-    px = W / 2 + (px - W / 2) * t.spread / 100 + W * t.ox / 100; py = H / 2 + (py - H / 2) * t.spread / 100 + H * t.oy / 100;
+    let px = (k + .5) / t.cols * bw + (t.stagger && r % 2 ? bw / t.cols / 2 : 0), py = (r + .5) / t.rows * bh;
+    px = bx + bw / 2 + (px - bw / 2) * t.spread / 100 + W * t.ox / 100; py = by + bh / 2 + (py - bh / 2) * t.spread / 100 + H * t.oy / 100;
     c.save(); c.translate(px, py); c.rotate(t.rot * Math.PI / 180); c.fillText(t.value, 0, 0); c.restore();
   }
   c.restore();
@@ -323,32 +325,35 @@ function drawInfo(c, W, H) {
 }
 function drawText(c, W, H) {
   const x = S.text; if (!x.on || !x.value) return;
-  const [i, j] = AX(x.pos), m = W * .03;
+  const [i, j] = AX(x.pos), m = W * .03, [bx, by, bw, bh] = box(W, H);
   c.save(); c.globalAlpha = x.opacity / 100; c.fillStyle = x.color; c.font = `${fw(x.font)} ${W * x.size / 100}px "${x.font}",sans-serif`;
   c.textAlign = ['left', 'center', 'right'][i]; c.textBaseline = ['top', 'middle', 'bottom'][j];
   if (x.shadow) { c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = W * .008; c.shadowOffsetY = W * .003; }
-  c.translate([m, W / 2, W - m][i], [m, H / 2, H - m][j]); c.rotate(x.rot * Math.PI / 180);
+  c.translate(bx + [m, bw / 2, bw - m][i], by + [m, bh / 2, bh - m][j]); c.rotate(x.rot * Math.PI / 180);
   if (x.stroke) { c.lineJoin = 'round'; c.lineWidth = W * x.size / 100 * .14; c.strokeStyle = x.strokeColor; c.strokeText(x.value, 0, 0); }
   c.fillText(x.value, 0, 0); c.restore();
 }
 function drawBadge(c, W, H) {
   const b = S.badge; if (!b.on || !b.value) return;
-  const [i, j] = AX(b.pos), m = W * .04, fs = W * b.size / 100;
+  const [i, j] = AX(b.pos), m = W * .04, fs = W * b.size / 100, [bx, by, bw0, bh0] = box(W, H);
   c.save(); c.globalAlpha = b.opacity / 100; c.font = `700 ${fs}px Fredoka,sans-serif`;
   const bw = c.measureText(b.value).width + fs * 1.2, bh = fs * 1.9;
-  c.translate([m + bw / 2, W / 2, W - m - bw / 2][i], [m + bh / 2, H / 2, H - m - bh / 2][j]); c.rotate(b.rot * Math.PI / 180);
+  c.translate(bx + [m + bw / 2, bw0 / 2, bw0 - m - bw / 2][i], by + [m + bh / 2, bh0 / 2, bh0 - m - bh / 2][j]); c.rotate(b.rot * Math.PI / 180);
   c.shadowColor = 'rgba(0,0,0,.25)'; c.shadowBlur = fs * .3; c.fillStyle = b.bg; rr(c, -bw / 2, -bh / 2, bw, bh, bh / 2); c.fill();
   c.shadowColor = 'transparent'; c.fillStyle = b.color; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(b.value, 0, fs * .05); c.restore();
 }
 function drawLogo(c, W, H) {
-  const l = S.logo; if (!l.on || !I.logo) return;
-  const [i, j] = AX(l.pos), m = W * .03, w = W * l.size / 100, h = w * I.logo.height / I.logo.width;
-  c.save(); c.globalAlpha = l.opacity / 100; c.drawImage(I.logo, [m, (W - w) / 2, W - m - w][i], [m, (H - h) / 2, H - m - h][j], w, h); c.restore();
+  const l = S.logo; HIT.logo = null; if (!l.on || !I.logo) return;
+  const [bx, by, bw, bh] = box(W, H), w = W * l.size / 100, h = w * I.logo.height / I.logo.width; let x, y;
+  if (l.x != null && l.y != null) { x = bx + bw * l.x / 100 - w / 2; y = by + bh * l.y / 100 - h / 2; } // posisi bebas (digeser)
+  else { const [i, j] = AX(l.pos), m = W * .03; x = bx + [m, (bw - w) / 2, bw - m - w][i]; y = by + [m, (bh - h) / 2, bh - m - h][j]; }
+  HIT.logo = {x, y, w, h}; c.save(); c.globalAlpha = l.opacity / 100; c.drawImage(I.logo, x, y, w, h); c.restore();
 }
 function drawMascot(c, W, H) {
-  const m = S.mascot; if (!m.on) return;
-  const w = W * m.size / 100, bb = m.bob && !still ? Math.sin(performance.now() / 280) : 0;
-  c.save(); c.globalAlpha = m.opacity / 100; c.translate(W * m.x / 100, H * m.y / 100 + bb * H * .012); c.rotate(bb * .08); if (m.flip) c.scale(-1, 1);
+  const m = S.mascot; HIT.mas = null; if (!m.on) return;
+  const [bx, by, bw, bh] = box(W, H), w = W * m.size / 100, bb = m.bob && !still ? Math.sin(performance.now() / 280) : 0, cx = bx + bw * m.x / 100, cy = by + bh * m.y / 100;
+  HIT.mas = {cx, cy, r: Math.max(w, 80) * .7};
+  c.save(); c.globalAlpha = m.opacity / 100; c.translate(cx, cy + bb * H * .012); c.rotate(bb * .08); if (m.flip) c.scale(-1, 1);
   if (I.mas) { const h = w * I.mas.height / I.mas.width; c.drawImage(I.mas, -w / 2, -h / 2, w, h); }
   else { c.font = `${w}px sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(m.emoji, 0, 0); }
   c.restore();
@@ -372,6 +377,10 @@ function drawRaw(t) {
   if (!U && !F.on) WIN = null;
   if (U) drawCF(c, W, H); else if (F.on) drawFrame(c, W, H); else if (p) c.drawImage(photoSrc(), 0, 0, W, H); else placeholder(c, 0, 0, W, H);
   drawTile(c, W, H); drawInfo(c, W, H); drawText(c, W, H); drawBadge(c, W, H); drawLogo(c, W, H); drawMascot(c, W, H);
+  if (t === cv && drag && (GUIDE.x || GUIDE.y)) { // garis bantu tengah saat menggeser
+    const [bx, by, bw, bh] = box(W, H); c.save(); c.strokeStyle = '#ff2d87'; c.lineWidth = Math.max(2, W / 360); c.setLineDash([W / 60, W / 90]); c.beginPath();
+    if (GUIDE.x) { c.moveTo(bx + bw / 2, by); c.lineTo(bx + bw / 2, by + bh); } if (GUIDE.y) { c.moveTo(bx, by + bh / 2); c.lineTo(bx + bw, by + bh / 2); } c.stroke(); c.restore();
+  }
 }
 
 /* ================= BINGKAI SENDIRI (upload PNG + bolongi tengah) ================= */
@@ -707,6 +716,8 @@ const ACT = {
   xFil: () => { S.filter = clone(DEF.filter); upd(); }, sh: share, th: toggleTheme, ts: saveTpl,
   pick: () => $('#photoRep').click(),
   pas: () => { S.frame.fit = 'cover'; tw(S.frame, 'zoom', 100, 600); tw(S.frame, 'px', 0, 600); tw(S.frame, 'py', 0, 600); },
+  cLogo: () => { S.logo.on = true; S.logo.x = S.logo.y = 50; upd(); },
+  cMas: () => { S.mascot.on = true; S.mascot.x = S.mascot.y = 50; upd(); },
   xLogo: () => { S.logo.src = ''; S.logo.on = false; I.logo = null; upd(); },
   xMas: () => { S.mascot.src = ''; I.mas = null; upd(); },
   rs: () => { if (confirm('Reset semua pengaturan, termasuk logo dan maskot?')) { S = clone(DEF); keepTxt(); loadAll(); } }
@@ -740,7 +751,7 @@ document.addEventListener('click', e => {
     if (d.set.startsWith('frame.') && d.set != 'frame.fit') { S.frame.on = true; S.cframe.on = false; }
     if (d.set == 'cframe.mode') { S.cframe.on = true; S.frame.on = false; punch(1); }
     if (d.set == 'frame.theme') S.frame.accent = TH[d.val][2];
-    if (d.set == 'logo.pos') S.logo.on = true;
+    if (d.set == 'logo.pos') { S.logo.on = true; S.logo.x = S.logo.y = null; }
     if (d.set == 'badge.pos') S.badge.on = true;
     if (d.set == 'text.pos') S.text.on = true;
     if (d.set == 'mascot.emoji') { S.mascot.src = ''; I.mas = null; S.mascot.on = true; tw(S.mascot, 'size', S.mascot.size, 500, 1); }
@@ -781,21 +792,37 @@ addEventListener('beforeunload', e => { if (ITEMS.length > 1) { e.preventDefault
 const cp = e => { const r = cv.getBoundingClientRect(), s = Math.min(r.width / cv.width, r.height / cv.height);
   return [(e.clientX - r.left - (r.width - cv.width * s) / 2) / s, (e.clientY - r.top - (r.height - cv.height * s) / 2) / s]; };
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const hitAt = (X, Y) => {
+  const m = HIT.mas, l = HIT.logo, pd = 12;
+  if (S.mascot.on && m && Math.hypot(X - m.cx, Y - m.cy) < m.r) return 1;
+  if (S.logo.on && l && X > l.x - pd && X < l.x + l.w + pd && Y > l.y - pd && Y < l.y + l.h + pd) return 3;
+  if ((S.frame.on || useCF()) && WIN && X > WIN.x && X < WIN.x + WIN.w && Y > WIN.y && Y < WIN.y + WIN.h) return 2;
+  return 0;
+};
 cv.addEventListener('pointerdown', e => {
-  const [X, Y] = cp(e), m = S.mascot; lx = X; ly = Y; drag = 0;
+  const [X, Y] = cp(e), m = S.mascot; lx = X; ly = Y; drag = 0; off = [0, 0];
   if (pickMode && CF.orig) { pickMode = false; S.cframe.mode = 'wand'; S.cframe.sx = Math.round(X); S.cframe.sy = Math.round(Y); punch(1); upd(); toast(CF.hole ? 'Bolongan dibuat' : 'Area tidak ketemu, coba tap titik lain'); if (!CF.hole) pickMode = true; return; }
-  if (m.on && Math.hypot(X - cv.width * m.x / 100, Y - cv.height * m.y / 100) < Math.max(cv.width * m.size / 100, 80) * .7) drag = 1;
-  else if ((S.frame.on || useCF()) && WIN && X > WIN.x && X < WIN.x + WIN.w && Y > WIN.y && Y < WIN.y + WIN.h) drag = 2;
-  else if (m.on) { drag = 1; m.x = clamp(X / cv.width * 100, 0, 100); m.y = clamp(Y / cv.height * 100, 0, 100); sync(); draw(); }
-  if (drag) cv.setPointerCapture(e.pointerId);
+  drag = hitAt(X, Y);
+  if (drag == 1) off = [HIT.mas.cx - X, HIT.mas.cy - Y];
+  else if (drag == 3) off = [HIT.logo.x + HIT.logo.w / 2 - X, HIT.logo.y + HIT.logo.h / 2 - Y];
+  else if (!drag && m.on) { drag = 1; pointMove(X, Y); sync(); draw(); }
+  if (drag) { cv.setPointerCapture(e.pointerId); cv.style.cursor = 'grabbing'; e.preventDefault(); }
 });
+function pointMove(X, Y) { // geser maskot / logo: posisi disimpan sebagai persen dari area acuan, menempel ke tengah kalau dekat
+  const [bx, by, bw, bh] = box(cv.width, cv.height), o = drag == 1 ? S.mascot : S.logo;
+  let px = clamp((X + off[0] - bx) / bw * 100, -25, 125), py = clamp((Y + off[1] - by) / bh * 100, -25, 125);
+  GUIDE.x = Math.abs(px - 50) < 2.2; GUIDE.y = Math.abs(py - 50) < 2.2; if (GUIDE.x) px = 50; if (GUIDE.y) py = 50;
+  o.x = Math.round(px * 10) / 10; o.y = Math.round(py * 10) / 10;
+}
 cv.addEventListener('pointermove', e => {
-  if (!drag) return; const [X, Y] = cp(e);
-  if (drag == 1) { S.mascot.x = clamp(X / cv.width * 100, 0, 100); S.mascot.y = clamp(Y / cv.height * 100, 0, 100); }
+  const [X, Y] = cp(e);
+  if (!drag) { if (e.pointerType == 'mouse') cv.style.cursor = hitAt(X, Y) ? 'grab' : ''; return; }
+  if (drag == 1 || drag == 3) pointMove(X, Y);
   else { const F = S.frame; F.px = clamp(F.px + (X - lx) / WIN.w * 100, -100, 100); F.py = clamp(F.py + (Y - ly) / WIN.h * 100, -100, 100); lx = X; ly = Y; }
   sync(); draw();
 });
-cv.addEventListener('pointerup', () => { if (drag) { drag = 0; save(); } });
+const dragEnd = () => { if (drag) { drag = 0; GUIDE.x = GUIDE.y = false; cv.style.cursor = ''; draw(); save(); } };
+cv.addEventListener('pointerup', dragEnd); cv.addEventListener('pointercancel', dragEnd);
 
 /* ================= MULAI ================= */
 try {
