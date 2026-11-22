@@ -163,3 +163,23 @@ Di panel pembayaran ada tombol **🧾 Buat invoice & QR tagihan**. Isinya gambar
 - **⚙️ Pengaturan**: nomor WhatsApp, pesan WA awal, buka/tutup pendaftaran. Tersimpan di sheet `Config`, berlaku langsung tanpa upload ulang.
 
 Catatan: "online" = membuka web dalam 15 menit terakhir (dicatat maksimal tiap 5 menit supaya Sheets tidak boros tulis). Kalau tab Aktivitas/Pengaturan menampilkan pesan "Code.gs belum diperbarui", berarti langkah deploy di atas belum dilakukan.
+
+
+## Update v22 — Akun gratis boleh pakai Kasir (dengan batas), fitur premium dikunci
+**WAJIB deploy ulang Apps Script** (Code.gs berubah, batas dijaga di server):
+1. Buka Apps Script, **ganti seluruh isi Code.gs** dengan versi baru → Save.
+2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
+3. Upload (timpa): `index.html`, `toko.js`, `kasir.js`, `config.js`, dan 2 file BARU: `premium.js`, `premium.css`.
+
+**Akun gratis (batas bisa diubah di `config.js` → `FREE` dan `Code.gs` → `FREE_LIM`, samakan angkanya):**
+- Kasir dasar: keranjang, diskon, **tunai & transfer**, nota PNG dengan **watermark kecil** ("Dibuat dengan ReyVion Kasir").
+- **30 transaksi/bulan**, **10 produk** (1 paket harga per produk), **10 pengeluaran/bulan**.
+- Riwayat kasir menampilkan **30 hari terakhir** (data lama tidak dihapus, terbuka lagi saat premium).
+- Pengingat perpanjang **H-1** saja. Laporan: omzet + jumlah transaksi. Hitung refund tetap gratis.
+- Bilah pemakaian (🆓 Akun Gratis) tampil di tab Kasir/Rekap/Produk/Laporan, ada tombol Upgrade.
+
+**Khusus premium (dikunci, tombol bertanda 🔒):** QRIS dinamis (bayar & QR per catatan), invoice & QR tagihan, nota tanpa watermark, logo toko, teks bawah nota & tampilan invoice sendiri, template WA sendiri, laporan laba/modal/pengeluaran/terlaris/tren 6 bulan, salin ringkasan, unduh CSV (rekap, laporan, riwayat), pengingat H-3/H-7, paket harga bertingkat, Klaim & garansi, Akun Simpanan, Pelanggan teratas & Backup/pulihkan.
+
+**Dijaga di server (tidak bisa ditembus lewat DevTools):** batas transaksi/produk/pengeluaran, paket harga >1, dan jenis catatan khusus premium (klaim, QRIS, logo, akun simpanan). Catatan template dari akun gratis hanya menyimpan nama toko, HP, dan alamat.
+
+Catatan: batas bulanan dihitung per bulan kalender (zona Asia/Jakarta). Mengedit catatan yang sudah ada selalu boleh, jadi akun yang premiumnya habis tidak kehilangan data. Item dalam satu transaksi (satu nomor nota) dihitung 1 transaksi. Untuk menutup kasir lagi dari akun gratis, set `PREMIUM_ONLY: true` di `config.js` dan `STORE_PREMIUM_ONLY = true` di `Code.gs`.

@@ -150,7 +150,7 @@
     return 'INV' + d + '-' + String(seen.size + 1).padStart(3, '0');
   }
   async function finish() {
-    if (BUSY) return; if (!CART.length) return toast('Pesanan masih kosong');
+    if (BUSY) return; if (!CART.length) return toast('Pesanan masih kosong'); if (window.Gate && !Gate.canSell()) return;
     const bad = CART.find(i => !i.start || !(i.days > 0)); if (bad) return toast('Tanggal & durasi wajib diisi: ' + bad.app);
     const total = tot(); if (total <= 0 && !confirm('Total Rp0. Tetap simpan?')) return;
     if (PAY == 'cash' && CASH < total) return toast('Uang diterima masih kurang');
@@ -160,7 +160,7 @@
       const i = CART[x], share = x == CART.length - 1 ? left : Math.min(left, s ? Math.round(disc * i.price / s) : 0); left -= share;
       const net = Math.max(0, i.price - share), end = T().addD(i.start, i.days);
       const rec = {id: T().uid(), hist: [{d: i.start, days: i.days, price: net, cost: i.cost}], renewals: 0, created: Date.now() + x, app: i.app, pid: i.pid || undefined,
-        email: i.email.trim(), buyer: BUYER.trim(), wa: WA.trim(), orderDate: i.start, days: i.days, end, price: net, cost: i.cost, note: '', rm: [T().RMS[1] || 3], rmDone: null,
+        email: i.email.trim(), buyer: BUYER.trim(), wa: WA.trim(), orderDate: i.start, days: i.days, end, price: net, cost: i.cost, note: '', rm: window.Gate && Gate.free() ? Gate.F.REMIND.slice() : [T().RMS[1] || 3], rmDone: null,
         inv, pay: PAY, dsc: share || undefined, cash: PAY == 'cash' ? CASH : undefined, time};
       if (!(await T().persist(rec))) { BUSY = false; renderPay(); return toast('Gagal menyimpan, coba lagi'); }
       saved.push(rec);
@@ -291,13 +291,14 @@
         y += BW + 22; if (H) { ctx.textAlign = ta; ctx.fillStyle = th.ink; ctx.font = fb(14); ctx.fillText(o.merch || 'QRIS', tx, y); } y += 20; if (H) { ctx.fillStyle = th.sub; ctx.font = fb(12.5); ctx.fillText('Scan pakai e-wallet / m-banking, nominal sudah terisi', tx, y, IW); } y += 30;
       } else y += 4;
       ctx.font = fb(13); ctx.textAlign = 'center'; ctx.fillStyle = th.body; wrap(ctx, o.unpaid ? 'Silakan bayar sesuai nominal tagihan. Nota LUNAS dikirim setelah pembayaran diterima 💖' : prof.foot, IW).slice(0, 3).forEach(t => { if (H) ctx.fillText(t, W / 2, y); y += 18; });
+      if (window.Gate && Gate.mark()) { y += 6; if (H) { const mk = Gate.mark(); ctx.save(); ctx.textAlign = 'center'; ctx.font = fb(12); const tw = Math.min(IW, ctx.measureText(mk).width + 36); ctx.fillStyle = 'rgba(0,0,0,.05)'; RR(ctx, W / 2 - tw / 2, y, tw, 26, 13); ctx.fill(); ctx.fillStyle = '#9a7a8c'; ctx.fillText(mk, W / 2, y + 17); ctx.restore(); } y += 30; }
       return y + 44;
     };
     const H = Math.ceil(run(() => body(0))); cv.height = H * SC; run(() => body(H));
   }
   function profile(over) {
     const w = T().WT || {}, o = over || {};
-    return {name: o.name ?? T().shopName(), phone: o.phone ?? w.phone ?? '', addr: o.addr ?? w.addr ?? '', foot: (o.foot ?? w.foot) || T().tplOf('foot'), img: LOGO_IMG, cashier: (Auth.user() || {}).username, showAcc: true, iv: o.iv !== undefined ? o.iv : w.iv};
+    return {name: o.name ?? T().shopName(), phone: o.phone ?? w.phone ?? '', addr: o.addr ?? w.addr ?? '', foot: ((window.Gate && Gate.free()) ? '' : (o.foot ?? w.foot)) || T().tplOf('foot'), img: (window.Gate && Gate.free()) ? null : LOGO_IMG, cashier: (Auth.user() || {}).username, showAcc: true, iv: (window.Gate && Gate.free()) ? undefined : (o.iv !== undefined ? o.iv : w.iv)};
   }
   function syncLogo() { const s = T().LG ? T().LG.img : ''; if (s == LOGO_SRC) return Promise.resolve(); LOGO_SRC = s; LOGO_IMG = null; if (!s) return Promise.resolve(); return new Promise(r => { const im = new Image(); im.onload = () => { LOGO_IMG = im; r(); }; im.onerror = r; im.src = s; }); }
   async function fonts() { try { await Promise.all([document.fonts.load(FH(26)), document.fonts.load(FB(14))]); } catch (e) {} }
@@ -341,9 +342,12 @@
   }
 
   /* ---------- riwayat ---------- */
+  let HIDDEN = 0;
   function orders() {
     const m = {}; T().R.filter(r => r.inv && !r.ref).forEach(r => (m[r.inv] = m[r.inv] || []).push(r));
-    return Object.keys(m).map(k => orderOf(k, m[k])).sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time) || b.inv.localeCompare(a.inv));
+    let all = Object.keys(m).map(k => orderOf(k, m[k])).sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time) || b.inv.localeCompare(a.inv)); HIDDEN = 0;
+    if (window.Gate && Gate.free()) { const cut = T().addD(T().today(), -(Gate.F.HISTORY_DAYS - 1)), ls = all.filter(o => o.date >= cut); HIDDEN = all.length - ls.length; all = ls; }
+    return all;
   }
   function renderHis() {
     if (!Q('#ksHList')) return;
@@ -356,6 +360,7 @@
       <div class="ks-hrm">${T().fd(o.date)}${o.time ? ' · ' + o.time : ''}${o.buyer ? ' · ' + E(o.buyer) : ''}</div><div class="ks-hri">${o.items.map(i => E(i.app) + ' (' + durTxt(i.days) + ')').join(', ')}</div>
       <div class="ks-hrf"><b>${rp(o.total)}</b><span><button class="btn" type="button" data-ksrc="${E(o.inv)}">🧾 Nota</button> <button class="btn" type="button" data-kswa="${E(o.inv)}">💬 WA</button></span></div></div>`).join('')
       : '<div class="empty">Belum ada transaksi di periode ini.</div>';
+    if (window.Gate) Gate.histNote(HIDDEN);
   }
   function csv() {
     const rows = [['No Nota', 'Tanggal', 'Jam', 'Pembeli', 'WA', 'Produk', 'Durasi (hari)', 'Berakhir', 'Harga', 'Diskon', 'Metode']];

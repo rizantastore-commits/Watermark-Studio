@@ -31,13 +31,21 @@ window.WM_CONFIG = {
     ['Frame testimoni & bingkai upload', false, true],
     ['Filter foto & Maskot', false, true],
     ['Template tersimpan di akun (sync device)', false, true],
-    ['Kasir: rekap, produk & stok, laporan, refund, pengingat', false, true],
-    ['Nota PNG, template WA sendiri, catatan klaim & garansi', false, true]
+    ['Kasir: catat jual, tunai & transfer, nota PNG', true, true],
+    ['Kasir: transaksi per bulan', '30', 'Tanpa batas'],
+    ['Kasir: produk & stok', '10 produk', 'Tanpa batas + paket harga'],
+    ['Nota tanpa watermark + logo toko', false, true],
+    ['QRIS dinamis sesuai nominal & invoice', false, true],
+    ['Riwayat kasir', '30 hari', 'Semua + CSV'],
+    ['Laporan laba, terlaris & tren 6 bulan', false, true],
+    ['Pengingat perpanjang H-3 / H-7', false, true],
+    ['Klaim, Akun Simpanan, pelanggan & backup', false, true],
+    ['Template WA & teks nota sendiri', false, true]
   ],
 
   // Kasir & Rekap Toko (index.html). Data tersimpan per akun di sheet "Records".
   STORE: {
-    PREMIUM_ONLY: true,            // true = khusus premium/admin. Samakan dengan STORE_PREMIUM_ONLY di Code.gs
+    PREMIUM_ONLY: false,           // false = akun gratis boleh pakai kasir (dengan batas di FREE). Samakan dengan STORE_PREMIUM_ONLY di Code.gs
     REMIND_DAYS: [1, 3, 7],        // pilihan pengingat H-1, H-3, H-7
     DURATIONS: [7, 14, 30, 60, 90, 180, 365],
     // Template bawaan pesan WA. Tiap member bisa mengubahnya sendiri di Kasir → Lainnya → Pesan & Nota
@@ -48,6 +56,17 @@ window.WM_CONFIG = {
     WA_CLAIM: 'Halo kak {nama}, kendala {app} kakak sudah kami tangani ya. {akun} Terima kasih sudah sabar menunggu 🙏',
     NOTA_FOOT: 'Terima kasih sudah belanja 💖 Simpan nota ini sebagai bukti pembelian & garansi.',
     CLAIM_FLAG: 3                  // pembeli dengan klaim sebanyak ini (atau lebih) diberi tanda 🚩 "sering komplain"
+  },
+
+  // Batas akun GRATIS di kasir. Batas transaksi/produk/pengeluaran juga dijaga di server: samakan dengan FREE_LIM di Code.gs.
+  FREE: {
+    TX_MONTH: 30,          // transaksi per bulan
+    PRODUCTS: 10,          // jumlah produk
+    EXPENSES_MONTH: 10,    // catatan pengeluaran per bulan
+    HISTORY_DAYS: 30,      // riwayat kasir yang tampil (data lama tidak dihapus, terbuka lagi saat premium)
+    REMIND: [1],           // pengingat perpanjangan yang boleh dipakai (H-1)
+    TIERS: 1,              // paket harga per produk
+    MARK: 'Dibuat dengan ReyVion Kasir'   // watermark kecil di nota akun gratis
   },
 
   // Tab yang dikunci untuk akun gratis (id tab di script.js)
@@ -61,7 +80,10 @@ window.WM_CONFIG = {
     'Banyak foto sekaligus + Download ZIP',
     'Atur warna tema sendiri (custom)',
     'Simpan template sendiri & template premium',
-    'Kasir & rekap toko: produk & stok, laporan laba, refund, pengingat perpanjangan, backup data',
-    'Nota PNG siap kirim, template pesan WA per akun, catatan klaim & ganti akun'
+    'Kasir tanpa batas: transaksi, produk & stok, paket harga',
+    'QRIS dinamis sesuai nominal + invoice tagihan',
+    'Nota tanpa watermark, logo toko & teks nota sendiri',
+    'Laporan laba bersih, produk terlaris, tren 6 bulan, riwayat penuh + CSV',
+    'Klaim & garansi, Akun Simpanan, pelanggan teratas, backup & pulihkan, pengingat H-3/H-7'
   ]
 };

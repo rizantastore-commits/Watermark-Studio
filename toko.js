@@ -54,7 +54,7 @@
   async function persist(rec) {
     upsert(rec); cache(); split(); render();
     const r = await Auth.call('rec_save', {id: rec.id, data: JSON.stringify(rec)});
-    if (!r.ok) { toast(r.error); showErr(r.error); load(); } else showErr('');
+    if (!r.ok) { if (window.Gate && (r.code == 'limit' || r.code == 'premium')) Gate.limit(r.error, r.code); else { toast(r.error); showErr(r.error); } load(); } else showErr('');
     return r.ok;
   }
   async function remove(id) {
@@ -194,7 +194,7 @@
     claim: S.WA_CLAIM || 'Halo kak {nama}, kendala {app} kakak sudah kami tangani ya. {akun} Terima kasih sudah sabar menunggu 🙏',
     foot: S.NOTA_FOOT || 'Terima kasih sudah belanja 💖 Simpan nota ini sebagai bukti pembelian & garansi.'
   };
-  const tplOf = k => { const t = WT && typeof WT[k] == 'string' ? WT[k].trim() : ''; return t || WT_DEF[k]; };
+  const tplOf = k => { const t = WT && Auth.isPremium() && typeof WT[k] == 'string' ? WT[k].trim() : ''; return t || WT_DEF[k]; };
   const shopName = () => (WT && String(WT.shop || '').trim()) || (Auth.user() || {}).username || 'Toko';
   const fill = (tpl, vars) => String(tpl).replace(/\{(\w+)\}/g, (m, k) => Object.prototype.hasOwnProperty.call(vars, k) ? vars[k] : m).replace(/kak\s+,/g, 'kak,').replace(/[ \t]{2,}/g, ' ').trim();
   function waVars(r) {
@@ -224,7 +224,7 @@
     return m == 'e' ? syncEnd() : rPrev();
   }
   function editor(r, pre) {
-    EDIT = r || null; const d = r || pre || {app: '', email: '', buyer: '', wa: '', price: '', cost: '', orderDate: today(), days: 30, rm: [RMS.includes(3) ? 3 : RMS[0]], note: ''};
+    EDIT = r || null; const d = r || pre || {app: '', email: '', buyer: '', wa: '', price: '', cost: '', orderDate: today(), days: 30, rm: window.Gate && Gate.free() ? Gate.F.REMIND.slice() : [RMS.includes(3) ? 3 : RMS[0]], note: ''};
     EDAYS = +d.days || 30; ERM = [...(d.rm || [])]; EPID = d.pid || ''; EACC = '';
     Q('#em .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${r ? 'Edit catatan' : 'Catat penjualan'}</h3>
     ${P.length ? `<label class="f"><span>Pilih dari produk (opsional)</span><select id="eProd"><option value="">— ketik manual —</option>${P.map(p => `<option value="${p.id}" ${EPID == p.id ? 'selected' : ''}>${E(p.name)} · stok ${+p.stock || 0}</option>`).join('')}</select></label>` : ''}
@@ -965,8 +965,8 @@
     cv.width = W * SC; cv.height = 2000 * SC; ctx.setTransform(SC, 0, 0, SC, 0, 0);
     ctx.font = fnt(FONT_B, 15); const lay = rows.map(([l, val]) => ({l, lines: wrapText(ctx, val, IW - 110).slice(0, 3)}));
     const shopLines = (ctx.font = fnt(FONT_H, 26), wrapText(ctx, shopName(), IW).slice(0, 2));
-    ctx.font = fnt(FONT_B, 13); const footLines = wrapText(ctx, (WT && WT.foot != null && String(WT.foot).trim()) ? WT.foot : WT_DEF.foot, IW).slice(0, 3);
-    let H = 50 + 34 + 22 + shopLines.length * 30 + 14 + 22 + 30 + 16 + lay.reduce((t, x) => t + x.lines.length * 20 + 12, 0) + 16 + 96 + 26 + footLines.length * 18 + 44;
+    ctx.font = fnt(FONT_B, 13); const footLines = wrapText(ctx, tplOf('foot'), IW).slice(0, 3);
+    let H = 50 + 34 + 22 + shopLines.length * 30 + 14 + 22 + 30 + 16 + lay.reduce((t, x) => t + x.lines.length * 20 + 12, 0) + 16 + 96 + 26 + footLines.length * 18 + 44 + (window.Gate && Gate.mark() ? 34 : 0);
     cv.height = H * SC; ctx.setTransform(SC, 0, 0, SC, 0, 0); ctx.textAlign = 'center';
     const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, '#fff0f6'); g.addColorStop(1, '#ffe3ef'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = '#ffffff'; drawRoundRect(ctx, 28, 28, W - 56, H - 56, 32); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#ffb8d8'; ctx.stroke();
@@ -986,6 +986,7 @@
     ctx.textAlign = 'center'; ctx.fillStyle = '#8c5a73'; ctx.font = fnt(FONT_B, 13); ctx.fillText('TOTAL BAYAR', W / 2, y + 26);
     ctx.fillStyle = '#d81b60'; ctx.font = fnt(FONT_H, 34); ctx.fillText(rp(d.price), W / 2, y + 62); y += 78 + 28;
     ctx.fillStyle = '#6b3e54'; ctx.font = fnt(FONT_B, 13); footLines.forEach((t, i) => ctx.fillText(t, W / 2, y + i * 18));
+    if (window.Gate && Gate.mark()) { const yy = y + footLines.length * 18 + 8, mk = Gate.mark(); ctx.font = fnt(FONT_B, 12); const tw = Math.min(IW, ctx.measureText(mk).width + 36); ctx.fillStyle = 'rgba(0,0,0,.05)'; drawRoundRect(ctx, W / 2 - tw / 2, yy, tw, 26, 13); ctx.fill(); ctx.fillStyle = '#9a7a8c'; ctx.fillText(mk, W / 2, yy + 17); }
   }
   async function openNota(r) {
     if (!r || r.ref) return toast('Catatan yang sudah di-refund tidak bisa dibuatkan nota');
@@ -1217,5 +1218,5 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Auth.user() && !Q('#panel').hidden && !modalOpen()) load(); });
   /* jembatan untuk kasir.js (modul kasir) */
   window.TK = {get R() { return R; }, get P() { return P; }, get WT() { return WT; }, get LG() { return LG; }, get QCFG() { return QCFG; },
-    get AK() { return AK; }, persist, remove, rp, fd, today, addD, uid, fill, waNum, shopName, buildDynamicQRIS, drawRoundRect, saveBlob, setView, tplOf, toast, RMS};
+    get AK() { return AK; }, get X() { return X; }, persist, remove, rp, fd, today, addD, uid, fill, waNum, shopName, buildDynamicQRIS, drawRoundRect, saveBlob, setView, tplOf, toast, RMS};
 })();
