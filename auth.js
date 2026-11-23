@@ -58,7 +58,7 @@ const Auth = (() => {
         <form id="gform" hidden autocomplete="on">
           <div class="seg"><button type="button" data-gm="login" class="on">Masuk</button><button type="button" data-gm="reg">Daftar</button></div>
           <label class="f"><span>👤 Username</span><input id="gu" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" placeholder="mis. kak_rina"></label>
-          <label class="f"><span>🔒 Password</span><div class="pw"><input id="gp" type="password" autocomplete="current-password" placeholder="minimal 6 karakter"><button type="button" class="eye" id="geye" aria-label="Lihat password">👁</button></div></label>
+          <label class="f"><span>🔒 Password</span><div class="pw"><input id="gp" type="password" autocomplete="current-password" placeholder="password kamu (daftar baru: min. 8 karakter)"><button type="button" class="eye" id="geye" aria-label="Lihat password">👁</button></div></label>
           <div class="str" id="gstr" hidden><i></i><i></i><i></i><em></em></div>
           <label class="f" id="gp2w" hidden><span>🔁 Ulangi password</span><input id="gp2" type="password" autocomplete="new-password" placeholder="ketik lagi"></label>
           <div id="gerr" class="gerr" role="alert"></div>
@@ -243,7 +243,7 @@ const Auth = (() => {
     setUser(r.user, r); return r;
   }
   function strength(p) {
-    let n = 0; if (p.length >= 6) n++; if (p.length >= 9 && /[A-Za-z]/.test(p) && /\d/.test(p)) n++; if (p.length >= 11 && /[^A-Za-z0-9]/.test(p) || p.length >= 14) n++;
+    let n = 0; if (p.length >= 8) n++; if (p.length >= 9 && /[A-Za-z]/.test(p) && /\d/.test(p)) n++; if (p.length >= 11 && /[^A-Za-z0-9]/.test(p) || p.length >= 14) n++;
     const b = Q('#gstr'); b.dataset.n = p ? n : 0; b.querySelector('em').textContent = !p ? '' : ['Terlalu pendek', 'Cukup', 'Bagus', 'Kuat'][n];
   }
 

@@ -74,8 +74,8 @@
   }
 
   /* ---------- log aktivitas ---------- */
-  const LG = {login: ['🔑', 'Masuk'], login_fail: ['⚠️', 'Gagal masuk'], login_blocked: ['⛔', 'Masuk ditolak (nonaktif)'], register: ['✨', 'Daftar akun baru'], acct_update: ['🪪', 'Ubah akun'], admin_create: ['➕', 'membuat member'], admin_update: ['✏️', 'mengubah'], admin_reset: ['🔒', 'reset password'], admin_delete: ['🗑️', 'menghapus'], admin_kick: ['🚪', 'paksa keluar'], cfg: ['⚙️', 'mengubah pengaturan web']};
-  const LFS = [['all', 'Semua', () => 1], ['in', 'Masuk', l => l.action == 'login'], ['bad', 'Gagal / ditolak', l => /^login_(fail|blocked)/.test(l.action)], ['reg', 'Daftar', l => l.action == 'register'], ['adm', 'Aksi admin', l => /^(admin_|bulk_|cfg)/.test(l.action)]];
+  const LG = {login: ['🔑', 'Masuk'], login_fail: ['⚠️', 'Gagal masuk'], login_blocked: ['⛔', 'Masuk ditolak (nonaktif)'], register: ['✨', 'Daftar akun baru'], acct_update: ['🪪', 'Ubah akun'], admin_create: ['➕', 'membuat member'], admin_update: ['✏️', 'mengubah'], admin_reset: ['🔒', 'reset password'], admin_delete: ['🗑️', 'menghapus'], admin_kick: ['🚪', 'paksa keluar'], cfg: ['⚙️', 'mengubah pengaturan web'], admin_trash: ['🗑️', 'memindah ke sampah'], admin_restore: ['↩️', 'memulihkan'], admin_purge: ['❌', 'hapus permanen'], admin_kickall: ['🚨', 'keluarkan semua member'], backup: ['💾', 'backup data'], backup_fail: ['🔥', 'BACKUP GAGAL'], register_limit: ['🛑', 'pendaftaran dibatasi (terlalu ramai)']};
+  const LFS = [['all', 'Semua', () => 1], ['in', 'Masuk', l => l.action == 'login'], ['bad', 'Gagal / ditolak', l => /^(login_(fail|blocked)|register_limit|backup_fail)/.test(l.action)], ['reg', 'Daftar', l => l.action == 'register'], ['adm', 'Aksi admin', l => /^(admin_|bulk_|cfg|backup)/.test(l.action)]];
   function drawLog() {
     Q('#lflt').innerHTML = LFS.map(([k, l, f]) => `<button data-lf="${k}" class="${LF == k ? 'on' : ''}">${l}<em>${LOGS.filter(f).length}</em></button>`).join('') + '<button data-lf="rf" type="button">↻</button>';
     const f = LFS.find(x => x[0] == LF)[2], ls = LOGS.filter(f);
@@ -97,7 +97,10 @@
       <label class="f"><span>Nomor WhatsApp admin</span><input id="cwa" type="tel" inputmode="numeric" value="${E(c.waNumber || '')}" placeholder="62812xxxxxxx"></label>
       <label class="f"><span>Pesan WhatsApp awal</span><input id="cwt" type="text" maxlength="300" value="${E(c.waText || '')}"></label>
       <label class="chk"><span>Pendaftaran akun baru dibuka</span><input type="checkbox" id="creg" ${c.registerOpen !== false ? 'checked' : ''}></label>
+      <label class="chk"><span>🛠️ Mode maintenance (hanya admin yang bisa masuk)</span><input type="checkbox" id="cmt" ${c.maintenance ? 'checked' : ''}></label>
       <button class="btn pri wide" id="csave" type="button">Simpan pengaturan</button>
+      <h3>🛡️ Keamanan & data</h3><small>Backup otomatis jalan tiap hari jam 03.00 (pasang sekali lewat installTriggers, lihat SETUP.md). Salinan tersimpan di Google Drive, folder “ReyVion Backup”.</small>
+      <div class="shortcuts"><button class="btn" id="cbackup" type="button">💾 Backup sekarang</button><button class="btn" id="ckick" type="button">🚨 Keluarkan semua member</button></div>
       <h3>🔗 Pintasan</h3>
       <div class="shortcuts"><a class="btn" href="index.html">🧾 Kasir</a><a class="btn" href="watermark.html">🎀 Watermark</a><button class="btn" data-goto="mem" data-csv type="button">⬇ Unduh member</button><button class="btn" id="creload" type="button">↻ Muat ulang data</button></div>
       <h3>ℹ️ Info</h3><div class="usage"><span>Mode <b>${WM_API.DEMO ? 'DEMO (data di browser)' : 'LIVE (Google Sheets)'}</b></span><span>Member <b>${U().length}</b></span><span>Admin <b>${U().filter(u => u.role == 'admin').length}</b></span></div>`;
@@ -123,8 +126,10 @@
     if (d.lf) { if (d.lf == 'rf') return loadLog(); LF = d.lf; return drawLog(); }
     if (d.bk) { if (d.bk == 'none') ADM.sel.clear(); else if (d.bk == 'all') QA('[data-sel]:not(:disabled)').forEach(c => ADM.sel.add(c.dataset.sel)); else return doBulk(d.bk); return bulk(); }
     if (b.id == 'creload') { ADM.reload(); return toast('Memuat ulang…'); }
+    if (b.id == 'cbackup') { b.disabled = true; toast('Membuat backup…'); const r = await ADM.api('admin_backup'); b.disabled = false; return toast(r.ok ? 'Backup tersimpan di Drive ✓' : (r.code == 'unknown' ? OLD : 'Backup gagal: ' + r.error)); }
+    if (b.id == 'ckick') { if (!confirm('Keluarkan SEMUA member dari semua perangkat? Mereka harus masuk lagi. Akun adminmu tetap masuk.')) return; const r = await ADM.api('admin_kickall'); return toast(r.ok ? `${r.done} sesi dihentikan ✓` : err(r)); }
     if (b.id == 'csave') {
-      const wa = Q('#cwa').value.trim(), r = await ADM.api('admin_cfg', {set: 1, waNumber: wa, waText: Q('#cwt').value.trim(), registerOpen: Q('#creg').checked});
+      const wa = Q('#cwa').value.trim(), r = await ADM.api('admin_cfg', {set: 1, waNumber: wa, waText: Q('#cwt').value.trim(), registerOpen: Q('#creg').checked, maintenance: Q('#cmt').checked});
       return toast(r.ok ? 'Pengaturan tersimpan ✓' : err(r));
     }
   });

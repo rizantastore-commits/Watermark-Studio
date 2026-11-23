@@ -183,3 +183,36 @@ Catatan: "online" = membuka web dalam 15 menit terakhir (dicatat maksimal tiap 5
 **Dijaga di server (tidak bisa ditembus lewat DevTools):** batas transaksi/produk/pengeluaran, paket harga >1, dan jenis catatan khusus premium (klaim, QRIS, logo, akun simpanan). Catatan template dari akun gratis hanya menyimpan nama toko, HP, dan alamat.
 
 Catatan: batas bulanan dihitung per bulan kalender (zona Asia/Jakarta). Mengedit catatan yang sudah ada selalu boleh, jadi akun yang premiumnya habis tidak kehilangan data. Item dalam satu transaksi (satu nomor nota) dihitung 1 transaksi. Untuk menutup kasir lagi dari akun gratis, set `PREMIUM_ONLY: true` di `config.js` dan `STORE_PREMIUM_ONLY = true` di `Code.gs`.
+
+
+## Update v22 — Keamanan & anti-kehilangan data
+**WAJIB deploy ulang Apps Script** dan jalankan `installTriggers` sekali.
+
+### Langkah pasang (urut)
+1. Apps Script → **ganti seluruh isi Code.gs** dengan versi baru → Save.
+2. Pilih fungsi **installTriggers** di dropdown → **Run** → klik *Izinkan* (akan minta akses Google Drive & kirim email; wajar, untuk backup & peringatan). Ini memasang jadwal harian jam 03.00 dan langsung membuat 1 backup. Cek Drive: folder **ReyVion Backup**.
+3. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
+4. Upload (timpa) ke hosting: `index.html`, `admin.html`, `watermark.html`, `admin.js`, `admin-plus.js`, `auth.js`, `settings.js`.
+5. **Semua member akan diminta login ulang satu kali** (token sekarang disimpan sebagai hash). Normal, bukan error.
+
+### Yang berubah
+- **Backup harian otomatis** ke Google Drive (folder `ReyVion Backup`, 14 salinan terakhir). Tombol **💾 Backup sekarang** ada di Admin → Pengaturan. Kalau backup gagal atau login gagal 24 jam terakhir ≥ 30x, kamu dapat **email peringatan**.
+- **Hapus member = pindah ke Sampah** (filter *Sampah* di tab Member). Bisa **Pulihkan** selama 30 hari, lalu terhapus permanen otomatis. Perlu ketik ulang username untuk konfirmasi. Username di Sampah tidak bisa dipakai orang lain.
+- **Token login disimpan sebagai hash.** Kalau Google Sheet bocor, token yang terbaca tidak bisa dipakai masuk. Token admin berlaku 3 hari (member 30 hari).
+- **Password baru minimal 8 karakter**, password umum (12345678, password123, dll.) dan password sama dengan username ditolak. Password lama tetap bisa dipakai login; aturan baru berlaku saat daftar / ganti / reset.
+- **Batas pendaftaran** 20 akun/jam (ubah `REG_PER_HOUR` di Code.gs). **Kunci login bertahap**: 5x salah → kunci 5 menit, lalu 10, 20, 60 menit kalau terus dicoba.
+- **Mode maintenance** (Admin → Pengaturan): hanya admin yang bisa masuk. **🚨 Keluarkan semua member** untuk keadaan darurat.
+- **CSP** di `index.html`, `admin.html`, `watermark.html`: halaman hanya boleh terhubung ke Apps Script dan memuat skrip dari diri sendiri + jsdelivr (QR). Ini mempersulit pencurian token lewat skrip nakal. Kalau suatu saat menambah layanan luar (mis. analytics), tambahkan domainnya di tag `Content-Security-Policy`.
+- Log aktivitas mencatat: pindah ke sampah, pulihkan, hapus permanen, keluarkan semua, backup, dan pendaftaran yang dibatasi.
+
+### Wajib dilakukan manual (tidak bisa lewat kode)
+- Aktifkan **2-Step Verification / passkey** di akun Google pemilik Sheet.
+- **Jangan share** Google Sheet ke siapa pun. Siapa pun yang bisa membuka Sheet bisa membaca semua data member.
+- Folder `ReyVion Backup` juga berisi data lengkap: jangan dibagikan.
+- Tes pulihkan: sekali-sekali buka salinan backup di Drive untuk memastikan datanya utuh.
+
+### Belum dikerjakan (catatan jujur)
+- Password di **Akun Simpanan** masih tersimpan polos di Sheet `Rec_<username>` (dilindungi hanya oleh keamanan Sheet).
+- Hash password tetap SHA-256 ×300 (Apps Script tidak punya bcrypt/argon2; menaikkan iterasi terlalu banyak membuat login lambat dan menahan semua pengguna).
+- Apps Script tidak bisa membaca IP pengunjung, jadi pembatasan login per-username, bukan per-IP.
+- Mode DEMO (`api.js`) tidak meniru fitur baru ini; fitur v22 hanya jalan di mode LIVE.

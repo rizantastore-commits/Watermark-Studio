@@ -2,15 +2,15 @@
 /* Panel admin: kelola member & premium (data di Google Sheets lewat Apps Script) */
 (() => {
   const Q = s => document.querySelector(s), A = window.WM_API, E = Auth.esc, DAY = 864e5, LIFE = A.LIFETIME;
-  const SEL = new Set(), USE = {}; let USERS = [], FLT = 'all', QS = '', SORT = 'new', LIM = 30, EDIT = null, DUR = null; // DUR: durasi terpilih (hari | 'life' | null)
+  const SEL = new Set(), USE = {}; let USERS = [], TRASH = [], FLT = 'all', QS = '', SORT = 'new', LIM = 30, EDIT = null, DUR = null; // DUR: durasi terpilih (hari | 'life' | null)
   let tt; window.toast = m => { const t = Q('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2400); };
   const tok = () => { try { return localStorage.getItem('wm_tok') || ''; } catch (e) { return ''; } };
   const api = (action, o = {}) => A.call({action, token: tok(), ...o});
   const fd = t => Auth.fmtDate(t);
   const daysLeft = u => Math.max(1, Math.ceil((u.premiumUntil - Auth.now()) / DAY));
   const stat = u => u.status == 'suspended' ? 'sp' : u.role == 'admin' ? 'ad' : u.premium ? 'pr' : u.expired ? 'ex' : 'fr';
-  const FILTERS = [['all', 'Semua'], ['pr', 'Premium'], ['fr', 'Gratis'], ['ex', 'Habis'], ['soon', 'Segera habis'], ['sp', 'Nonaktif'], ['ad', 'Admin']];
-  const match = (u, f = FLT) => f == 'all' || (f == 'soon' ? u.premium && u.role == 'premium' && u.premiumUntil < Auth.now() + 7 * DAY : stat(u) == f);
+  const FILTERS = [['all', 'Semua'], ['pr', 'Premium'], ['fr', 'Gratis'], ['ex', 'Habis'], ['soon', 'Segera habis'], ['sp', 'Nonaktif'], ['ad', 'Admin'], ['tr', 'Sampah']];
+  const match = (u, f = FLT) => f == 'all' || f == 'tr' || (f == 'soon' ? u.premium && u.role == 'premium' && u.premiumUntil < Auth.now() + 7 * DAY : stat(u) == f);
   const SORTS = {
     new: (a, b) => b.createdAt - a.createdAt,
     seen: (a, b) => (b.lastSeen || b.lastLogin || 0) - (a.lastSeen || a.lastLogin || 0),
@@ -33,14 +33,19 @@
       <div class="mm-meta"><span>📅 Daftar ${fd(u.createdAt)}</span><span>🕒 ${seen ? 'Aktif ' + rel(seen) : 'Belum pernah masuk'}</span>${us ? `<span>🧾 ${us.rec} catatan${us.tpl ? ' · 🎀 ' + us.tpl + ' template' : ''}</span>` : ''}${u.note ? `<span class="mm-note">📝 ${E(u.note)}</span>` : ''}</div>
       <div class="mm-act">${ext}<button class="btn" data-ed="${E(u.username)}" type="button">Atur</button></div></article>`;
   }
+  function trow(u) { // akun di Sampah: bisa dipulihkan atau dihapus permanen
+    const left = Math.max(0, Math.ceil((u.deletedAt + 30 * DAY - Auth.now()) / DAY));
+    return `<article class="mrow mm sp"><div class="mm-top"><div class="mm-av">${Auth.avatar(u)}</div><div class="mi"><strong>${E(u.username)}<span class="badge sp">Sampah</span></strong><small>Dihapus ${fd(u.deletedAt)} · hilang permanen ${left} hari lagi</small></div></div>
+      <div class="mm-act"><button class="btn pri" data-restore="${E(u.username)}" type="button">↩ Pulihkan</button><button class="btn" data-purge="${E(u.username)}" type="button">Hapus permanen</button></div></article>`;
+  }
   function render() {
     const n = Auth.now(), soon = USERS.filter(u => u.premium && u.role == 'premium' && u.premiumUntil < n + 7 * DAY);
     document.dispatchEvent(new CustomEvent('adm:users'));
-    Q('#flt').innerHTML = FILTERS.map(([k, l]) => `<button data-f="${k}" class="${FLT == k ? 'on' : ''}">${l}<em>${USERS.filter(u => match(u, k)).length}</em></button>`).join('');
+    Q('#flt').innerHTML = FILTERS.map(([k, l]) => `<button data-f="${k}" class="${FLT == k ? 'on' : ''}">${l}<em>${k == 'tr' ? TRASH.length : USERS.filter(u => match(u, k)).length}</em></button>`).join('');
     Q('#asrt').value = SORT;
-    const ls = USERS.filter(u => match(u) && (u.username + ' ' + Auth.dispName(u) + ' ' + (u.note || '')).toLowerCase().includes(QS)).sort(SORTS[SORT] || SORTS.new), shown = ls.slice(0, LIM);
+    const ls = (FLT == 'tr' ? TRASH : USERS).filter(u => match(u) && (u.username + ' ' + Auth.dispName(u) + ' ' + (u.note || '')).toLowerCase().includes(QS)).sort(SORTS[SORT] || SORTS.new), shown = ls.slice(0, LIM), draw = FLT == 'tr' ? trow : row;
     Q('#acount').textContent = ls.length ? `Menampilkan ${shown.length} dari ${ls.length} member${ls.length != USERS.length ? ' (total ' + USERS.length + ')' : ''}` : '';
-    Q('#list').innerHTML = shown.map(row).join('') || '<div class="empty">Belum ada member yang cocok.</div>';
+    Q('#list').innerHTML = shown.map(draw).join('') || `<div class="empty">${FLT == 'tr' ? 'Sampah kosong. Akun yang dihapus muncul di sini selama 30 hari.' : 'Belum ada member yang cocok.'}</div>`;
     const mo = Q('#more'); mo.hidden = ls.length <= LIM; mo.textContent = `Tampilkan lebih banyak (${ls.length - LIM} lagi)`;
   }
   function csv() {
@@ -62,7 +67,7 @@
     if (!quiet) Q('#list').innerHTML = '<div class="gload"><span class="spin"></span>Memuat member…</div>';
     const r = await api('admin_list');
     if (!r.ok) { if (r.code == 'session') return Auth.logout(r.error); toast(r.error); return Q('#list').innerHTML = `<div class="empty">${E(r.error)}</div>`; }
-    USERS = r.users; render(); api('admin_usage').then(x => { if (x.ok) { Object.keys(USE).forEach(k => delete USE[k]); Object.assign(USE, x.usage); render(); } });
+    USERS = r.users.filter(u => u.status != 'trashed'); TRASH = r.users.filter(u => u.status == 'trashed'); render(); api('admin_usage').then(x => { if (x.ok) { Object.keys(USE).forEach(k => delete USE[k]); Object.assign(USE, x.usage); render(); } });
   }
 
   /* ---------- jendela atur member ---------- */
@@ -113,15 +118,25 @@
     if (d.st) return document.querySelectorAll('#estat button').forEach(x => x.classList.toggle('on', x == b));
     if (d.dur) { DUR = d.dur == 'life' ? 'life' : +d.dur; Q('#ecust').value = ''; document.querySelectorAll('[data-dur]').forEach(x => x.classList.toggle('on', x == b)); return pv(); }
     if (b.id == 'esave') return save();
-    if (b.id == 'ereset') { const v = await ADM.ask({title: 'Reset password', sub: `Password baru untuk ${EDIT.username}. Kirim ke member setelah ini.`, ok: 'Reset', fields: [{id: 'p', label: 'Password baru (min. 6 karakter)', type: 'text', ph: 'mis. Rey2026!'}]}); if (!v) return; const r = await api('admin_reset', {username: EDIT.username, password: v.p}); return toast(r.ok ? 'Password direset' : r.error); }
+    if (b.id == 'ereset') { const v = await ADM.ask({title: 'Reset password', sub: `Password baru untuk ${EDIT.username}. Kirim ke member setelah ini.`, ok: 'Reset', fields: [{id: 'p', label: 'Password baru (min. 8 karakter)', type: 'text', ph: 'mis. Rey2026!'}]}); if (!v) return; const r = await api('admin_reset', {username: EDIT.username, password: v.p}); return toast(r.ok ? 'Password direset' : r.error); }
     if (b.id == 'ekick') { if (!confirm(`Keluarkan ${EDIT.username} dari semua perangkat?`)) return; const r = await api('admin_kick', {username: EDIT.username}); return toast(r.ok ? 'Member dikeluarkan dari semua perangkat' : r.error); }
-    if (b.id == 'edel') { if (!confirm(`Hapus akun ${EDIT.username} permanen?`)) return; const r = await api('admin_delete', {username: EDIT.username}); if (!r.ok) return toast(r.error); Q('#em').hidden = true; toast('Akun dihapus'); return load(true); }
+    if (b.id == 'edel') { // hapus = pindah ke Sampah (bisa dipulihkan 30 hari); wajib ketik ulang username
+      const nm = EDIT.username, v = await ADM.ask({title: 'Pindahkan ke Sampah?', sub: `Akun ${nm} tidak bisa masuk lagi, datanya disimpan 30 hari dan bisa dipulihkan dari filter Sampah.`, ok: 'Pindahkan', fields: [{id: 'n', label: `Ketik "${nm}" untuk konfirmasi`, ph: nm}]});
+      if (!v) return; if (v.n.trim().toLowerCase() != nm.toLowerCase()) return toast('Nama tidak cocok, dibatalkan');
+      const r = await api('admin_delete', {username: nm}); if (!r.ok) return toast(r.error); Q('#em').hidden = true; toast('Dipindah ke Sampah ✓'); return load(true);
+    }
+    if (b.dataset.restore) { const r = await api('admin_restore', {username: b.dataset.restore}); toast(r.ok ? 'Akun dipulihkan ✓' : r.error); return r.ok && load(true); }
+    if (b.dataset.purge) {
+      const nm = b.dataset.purge, v = await ADM.ask({title: 'Hapus PERMANEN?', sub: `Semua data ${nm} (kasir, template, akun simpanan) hilang dan TIDAK bisa dikembalikan.`, ok: 'Hapus permanen', fields: [{id: 'n', label: `Ketik "${nm}" untuk konfirmasi`, ph: nm}]});
+      if (!v) return; if (v.n.trim().toLowerCase() != nm.toLowerCase()) return toast('Nama tidak cocok, dibatalkan');
+      const r = await api('admin_purge', {username: nm}); toast(r.ok ? 'Dihapus permanen' : r.error); return r.ok && load(true);
+    }
     if (b.id == 'rf') { load(); return toast('Diperbarui'); }
     if (b.id == 'xcsv') return USERS.length ? csv() : toast('Belum ada data');
     if (b.id == 'more') { LIM += 30; return render(); }
     if (b.id == 'out' || b.id == 'out2') return Auth.logout();
     if (b.id == 'add') {
-      const v = await ADM.ask({title: 'Member baru', ok: 'Buat akun', fields: [{id: 'n', label: 'Username (3-20 karakter)', ph: 'mis. kak_rina'}, {id: 'p', label: 'Password awal (min. 6 karakter)', ph: 'min. 6 karakter'}]}); if (!v) return;
+      const v = await ADM.ask({title: 'Member baru', ok: 'Buat akun', fields: [{id: 'n', label: 'Username (3-20 karakter)', ph: 'mis. kak_rina'}, {id: 'p', label: 'Password awal (min. 8 karakter)', ph: 'min. 8 karakter'}]}); if (!v) return;
       const r = await api('admin_create', {username: v.n.trim(), password: v.p}); toast(r.ok ? 'Member dibuat' : r.error); if (r.ok) load(true);
     }
   });

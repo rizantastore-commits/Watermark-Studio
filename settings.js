@@ -44,7 +44,7 @@ window.WM_SETTINGS = (() => {
         <form id="sForm" autocomplete="off" novalidate>
           <label class="f"><span>👤 Nama pengguna</span><input id="sNm" type="text" maxlength="20" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
           <small>Dipakai untuk masuk. 3-20 karakter: huruf, angka, titik, atau _ . Data kamu ikut pindah ke nama baru.</small>
-          <label class="f"><span>🔑 Password baru <em>kosongkan kalau tidak diganti</em></span><div class="pw"><input id="sNp" type="password" autocomplete="new-password" placeholder="minimal 6 karakter"><button type="button" class="eye" id="sEye" aria-label="Lihat password">👁</button></div></label>
+          <label class="f"><span>🔑 Password baru <em>kosongkan kalau tidak diganti</em></span><div class="pw"><input id="sNp" type="password" autocomplete="new-password" placeholder="minimal 8 karakter"><button type="button" class="eye" id="sEye" aria-label="Lihat password">👁</button></div></label>
           <div class="str" id="sStr" hidden><i></i><i></i><i></i><em></em></div>
           <label class="f" id="sNp2w" hidden><span>🔁 Ulangi password baru</span><input id="sNp2" type="password" autocomplete="new-password" placeholder="ketik lagi"></label>
           <div class="sdiv"></div>
@@ -121,7 +121,7 @@ window.WM_SETTINGS = (() => {
     if (!rename && !repass) return err('Belum ada yang diubah.');
     if (rename && !/^[A-Za-z0-9_.]{3,20}$/.test(nm)) return err('Nama pengguna 3-20 karakter: huruf, angka, titik, atau underscore.');
     if (repass) {
-      if (np.length < 6) return err('Password baru minimal 6 karakter.');
+      if (np.length < 8) return err('Password baru minimal 8 karakter.');
       if (np !== np2) return err('Ulangi password baru belum sama.');
       if (np === op) return err('Password baru harus beda dari password saat ini.');
     }
