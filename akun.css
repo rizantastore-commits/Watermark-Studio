@@ -1,57 +1,145 @@
-/* ===== Akun Simpanan (tim FH) ===== */
+/* ===== Akun Simpanan (tim FH) — v25: kartu ringkas, toolbar rapi, editor bottom-sheet di HP ===== */
 #p-cat,#p-acc{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
 #p-cat[hidden],#p-acc[hidden]{display:none}
 
 .ak-sub{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;background:var(--solid);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--chunk)}
 .ak-sub button{height:46px;padding:0 8px;border:0;border-radius:18px;background:none;color:var(--mut);font:600 14px Fredoka,Nunito,sans-serif;cursor:pointer;transition:background .2s,color .2s}
 .ak-sub button.on{color:#fff;background:linear-gradient(135deg,var(--p),var(--p2));box-shadow:var(--chunkp)}
+.ak-bd{font-style:normal;display:inline-block;min-width:18px;padding:0 6px;margin-left:4px;border-radius:99px;background:#e8707e;color:#fff;font-size:11px;line-height:18px}
 
+/* ---------- ringkasan & toolbar ---------- */
+.ak-hint{margin:0}
+#p-acc .ak-sum{grid-template-columns:repeat(6,minmax(0,1fr))}
+#p-acc .ak-sum .st:nth-child(-n+3){grid-column:span 2}
+#p-acc .ak-sum .st:nth-child(n+4){grid-column:span 3}
+@media(min-width:641px){#p-acc .ak-sum{grid-template-columns:repeat(5,minmax(0,1fr))}#p-acc .ak-sum .st:nth-child(n){grid-column:auto}}
 .ak-sum .st{position:relative;overflow:hidden}
 .ak-sum .st i{position:absolute;right:10px;top:8px;font-style:normal;font-size:20px;opacity:.9}
-.ak-rep{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
-.ak-rep .btn{height:auto;min-height:44px;padding:8px 12px;white-space:normal;text-align:center;line-height:1.2}
-
-/* kartu akun */
-.tk-rec.ak{gap:10px}
-.ak-cred{display:grid;gap:6px;padding:10px 12px;border-radius:16px;background:var(--soft);border:2px solid var(--line)}
-.ak-cred>div{display:flex;align-items:center;gap:8px;min-width:0}
-.ak-cred span{flex:none}
-.ak-cred b{flex:1;min-width:0;font:700 13.5px Nunito,sans-serif;overflow-wrap:anywhere;word-break:break-all}
-.ak-pw{font-family:ui-monospace,Menlo,monospace!important;letter-spacing:.02em}
-.ak-i{flex:none;width:36px;height:36px;display:grid;place-items:center;padding:0;border-radius:12px;border:2px solid var(--line);background:var(--solid);color:var(--pd);font-size:15px;line-height:1;cursor:pointer}
-.ak-i:active{transform:scale(.92)}
-.ak-sl{display:grid;gap:6px}
-.ak-pfs{list-style:none;margin:0;padding:0;display:grid;gap:5px}
-.ak-pf{display:grid;grid-template-columns:minmax(0,1.2fr) auto minmax(0,1fr);gap:8px;align-items:center;padding:7px 10px;border-radius:14px;border:2px dashed var(--line);font-size:12.5px;font-weight:800}
-.ak-pf.on{border-style:solid;background:var(--soft)}
-.ak-pf .ak-pn,.ak-pf em{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ak-pf code{padding:1px 8px;border-radius:8px;background:var(--solid);border:1.5px solid var(--line);font-size:12px;letter-spacing:.08em}
-.ak-pf em{font-style:normal;text-align:right;color:var(--mut)}
-.ak-pf.on em{color:var(--pd)}
-
-/* editor */
-.ak-prow{display:grid;grid-template-columns:minmax(0,1fr) 96px 44px;gap:8px;align-items:center;padding:10px;border-radius:18px;background:var(--soft);border:2px solid var(--line)}
-.ak-prow .pu{grid-column:1/3}
-.ak-prow .btn{grid-column:3;grid-row:1/3;height:100%;min-height:44px;padding:0}
-.ak-padd{display:flex;flex-wrap:wrap;gap:8px}
-.ak-padd .btn{flex:1 1 auto}
-
-@media(max-width:400px){.ak-pf{grid-template-columns:minmax(0,1fr) auto}.ak-pf em{grid-column:1/-1;text-align:left}}
-
-/* jendela akun: jarak antar isi lebih lega */
-.tokopg .ed{gap:12px}
-
-/* ===== v20: masa aktif, pemakai per profil, pengingat marker ===== */
-.ak-pfs li{list-style:none}
-button.ak-pf{width:100%;text-align:left;font-family:inherit;color:inherit;background:none;cursor:pointer;-webkit-appearance:none;appearance:none}
-button.ak-pf.on{background:var(--soft)}
-button.ak-pf:active{transform:scale(.99)}
-.ak-pf small{grid-column:1/-1;font-size:11.5px;font-weight:700;color:var(--mut)}
-.ak-pf.free small{opacity:.8}
-.ak-pf.soon{border-style:solid;border-color:#f2b84b;background:rgba(242,184,75,.18)}
-.ak-pf.ex{border-style:solid;border-color:#e8707e;background:rgba(232,112,126,.15)}
-.ak-warn{font-weight:800;color:#b9770e}
-.ak-bd{font-style:normal;display:inline-block;min-width:18px;padding:0 6px;margin-left:4px;border-radius:99px;background:#e8707e;color:#fff;font-size:11px;line-height:18px}
 #akRemind,#akAlert{margin:0}
 #akRemind b,#akAlert b{display:block}
+#p-acc .ak-bar{display:flex;flex-wrap:nowrap;gap:8px;align-items:center}
+#p-acc .ak-bar input[type=search]{flex:1 1 0;min-width:0}
+#p-acc .ak-bar .btn.pri{flex:none;padding:0 16px}
+#p-acc .ak-bar .ak-mbtn{flex:none;width:44px;padding:0;font-size:20px;line-height:1}
+.ak-menu{display:grid;gap:6px;padding:8px;border-radius:18px;background:var(--solid);border:2.5px solid var(--line);box-shadow:var(--chunk)}
+.ak-menu[hidden]{display:none}
+.ak-menu .btn{justify-content:flex-start;height:42px;font-size:13.5px}
+/* filter: satu baris yang bisa digeser, tidak menumpuk ke bawah */
+.ak-fl{margin:0 -2px}
+#akFlt{flex-wrap:nowrap;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#akFlt::-webkit-scrollbar{display:none}
+#akFlt button{flex:none;height:34px;padding:0 12px;font-size:13px;white-space:nowrap}
+.ak-tl{display:flex;gap:8px;align-items:center}
+.ak-tl select{flex:1 1 0;min-width:0;height:38px;padding:0 12px;font-size:13px}
+.ak-tl .btn{flex:none;height:38px;padding:0 12px;font-size:13px;white-space:nowrap}
+.ak-list{align-items:start}
+
+/* ---------- kartu akun ---------- */
+.tk-rec.ak{gap:8px;padding:12px 14px}
+.ak-top{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;-webkit-appearance:none;appearance:none}
+.ak-top strong{flex:1;min-width:0;font:600 17px Fredoka,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-top .badge{margin:0;flex:none}
+.ak-chev{flex:none;font-style:normal;color:var(--mut);transition:transform .2s}
+.tk-rec.open .ak-chev{transform:rotate(180deg)}
+.ak-em{display:flex;align-items:center;gap:6px;min-width:0}
+.ak-em>span{flex:none}
+.ak-em b{flex:1;min-width:0;font:700 13.5px Nunito,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-i{flex:none;width:38px;height:38px;display:grid;place-items:center;padding:0;border-radius:12px;border:2px solid var(--line);background:var(--solid);color:var(--pd);font-size:15px;line-height:1;cursor:pointer}
+.ak-i:active{transform:scale(.92)}
+.ak-warn{font-weight:800;color:#b9770e}
+.ak-chs{display:flex;flex-wrap:wrap;gap:6px}
+.ak-ch{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--soft);color:var(--pd);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.ak-ch.soon{background:#ffe9b8;color:#7a5200}
+.ak-ch.ex{background:#ffd1d1;color:#a11}
+.ak-dots{display:flex;flex-wrap:wrap;gap:5px}
+.ak-dg{display:inline-flex;gap:3px;padding:3px 6px;border-radius:99px;background:var(--soft)}
+.ak-dot{display:block;width:12px;height:12px;border-radius:50%;border:2px solid var(--line);background:transparent}
+.ak-dot.on{background:#3cc47c;border-color:#3cc47c}
+.ak-dot.soon{background:#f2b84b;border-color:#f2b84b}
+.ak-dot.ex{background:#e8707e;border-color:#e8707e}
+.ak-more{display:grid;gap:10px;padding-top:10px;border-top:2px dashed var(--line)}
+.ak-more[hidden]{display:none}
+.ak-pwr{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;border-radius:14px;background:var(--soft);border:2px solid var(--line)}
+.ak-pwr>span{flex:none}
+.ak-pwr b{flex:1;min-width:0;font:700 13.5px Nunito,sans-serif;overflow-wrap:anywhere;word-break:break-all}
+.ak-pw{font-family:ui-monospace,Menlo,monospace!important;letter-spacing:.02em}
+.ak-sl{display:grid;gap:6px}
+.ak-sh{font-weight:800}
+.ak-acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px}
+.ak-acts .btn{height:auto;min-height:40px;padding:6px 8px;font-size:13px;white-space:normal;line-height:1.15;text-align:center}
+.ak-acts .btn.pri{grid-column:1/-1}
+
+/* ---------- daftar profil ---------- */
+.ak-pfs{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ak-pfs li{list-style:none}
+.ak-li{display:flex;gap:6px;align-items:stretch}
+.ak-pf{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;align-items:center;padding:8px 10px;border-radius:14px;border:2px dashed var(--line);font-size:12.5px;font-weight:800}
+button.ak-pf{width:100%;text-align:left;font-family:inherit;color:inherit;background:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+.ak-li button.ak-pf{flex:1;width:auto;min-width:0}
+button.ak-pf:active{transform:scale(.99)}
+.ak-pf.on{border-style:solid;background:var(--soft)}
+.ak-l{display:flex;align-items:center;gap:8px;min-width:0}
+.ak-pf .ak-pn,.ak-pf em{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-pf code{flex:none;padding:1px 8px;border-radius:8px;background:var(--solid);border:1.5px solid var(--line);font-size:12px;letter-spacing:.08em}
+.ak-pf em{font-style:normal;text-align:right;color:var(--mut);max-width:48vw}
+.ak-pf.on em{color:var(--pd)}
+.ak-pf small{grid-column:1/-1;font-size:11.5px;font-weight:700;color:var(--mut)}
+.ak-pf.soon{border-style:solid;border-color:#f2b84b;background:rgba(242,184,75,.18)}
+.ak-pf.ex{border-style:solid;border-color:#e8707e;background:rgba(232,112,126,.15)}
+.ak-ac{display:flex;gap:4px;align-items:center}
+.ak-ac .ak-i{width:38px;height:38px}
+/* profil multi-user */
+.ak-pfs .ak-pg{border:2px solid var(--line);border-radius:16px;padding:7px;display:grid;gap:6px;background:var(--solid)}
+.ak-ph{display:flex;align-items:center;gap:8px;padding:0 4px;font-size:12.5px;font-weight:900}
+.ak-ph .ak-pn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-ph code{padding:1px 8px;border-radius:8px;background:var(--soft);border:1.5px solid var(--line);font-size:12px;letter-spacing:.08em}
+.ak-cap{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--pd)}
+.ak-mbs{display:grid;gap:6px}
+
+/* ---------- editor (jendela akun) ---------- */
+#am .ed{--px:22px;--pb:22px;padding:24px var(--px) var(--pb);gap:12px}
+.ak-sec{display:grid;gap:10px;padding:12px;border-radius:18px;background:var(--soft);border:2px solid var(--line)}
+.ak-sec h4{margin:0;font-size:14px;color:var(--pd)}
+.ak-sec h4::before,.ak-sec h4::after{content:none!important;display:none!important}
+.ak-sec>small{color:var(--mut);font-weight:700}
+.ak-sec .row2{gap:8px}
+.ak-sec .prev{background:var(--solid)}
+.ak-plist{display:grid;gap:10px}
+.ak-prow{display:grid;grid-template-columns:minmax(0,1fr) 96px 44px;gap:8px;align-items:center;padding:10px;border-radius:16px;background:var(--solid);border:2px solid var(--line)}
+.ak-prow .pu{grid-column:1/3}
+.ak-prow>.btn{grid-column:3;grid-row:1/3;height:100%;min-height:44px;padding:0}
+.ak-prow .pc{grid-column:1/3;min-height:40px}
+.ak-prow .ak-us{grid-column:1/-1;display:grid;gap:8px}
+.ak-urow{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;padding:9px;border-radius:14px;background:var(--soft);border:2px solid var(--line)}
+.ak-urow .ak-un{grid-column:1/-1;font-size:12.5px}
+.ak-urow input,.ak-urow select{min-width:0;width:100%}
+.ak-urow .un,.ak-urow .uw{grid-column:1/-1}
+.ak-ul{display:grid;gap:2px;font-size:11px;font-weight:800;color:var(--mut)}
+.ak-ul.wide{grid-column:1/-1}
+.ak-oth{display:block;margin:2px 0;font-size:11.5px;font-weight:700;color:var(--mut)}
+.ak-padd{display:flex;flex-wrap:wrap;gap:8px}
+.ak-padd .btn{flex:1 1 auto}
+/* tombol simpan menempel di bawah supaya tidak perlu scroll jauh */
+.ak-sbar{position:sticky;bottom:0;z-index:2;display:grid;gap:8px;margin:4px calc(-1*var(--px)) calc(-1*var(--pb));padding:10px var(--px) calc(14px + env(safe-area-inset-bottom,0px));background:var(--solid);border-top:2px solid var(--line)}
+.ak-sbar .btn{width:100%;height:46px}
+.ak-sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.ak-sr .btn{height:42px}
 .tokopg .ed .prev{font-weight:800;font-size:13px}
+
+@media(max-width:640px){
+  /* jendela akun jadi bottom-sheet di HP */
+  #am{place-items:end center;padding:0}
+  #am .ed{--px:16px;--pb:0px;width:100%;max-height:92dvh;padding-top:20px;border-radius:26px 26px 0 0;border-bottom:0;animation:sheet .3s cubic-bezier(.3,1.2,.5,1)}
+  .ak-sec{padding:11px}
+  .ak-prow{grid-template-columns:minmax(0,1fr) 84px 44px}
+  .ak-acts .btn{padding:0 6px}
+}
+@media(max-width:360px){.ak-pf em{max-width:40vw}.ak-top strong{font-size:16px}}
+
+/* v26: perpanjang akun & batalkan */
+.ak-rn{border:0;cursor:pointer;font-family:inherit;color:#fff;background:linear-gradient(135deg,var(--p),var(--p2));box-shadow:0 2px 0 #e0407f}
+.ak-rn:active{transform:scale(.95)}
+.ak-rw{display:flex;gap:8px}
+.ak-rw .btn{width:auto;flex:1}
+.ak-rw .btn.pri{flex:2}
+.ak-del{width:100%;height:42px}

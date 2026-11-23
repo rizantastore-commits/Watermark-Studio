@@ -229,7 +229,7 @@
     Q('#em .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${r ? 'Edit catatan' : 'Catat penjualan'}</h3>
     ${P.length ? `<label class="f"><span>Pilih dari produk (opsional)</span><select id="eProd"><option value="">— ketik manual —</option>${P.map(p => `<option value="${p.id}" ${EPID == p.id ? 'selected' : ''}>${E(p.name)} · stok ${+p.stock || 0}</option>`).join('')}</select></label>` : ''}
     <div class="chips" id="eTiers" ${EPID && (P.find(p => p.id == EPID) || {tiers: []}).tiers.length ? '' : 'hidden'}>${tierChips(P.find(p => p.id == EPID))}</div>
-    ${!r && AK.some(a => Akun.free(a) > 0) ? `<label class="f"><span>Ambil dari akun simpanan (opsional)</span><select id="eAcc"><option value="">— tidak —</option>${AK.filter(a => Akun.free(a) > 0).map(a => `<option value="${E(a.id)}">${E(a.app)} · ${E(a.email)}${(a.profs || []).length ? ' · ' + (a.profs.filter(q => !q.u).length) + ' profil kosong' : ''}</option>`).join('')}</select></label>` : ''}
+    ${!r && AK.some(a => Akun.free(a) > 0) ? `<label class="f"><span>Ambil dari akun simpanan (opsional)</span><select id="eAcc"><option value="">— tidak —</option>${AK.filter(a => Akun.free(a) > 0).map(a => `<option value="${E(a.id)}">${E(a.app)} · ${E(a.email)}${(a.profs || []).length ? ' · ' + Akun.free(a) + ' slot kosong' : ''}</option>`).join('')}</select></label>` : ''}
     <label class="f"><span>Nama aplikasi / produk</span><input type="text" id="eApp" list="appl" maxlength="60" placeholder="mis. Netflix Premium" value="${E(d.app)}"></label>
     <label class="f"><span>Email / akun yang dijual</span><input type="text" id="eEmail" maxlength="80" placeholder="mis. akun01@gmail.com" value="${E(d.email || '')}"></label>
     <div class="row2"><label class="f"><span>Nama pembeli</span><input type="text" id="eBuyer" maxlength="40" value="${E(d.buyer || '')}"></label>
@@ -257,7 +257,7 @@
     const ps = Q('#eProd'); if (a.pid && ps && P.some(p => p.id == a.pid)) { ps.value = a.pid; pickProd(a.pid); }
     if (Q('#eStk')) Q('#eStk').checked = false; // stok produk diatur lewat akun simpanan
     Q('#eApp').value = a.app; Q('#eEmail').value = a.email || ''; if (a.cost && !num('eCost')) Q('#eCost').value = a.cost;
-    const fp = (a.profs || []).find(q => !q.u); if (fp && !v('eNote')) Q('#eNote').value = `Profil: ${fp.n}${fp.p ? ' · PIN ' + fp.p : ''}`;
+    const fs = Akun.firstSeat(a), fp = fs && fs.p; if (fp && !v('eNote')) Q('#eNote').value = `Profil: ${fp.n}${fp.p ? ' · PIN ' + fp.p : ''}${Akun.cap(fp) > 1 ? ' · User ' + (fs.k + 1) : ''}`;
   }
   function useTier(m, t) { setDur(m, t.d); Q('#' + (m == 'e' ? 'ePrice' : 'rPrice')).value = t.price; }
   function syncEnd() { if (!EDIT || !EDIT.renewals) { const o = v('eOrd'); if (o && Q('#eEnd')) Q('#eEnd').value = addD(o, EDAYS); } }
@@ -275,7 +275,7 @@
     Q('#em').hidden = true;
     persist(rec).then(ok => {
       if (!ok) return; toast('Tersimpan ✓');
-      if (acc) { const ps = (acc.profs || []).map(q => ({...q})), i = ps.findIndex(q => !q.u); if (i >= 0) Object.assign(ps[i], {u: rec.buyer || 'Terjual', s: ord, d: EDAYS, e: end, w: rec.wa || undefined}); persist({...acc, profs: ps, status: ps.length ? acc.status : 'used'}); } // status akun dengan profil dihitung dari slot
+      if (acc) { const ps = (acc.profs || []).map(q => ({...q})), fs = Akun.firstSeat({...acc, profs: ps}); if (fs) Akun.assign(ps, fs.i, fs.k, {u: rec.buyer || 'Terjual', s: ord, d: EDAYS, e: end, w: rec.wa || undefined}); persist({...acc, profs: ps, status: ps.length ? acc.status : 'used'}); } // status akun dengan profil dihitung dari slot
       if (p) { const ns = Math.max(0, (+p.stock || 0) - 1); persist({...p, stock: ns}); if (ns <= (p.min == null ? 3 : +p.min)) setTimeout(() => toast(`Stok ${p.name} tinggal ${ns}`), 1500); }
     });
   }
@@ -436,7 +436,8 @@
       tiers: A1(x.tiers).slice(0, 8).map(t => ({d: Math.floor(N0(t && t.d)), price: N0(t && t.price)})).filter(t => t.d > 0)} : null;
     if (x.t == 'a') return x.app ? {t: 'a', id, pid: x.pid ? T1(x.pid, 40) : undefined, app: T1(x.app, 60), email: T1(x.email, 80), pass: T1(x.pass, 80), holder: T1(x.holder, 40), hw: T1(x.hw, 20), st: D1(x.st), days: Math.floor(N0(x.days)) || undefined, exp: D1(x.exp), rm: x.rm == null ? undefined : Math.min(60, Math.floor(N0(x.rm))), rmDone: D1(x.rmDone) || null, cost: N0(x.cost),
       status: ['ready', 'used', 'issue', 'dead'].includes(x.status) ? x.status : 'ready', note: T1(x.note, 200), created: N0(x.created) || Date.now(),
-      profs: A1(x.profs).slice(0, 10).map(q => { const o = {n: T1(q && q.n, 20), p: T1(q && q.p, 8), u: T1(q && q.u, 30)}; if (o.u && q) { if (D1(q.s)) o.s = D1(q.s); if (D1(q.e)) o.e = D1(q.e); if (N0(q.d) > 0) o.d = Math.floor(N0(q.d)); if (q.w) o.w = T1(q.w, 20); } return o; })} : null;
+      profs: A1(x.profs).slice(0, 10).map(q => { const o = {n: T1(q && q.n, 20), p: T1(q && q.p, 8), u: T1(q && q.u, 30)}; if (o.u && q) { if (D1(q.s)) o.s = D1(q.s); if (D1(q.e)) o.e = D1(q.e); if (N0(q.d) > 0) o.d = Math.floor(N0(q.d)); if (q.w) o.w = T1(q.w, 20); }
+        const c = Math.max(1, Math.min(4, Math.floor(N0(q && q.cap)) || 1)); if (c > 1) { o.cap = c; const x = A1(q.x).slice(0, c - 1).map(m => { const y = {u: T1(m && m.u, 30)}; if (y.u) { if (D1(m.s)) y.s = D1(m.s); if (D1(m.e)) y.e = D1(m.e); if (N0(m.d) > 0) y.d = Math.floor(N0(m.d)); if (m.w) y.w = T1(m.w, 20); } return y; }); while (x.length && !x[x.length - 1].u) x.pop(); if (x.length) o.x = x; } return o; })} : null;
     if (x.t == 'c') return x.buyer && D1(x.date) ? {t: 'c', id, rid: T1(x.rid, 40), buyer: T1(x.buyer, 40), wa: T1(x.wa, 20), app: T1(x.app, 60), date: D1(x.date), kind: ['komplain', 'garansi', 'ganti'].includes(x.kind) ? x.kind : 'komplain',
       status: ['baru', 'proses', 'selesai'].includes(x.status) ? x.status : 'baru', issue: T1(x.issue, 300), fix: T1(x.fix, 200), oldAcc: T1(x.oldAcc, 80), newAcc: T1(x.newAcc, 80), doneAt: D1(x.doneAt) || undefined, created: N0(x.created) || Date.now()} : null;
     if (x.t == 'l') return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(x.img || '') && x.img.length < 7500 ? {t: 'l', id, img: x.img} : null;

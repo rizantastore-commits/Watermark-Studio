@@ -163,20 +163,22 @@
         <div id="plist" class="tk-list"></div>
       </div>
       <div id="p-acc" hidden>
-        <small class="tk-hint">Catat akun yang kamu simpan: email, password, masa aktif (tanggal mulai + durasi), dan siapa yang memakai tiap profil beserta durasinya. Dapat pengingat untuk minta laporan ke marker sebelum masa akun habis.</small>
+        <small class="tk-hint ak-hint">Catat akun simpanan: email, password, masa aktif, dan siapa yang memakai tiap profil beserta durasinya.</small>
         <div class="stats ak-sum" id="akSum"></div>
-        <div class="tools">
-          <input type="search" id="akQ" placeholder="Cari email, produk, pemegang, profil…" aria-label="Cari akun simpanan">
-          <button class="btn pri" id="akAdd" type="button">+ Akun</button>
-          <button class="btn" id="akCsv" type="button" title="Unduh CSV" aria-label="Unduh CSV">⬇</button>
-        </div>
-        <div class="tk-fl">
-          <div class="chips" id="akFlt"></div>
-          <select id="akSrt" aria-label="Urutkan akun"><option value="new">↕ Terbaru</option><option value="app">↕ Produk A–Z</option><option value="due">↕ Segera berakhir</option><option value="holder">↕ Pemegang</option></select>
-        </div>
         <div class="tk-rm" id="akRemind" hidden></div>
-        <div class="ak-rep"><button class="btn" id="akRep" type="button">📋 Salin laporan untuk marker</button><button class="btn" id="akRepFull" type="button">🔐 Laporan lengkap + password</button></div>
-        <div id="akList" class="tk-list"></div>
+        <div class="tools ak-bar">
+          <input type="search" id="akQ" placeholder="Cari akun, nama, no. WA…" aria-label="Cari akun simpanan">
+          <button class="btn pri" id="akAdd" type="button">+ Akun</button>
+          <button class="btn ak-mbtn" type="button" data-ax="more" aria-expanded="false" aria-controls="akMenu" aria-label="Menu lainnya">⋯</button>
+        </div>
+        <div class="ak-menu" id="akMenu" hidden>
+          <button class="btn" id="akRep" type="button">📋 Salin laporan untuk marker</button>
+          <button class="btn" id="akRepFull" type="button">🔐 Laporan lengkap + password</button>
+          <button class="btn" id="akCsv" type="button">⬇ Unduh CSV</button>
+        </div>
+        <div class="ak-fl"><div class="chips" id="akFlt"></div></div>
+        <div class="ak-tl"><select id="akSrt" aria-label="Urutkan akun"><option value="new">↕ Terbaru</option><option value="app">↕ Produk A–Z</option><option value="due">↕ Segera berakhir</option><option value="holder">↕ Pemegang</option></select><button class="btn" id="akTgl" type="button" data-ax="tglall">⤢ Buka semua</button></div>
+        <div id="akList" class="tk-list ak-list"></div>
         <datalist id="akHl"></datalist>
       </div>
     </section>
