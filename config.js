@@ -20,6 +20,14 @@ window.WM_CONFIG = {
     {name: 'Seumur Hidup', days: 0, price: 'Rp99.000', note: 'Bayar sekali'}
   ],
 
+  // Tab Promosi di panel admin (semua opsional; kosong = pakai bawaan). Poster & teks juga bisa diubah langsung di panel.
+  PROMO: {
+    URL: '',                      // link web yang disebar. Kosong = otomatis dari alamat web saat panel dibuka
+    HEAD: 'Jualan akun premium jadi rapi & gampang',
+    SUB: 'Kasir, stok akun, nota PNG, dan laporan laba — semua dari HP. Gratis dipakai!',
+    TAG: 'Kasir & Rekap Toko Online'
+  },
+
   // Tabel perbandingan Gratis vs Premium
   COMPARE: [
     ['Watermark teks, badge, logo, kontak', true, true],

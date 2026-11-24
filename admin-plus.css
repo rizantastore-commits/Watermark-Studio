@@ -6,7 +6,7 @@ body.adminpg{--bnh:64px}
 .tab>*{min-width:0}
 
 /* ---- menu tab: di layar lebar = baris tab di atas, di HP = menu bawah ---- */
-.bnav{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:6px;background:var(--panel);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--chunk)}
+.bnav{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:6px;background:var(--panel);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:2.5px solid var(--line);border-radius:22px;box-shadow:var(--chunk)}
 .bnav button{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 8px;font:600 14px Fredoka,Nunito,sans-serif;color:var(--mut);background:transparent;border:0;border-radius:16px;cursor:pointer}
 .bnav button i{font-style:normal;font-size:18px}
 .bnav button.on{color:#fff;background:linear-gradient(135deg,var(--p),var(--p2));box-shadow:0 3px 0 #e0407f}
@@ -116,7 +116,7 @@ body.hasbulk .adm{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
    ===================================================================== */
 
 /* ---- menu tab: 6 kolom sama lebar, tidak pernah melebar keluar layar ---- */
-.bnav{grid-template-columns:repeat(6,minmax(0,1fr))}
+.bnav{grid-template-columns:repeat(7,minmax(0,1fr))}
 .bnav button{min-width:0;overflow:visible}
 .bnav button>span{min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bnav button>span b{font:inherit}
@@ -168,12 +168,12 @@ body.hasbulk .adm{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
 .todo-i s{text-decoration:none;font-size:22px;color:var(--p);line-height:1}
 
 /* ---- aksi cepat ---- */
-.qa{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.qa{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px}
 .qa-b{display:grid;justify-items:center;align-content:center;gap:4px;min-height:74px;padding:10px 6px;font:600 12.5px/1.2 Fredoka,Nunito,sans-serif;color:var(--ink);background:var(--panel);border:2.5px solid var(--line);border-radius:20px;box-shadow:var(--chunk);cursor:pointer;text-align:center}
 .qa-b i{font-style:normal;font-size:22px;line-height:1}
 .qa-b:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
 .qa-b:disabled{opacity:.5}
-@media(max-width:700px){.qa{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.qa-b{min-height:68px;font-size:12px}}
+@media(max-width:700px){.qa{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.qa-b{min-height:66px;padding:8px 4px;font-size:11.5px}}
 
 /* ---- grafik: pilih rentang & komposisi ---- */
 .rgs{display:flex;gap:6px;margin-top:-2px}

@@ -2,7 +2,7 @@
 /* Panel admin v21: tab bawah, ringkasan, aksi massal, log aktivitas, pengaturan web, rincian pemakaian member */
 (() => {
   const Q = s => document.querySelector(s), QA = s => [...document.querySelectorAll(s)], E = Auth.esc, ADM = window.ADM, DAY = 864e5;
-  const TABS = ['dash', 'mem', 'ann', 'fb', 'log', 'set'], U = () => ADM.users(), NOW = () => Auth.now();
+  const TABS = ['dash', 'mem', 'ann', 'promo', 'fb', 'log', 'set'], U = () => ADM.users(), NOW = () => Auth.now();
   const abs = t => t ? new Date(t).toLocaleString('id-ID', {day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'}) : '-';
   const OLD = 'Code.gs belum diperbarui ke v21. Tempel Code.gs terbaru di Apps Script lalu Deploy → Manage deployments → Edit → New version.';
   const err = r => r.code == 'unknown' ? OLD : r.error;
@@ -42,7 +42,7 @@
     QA('.tab').forEach(x => x.hidden = x.id != 't-' + t);
     QA('#bnav button').forEach(b => b.classList.toggle('on', b.dataset.tab == t));
     try { history.replaceState(null, '', '#' + t); } catch (e) {}
-    if (ready) { if (t == 'log') loadLog(); if (t == 'set') loadCfg(); if (t == 'ann' && ADM.loadAnn) ADM.loadAnn(); if (t == 'fb') loadFb(); }
+    if (ready) { if (t == 'log') loadLog(); if (t == 'set') loadCfg(); if (t == 'ann' && ADM.loadAnn) ADM.loadAnn(); if (t == 'fb') loadFb(); if (t == 'promo' && ADM.loadPromo) ADM.loadPromo(); }
     window.scrollTo(0, 0);
   }
 
@@ -74,7 +74,7 @@
     ].filter(Boolean);
     const td = Q('#todo'); td.hidden = false;
     td.innerHTML = `<h4>🎯 Perlu perhatian${items.length ? `<em>${items.length}</em>` : ''}</h4>` + (items.length ? `<div class="todo-l">${items.map(([ic, t, sub, g, f, lf]) => `<button type="button" class="todo-i" data-goto="${g}" ${f ? `data-f="${f}"` : ''} ${lf ? `data-lfx="${lf}"` : ''}><i>${ic}</i><span><b>${t}</b><small>${sub}</small></span><s>${IC('chevron')}</s></button>`).join('')}</div>` : '<p class="dnone">✅ Semua beres, tidak ada yang perlu ditindaklanjuti.</p>');
-    const q = [[IC('plus'), 'Member baru', 'add'], [IC('megaphone'), 'Buat info', 'ann'], [IC('inbox'), 'Masukan', 'fb'], [IC('download'), 'Unduh member', 'csv'], [IC('save'), 'Backup', 'bk'], [IC('clipboard'), 'Salin laporan', 'rpt']];
+    const q = [[IC('plus'), 'Member baru', 'add'], [IC('megaphone'), 'Buat info', 'ann'], [IC('send'), 'Promosi', 'promo'], [IC('link'), 'Salin link ajak', 'plink'], [IC('inbox'), 'Masukan', 'fb'], [IC('download'), 'Unduh member', 'csv'], [IC('save'), 'Backup', 'bk'], [IC('clipboard'), 'Salin laporan', 'rpt']];
     Q('#qa').innerHTML = q.map(([i, l, k]) => `<button type="button" class="qa-b" data-qa="${k}"><i>${i}</i><span>${l}</span></button>`).join('');
     const tot = us.length || 1, seg = [['Premium', us.filter(P).length, 'a'], ['Gratis', us.filter(u => u.role == 'free' && u.status == 'active').length, 'b'], ['Habis', expired, 'c'], ['Nonaktif', susp, 'd']];
     const rngs = `<div class="rgs">${[7, 14, 30].map(r => `<button type="button" data-rg="${r}" class="${r == RG ? 'on' : ''}">${r} hr</button>`).join('')}</div>`;
@@ -244,6 +244,8 @@
       if (d.qa == 'add') { go('mem'); return Q('#add').click(); }
       if (d.qa == 'ann') { go('ann'); let k = 0; const t = setInterval(() => { const a = Q('#an_new'); if (a) { clearInterval(t); a.click(); } else if (++k > 25) clearInterval(t); }, 150); return; }
       if (d.qa == 'fb') return go('fb');
+      if (d.qa == 'promo') return go('promo');
+      if (d.qa == 'plink') return ADM.promoCopy ? ADM.promoCopy() : toast('Buka tab Promosi dulu');
       if (d.qa == 'csv') { go('mem'); return Q('#xcsv').click(); }
       if (d.qa == 'bk') { b.disabled = true; toast('Membuat backup…'); const r = await ADM.api('admin_backup'); b.disabled = false; return toast(r.ok ? 'Backup tersimpan di Drive ✓' : (r.code == 'unknown' ? OLD : 'Backup gagal: ' + r.error)); }
       if (d.qa == 'rpt') { const t = report(); try { await navigator.clipboard.writeText(t); toast('Laporan disalin ✓ tinggal tempel ke WhatsApp'); } catch (x) { prompt('Salin laporan ini:', t); } return; }

@@ -278,3 +278,14 @@ Admin menulis pengumuman **sekali**, tampil sebagai **banner di atas halaman** s
 2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
 3. Sheet baru **Feedback** dibuat otomatis saat masukan pertama dikirim (atau jalankan `setup()` sekali).
 4. Upload (timpa) semua file di folder `reyvion-v30` ke hosting (termasuk file baru `help.js` dan `help.css`).
+
+## Update v32 (tab Promosi di panel admin)
+Tab baru **Promosi** (ikon pesawat kertas) untuk admin yang menyebar web ke teman / calon pengguna. **Tidak perlu update Code.gs**, cukup upload file ke hosting (timpa yang lama): `admin.html`, `admin-plus.js`, `admin-plus.css`, `config.js`, dan dua file baru `admin-promo.js` + `admin-promo.css`.
+
+Isi tab Promosi:
+- **Bagikan cepat**: link web, tombol Salin / Kirim ke WhatsApp / Bagikan, dan QR link yang bisa diunduh (scan langsung di depan orang).
+- **Poster promosi**: 3 ukuran (Story/Status 9:16, Feed IG 4:5, Kotak 1:1), 6 warna, judul & fitur bisa diatur, ada harga Premium (diambil dari `PLANS` di `config.js`) dan QR link. Unduh PNG, salin gambar, atau bagikan langsung lewat menu share HP (WhatsApp, IG, dll.).
+- **Kirim ke teman**: 4 teks siap kirim (WhatsApp pribadi, Status WA, Caption IG, Grup), nama penerima terisi otomatis, kirim langsung ke nomor tertentu atau pilih kontak sendiri. Setiap kiriman dicatat; tandai yang sudah daftar untuk melihat persentase berhasil.
+- Dashboard punya 2 aksi cepat baru: **Promosi** dan **Salin link ajak**.
+
+Catatan: pengaturan poster, teks, dan catatan kirim tersimpan di **browser admin yang dipakai** (tidak ikut ke perangkat lain). Kalau link otomatis salah, isi manual di kolom *Link web*. Nomor WhatsApp di poster mengikuti `WA_NUMBER` / sheet Config, atau isi sendiri.
