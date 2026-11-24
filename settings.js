@@ -10,32 +10,32 @@ window.WM_SETTINGS = (() => {
   document.body.insertAdjacentHTML('beforeend', `
   <div class="mdl" id="set" hidden><div class="mcard wset" role="dialog" aria-modal="true" aria-labelledby="stT">
     <div class="sth">
-      <button class="mx" data-close type="button" aria-label="Tutup">✕</button>
+      <button class="mx" data-close type="button" aria-label="Tutup">${IC('x')}</button>
       <h3 id="stT">⚙️ Pengaturan</h3>
-      <div class="seg" id="stTabs" style="grid-template-columns:repeat(3,1fr)"><button type="button" data-st="tema" class="on">🎨 Tema</button><button type="button" data-st="profil">🪪 Profil</button><button type="button" data-st="akun">👤 Akun</button></div>
+      <div class="seg" id="stTabs" style="grid-template-columns:repeat(3,1fr)"><button type="button" data-st="tema" class="on">${IC('palette')} Tema</button><button type="button" data-st="profil">${IC('idcard')} Profil</button><button type="button" data-st="akun">${IC('user')} Akun</button></div>
     </div>
     <div class="stb">
       <section id="stTema">
         <div class="sgrp"><h4>Template</h4><div class="tp" id="tpGrid">${T.PRESETS.map(p => `<button type="button" class="tpb" data-p="${p.id}" aria-pressed="false"><i style="background:linear-gradient(135deg,${p.bg} 50%,${p.ac} 50%)"></i><span>${esc(p.n)}</span></button>`).join('')}</div></div>
         <div class="sgrp cust" id="tCust"><h4>Atur sendiri <span class="tlock" id="tLk">👑 Premium</span></h4>
-          <button type="button" class="clk" id="tUnl">🔒 Buka dengan Premium</button>
+          <button type="button" class="clk" id="tUnl">${IC('lock')} Buka dengan Premium</button>
           ${COLORS.map(([k, l]) => `<label class="tcr"><span>${l}</span><input type="color" data-c="${k}" aria-label="${l}"><input class="hx" type="text" data-h="${k}" maxlength="7" spellcheck="false" autocapitalize="none" autocomplete="off" aria-label="Kode ${l}"></label>`).join('')}
           <div class="tcn" id="tcN" role="status"></div>
         </div>
         <label class="f"><span>Font</span><select id="tFont">${T.FONTS.map(f => `<option value="${f.id}">${esc(f.n)}</option>`).join('')}</select></label>
-        <button class="btn wide" id="tReset" type="button">↺ Kembalikan ke bawaan</button>
+        <button class="btn wide" id="tReset" type="button">${IC('reset')} Kembalikan ke bawaan</button>
       </section>
       <section id="stProfil" hidden>
         <div id="pfPv"></div>
         <div class="pfed">
-          <div class="ks-ch pfph"><label class="btn pri" style="cursor:pointer">📷 Upload foto<input type="file" id="pfFile" accept="image/*" hidden></label><button class="btn" id="pfDelAv" type="button">Hapus foto</button></div>
+          <div class="ks-ch pfph"><label class="btn pri" style="cursor:pointer">${IC('camera')} Upload foto<input type="file" id="pfFile" accept="image/*" hidden></label><button class="btn" id="pfDelAv" type="button">Hapus foto</button></div>
           <label class="f"><span>✏️ Nama tampilan</span><input id="pfDn" type="text" maxlength="30" placeholder="mis. Rey Store" autocomplete="off"></label>
           <label class="f"><span>💬 Status singkat</span><input id="pfSt" type="text" maxlength="24" placeholder="mis. ✨ buka order 24 jam" autocomplete="off"></label>
           <label class="f"><span>📝 Bio</span><input id="pfBio" type="text" maxlength="120" placeholder="ceritain tokomu dikit…" autocomplete="off"></label>
           <label class="f"><span>📸 Instagram <em>tanpa @</em></span><input id="pfIg" type="text" maxlength="30" placeholder="username_ig" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
           <div class="sgrp"><h4>Warna sampul</h4><div class="ks-ch" id="pfCv"></div></div>
           <div class="gerr" id="pfErr" role="alert"></div>
-          <button class="btn pri wide big" id="pfSave" type="button">💾 Simpan profil</button>
+          <button class="btn pri wide big" id="pfSave" type="button">${IC('save')} Simpan profil</button>
           <small>Profil kamu bisa dilihat admin ReyVion. Jangan isi data rahasia ya.</small>
         </div>
       </section>
@@ -44,7 +44,7 @@ window.WM_SETTINGS = (() => {
         <form id="sForm" autocomplete="off" novalidate>
           <label class="f"><span>👤 Nama pengguna</span><input id="sNm" type="text" maxlength="20" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
           <small>Dipakai untuk masuk. 3-20 karakter: huruf, angka, titik, atau _ . Data kamu ikut pindah ke nama baru.</small>
-          <label class="f"><span>🔑 Password baru <em>kosongkan kalau tidak diganti</em></span><div class="pw"><input id="sNp" type="password" autocomplete="new-password" placeholder="minimal 8 karakter"><button type="button" class="eye" id="sEye" aria-label="Lihat password">👁</button></div></label>
+          <label class="f"><span>🔑 Password baru <em>kosongkan kalau tidak diganti</em></span><div class="pw"><input id="sNp" type="password" autocomplete="new-password" placeholder="minimal 8 karakter"><button type="button" class="eye" id="sEye" aria-label="Lihat password">${IC('eye')}</button></div></label>
           <div class="str" id="sStr" hidden><i></i><i></i><i></i><em></em></div>
           <label class="f" id="sNp2w" hidden><span>🔁 Ulangi password baru</span><input id="sNp2" type="password" autocomplete="new-password" placeholder="ketik lagi"></label>
           <div class="sdiv"></div>

@@ -109,7 +109,7 @@
   /* ---------- tampilan ---------- */
   const subOf = m => { const e = pend(m), d = dl(e); return m.u ? (m.s || e ? `📅 ${fd(m.s)}${e ? ' → ' + fd(e) : ' · tanpa batas'}${d != null ? ' · ' + (d < 0 ? 'lewat ' + -d + ' hr' : 'sisa ' + d + ' hr') : ''}` : 'Masa pakai belum diisi') + (m.w ? `<br>📱 ${E(m.w)}` : '') : 'Ketuk untuk isi pemakai & durasi'; };
   /* tombol hubungi per pemakai: 💬 chat WA (kendala/umum), ⏰ ingatkan perpanjang (kalau ada tgl habis) */
-  const acts = (aid, i, k, m) => { if (!m.u || !m.w || !T().waNum(m.w)) return ''; const at = `data-aid="${aid}" data-i="${i}" data-k="${k}"`; return `<div class="ak-ac"><button class="ak-i" type="button" data-ax="swa" data-t="hi" ${at} aria-label="Chat WA ${E(m.u)}">💬</button>${pend(m) ? `<button class="ak-i" type="button" data-ax="swa" ${at} aria-label="Ingatkan ${E(m.u)} untuk perpanjang">⏰</button>` : ''}</div>`; };
+  const acts = (aid, i, k, m) => { if (!m.u || !m.w || !T().waNum(m.w)) return ''; const at = `data-aid="${aid}" data-i="${i}" data-k="${k}"`; return `<div class="ak-ac"><button class="ak-i" type="button" data-ax="swa" data-t="hi" ${at} aria-label="Chat WA ${E(m.u)}">${IC('message')}</button>${pend(m) ? `<button class="ak-i" type="button" data-ax="swa" ${at} aria-label="Ingatkan ${E(m.u)} untuk perpanjang">${IC('clock')}</button>` : ''}</div>`; };
   function slotRow(a, p, i, sh) {
     const aid = E(a.id), ms = mem(p), pin = p.p ? (sh ? E(p.p) : '••••') : '—', nm = E(p.n || 'Profil ' + (i + 1));
     if (ms.length == 1) { const m = ms[0], st = sstate(a, m);
@@ -124,17 +124,17 @@
     const profs = (a.profs || []).map((p, i) => slotRow(a, p, i, sh)).join('');
     const warn = adue(a) ? `<small class="ak-warn">🔔 Waktunya minta laporan ke ${E(a.holder || 'marker')} · ${d < 0 ? 'masa akun sudah lewat' : 'sisa ' + ltxt(d)}</small>` : '';
     const xc = d == null ? '' : d < 0 ? 'ex' : d <= 7 ? 'soon' : '';
-    const chips = (sc ? `<span class="ak-ch">👤 ${f}/${sc} slot</span>` : '') + (a.exp ? `<span class="ak-ch ${xc}">📅 ${d < 0 ? 'lewat ' + -d + ' hr' : fd(a.exp) + ' · ' + d + ' hr'}</span>` : '') + (a.holder ? `<span class="ak-ch">🧑‍💼 ${E(a.holder)}</span>` : '') + (a.exp && e != 'dead' && d != null && d <= 7 ? `<button type="button" class="ak-ch ak-rn" data-ax="renew" data-aid="${id}">🔁 Perpanjang</button>` : '');
+    const chips = (sc ? `<span class="ak-ch">👤 ${f}/${sc} slot</span>` : '') + (a.exp ? `<span class="ak-ch ${xc}">📅 ${d < 0 ? 'lewat ' + -d + ' hr' : fd(a.exp) + ' · ' + d + ' hr'}</span>` : '') + (a.holder ? `<span class="ak-ch">🧑‍💼 ${E(a.holder)}</span>` : '') + (a.exp && e != 'dead' && d != null && d <= 7 ? `<button type="button" class="ak-ch ak-rn" data-ax="renew" data-aid="${id}">${IC('repeat')} Perpanjang</button>` : '');
     return `<article class="tk-rec ak ${cls}${op ? ' open' : ''}">
       <button type="button" class="ak-top" data-ax="tgl" data-aid="${id}" aria-expanded="${op}"><strong>${E(a.app)}</strong><span class="badge ${cls}">${lbl}</span><i class="ak-chev" aria-hidden="true">▾</i></button>
-      <div class="ak-em"><span>📧</span><b>${E(a.email) || '—'}</b><button class="ak-i" type="button" data-ax="cm" data-aid="${id}" aria-label="Salin email">⧉</button><button class="ak-i" type="button" data-ax="cp" data-aid="${id}" aria-label="Salin password">🔑</button></div>
+      <div class="ak-em"><span>📧</span><b>${E(a.email) || '—'}</b><button class="ak-i" type="button" data-ax="cm" data-aid="${id}" aria-label="Salin email">⧉</button><button class="ak-i" type="button" data-ax="cp" data-aid="${id}" aria-label="Salin password">${IC('key')}</button></div>
       ${warn}${chips ? `<div class="ak-chs">${chips}</div>` : ''}${n ? `<div class="ak-dots" aria-label="Status slot">${dots(a)}</div>` : ''}
       <div class="ak-more"${op ? '' : ' hidden'}>
-        <div class="ak-pwr"><span>🔑</span><b class="ak-pw">${a.pass ? (sh ? E(a.pass) : '••••••••') : '—'}</b><button class="ak-i" type="button" data-ax="eye" data-aid="${id}" aria-label="${sh ? 'Sembunyikan' : 'Lihat'} password &amp; PIN">${sh ? '🙈' : '👁'}</button><button class="ak-i" type="button" data-ax="cp" data-aid="${id}" aria-label="Salin password">⧉</button></div>
+        <div class="ak-pwr"><span>🔑</span><b class="ak-pw">${a.pass ? (sh ? E(a.pass) : '••••••••') : '—'}</b><button class="ak-i" type="button" data-ax="eye" data-aid="${id}" aria-label="${sh ? 'Sembunyikan' : 'Lihat'} password &amp; PIN">${sh ? '' + IC('eyeoff') + '' : '' + IC('eye') + ''}</button><button class="ak-i" type="button" data-ax="cp" data-aid="${id}" aria-label="Salin password">⧉</button></div>
         ${n ? `<div class="ak-sl"><small class="ak-sh">👤 ${n} profil${sc > n ? ' (' + sc + ' slot user)' : ''} · ${f}/${sc} terisi · ${sc - f} kosong<br>Ketuk untuk atur pemakai &amp; durasi</small><ul class="ak-pfs">${profs}</ul></div>` : ''}
         <div class="tk-grid"><span>Pemegang<b>${E(a.holder) || '-'}</b></span><span>Aktif sejak<b>${a.st ? fd(a.st) + (a.days ? ' · ' + E(dlab(a.days)) : '') : '-'}</b></span><span>Berakhir<b>${a.exp ? fd(a.exp) + (d != null ? (d < 0 ? ' · lewat' : ' · ' + d + ' hr') : '') : '-'}</b></span><span>Modal<b>${a.cost ? rp(a.cost) : '-'}</b></span></div>
         <small>${rm > 0 && a.exp ? '🔔 Ingatkan H-' + rm + ' untuk minta laporan' : '🔕 Tanpa pengingat'}${a.note ? ' · 📝 ' + E(a.note) : ''}</small>
-        <div class="ak-acts"><button class="btn pri" type="button" data-ax="copy" data-aid="${id}">📋 Salin data</button><button class="btn" type="button" data-ax="renew" data-aid="${id}">🔁 Perpanjang akun</button><button class="btn" type="button" data-ax="ask" data-aid="${id}">📣 Minta laporan</button><button class="btn" type="button" data-ax="edit" data-aid="${id}">✏️ Edit</button>${n ? '' : `<button class="btn" type="button" data-ax="tog" data-aid="${id}">${a.status == 'ready' ? '✓ Terpakai' : '↺ Tersedia'}</button>`}</div>
+        <div class="ak-acts"><button class="btn pri" type="button" data-ax="copy" data-aid="${id}">${IC('clipboard')} Salin data</button><button class="btn" type="button" data-ax="renew" data-aid="${id}">${IC('repeat')} Perpanjang akun</button><button class="btn" type="button" data-ax="ask" data-aid="${id}">${IC('megaphone')} Minta laporan</button><button class="btn" type="button" data-ax="edit" data-aid="${id}">${IC('pencil')} Edit</button>${n ? '' : `<button class="btn" type="button" data-ax="tog" data-aid="${id}">${a.status == 'ready' ? '' + IC('check') + ' Terpakai' : '' + IC('reset') + ' Tersedia'}</button>`}</div>
       </div></article>`;
   }
   const SORTS = {
@@ -164,7 +164,7 @@
     const hl = Q('#akHl'); if (hl) hl.innerHTML = [...new Set(ls.map(a => a.holder).filter(Boolean))].map(h => `<option value="${E(h)}">`).join('');
     const rm = Q('#akRemind'); if (rm) { const h = alertHtml(false); rm.innerHTML = h; rm.hidden = !h; }
     const top = Q('#akAlert'), vr = Q('#v-rekap'); if (top) { const h = vr && !vr.hidden ? alertHtml(true) : ''; top.innerHTML = h; top.hidden = !h; }
-    const nb = ls.filter(adue).length + sdue().length, sw = Q('#psw [data-ps="acc"]'); if (sw) sw.innerHTML = '🔐 Akun Simpanan' + (nb ? ` <em class="ak-bd">${nb}</em>` : '');
+    const nb = ls.filter(adue).length + sdue().length, sw = Q('#psw [data-ps="acc"]'); if (sw) sw.innerHTML = IC('lock') + ' Akun Simpanan' + (nb ? ` <em class="ak-bd">${nb}</em>` : '');
     document.querySelectorAll('#psw button').forEach(b => b.classList.toggle('on', b.dataset.ps == PS));
     Q('#p-cat').hidden = PS != 'cat'; Q('#p-acc').hidden = PS != 'acc';
   }
@@ -172,7 +172,7 @@
   /* ringkasan akun untuk kartu produk (dipanggil toko.js) */
   function line(p) {
     const ak = ofProd(p); if (!ak.length) return '';
-    return `<small>🔐 ${ak.length} akun simpanan · ${ak.reduce((t, a) => t + free(a), 0)} siap jual</small><div class="tk-act"><button class="btn" type="button" data-ax="sync" data-aid="${E(p.id)}">↻ Sinkron stok dari akun</button></div>`;
+    return `<small>🔐 ${ak.length} akun simpanan · ${ak.reduce((t, a) => t + free(a), 0)} siap jual</small><div class="tk-act"><button class="btn" type="button" data-ax="sync" data-aid="${E(p.id)}">${IC('refresh')} Sinkron stok dari akun</button></div>`;
   }
 
   /* ---------- pemilih durasi (dipakai editor akun & editor profil) ---------- */
@@ -200,7 +200,7 @@
       <label class="ak-ul"><span>Mulai</span><input type="date" class="ust" value="${E(st)}"></label><label class="ak-ul"><span>Durasi</span><select class="ud">${durOpts(DURS.some(x => x[0] == dd) ? dd : '')}</select></label><label class="ak-ul wide"><span>Habis (otomatis, bisa diubah)</span><input type="date" class="ue" value="${E(ee || '')}"></label></div>`;
   };
   const prow = (p = {}) => { const c = cap(p);
-    return `<div class="ak-prow" data-cap="${c}" data-u0="${E(p.u || '')}" data-s="${E(p.s || '')}" data-d="${E(p.d || '')}" data-e="${E(p.e || '')}" data-w="${E(p.w || '')}"><input type="text" class="pn" maxlength="20" placeholder="Nama profil" aria-label="Nama profil" value="${E(p.n || '')}"><input type="text" class="pp" maxlength="8" inputmode="numeric" pattern="[0-9]*" placeholder="PIN" aria-label="PIN profil" value="${E(p.p || '')}"><button class="btn" type="button" data-ax="pdel" aria-label="Hapus profil">✕</button>${c == 1 ? `<input type="text" class="pu" maxlength="30" placeholder="Dipakai oleh (kosong = siap jual)" aria-label="Dipakai oleh" value="${E(p.u || '')}">` : ''}<select class="pc" aria-label="Jumlah pemakai per profil">${capOpts(c)}</select>${c > 1 ? `<div class="ak-us">${mem(p).map(urow).join('')}</div>` : ''}</div>`; };
+    return `<div class="ak-prow" data-cap="${c}" data-u0="${E(p.u || '')}" data-s="${E(p.s || '')}" data-d="${E(p.d || '')}" data-e="${E(p.e || '')}" data-w="${E(p.w || '')}"><input type="text" class="pn" maxlength="20" placeholder="Nama profil" aria-label="Nama profil" value="${E(p.n || '')}"><input type="text" class="pp" maxlength="8" inputmode="numeric" pattern="[0-9]*" placeholder="PIN" aria-label="PIN profil" value="${E(p.p || '')}"><button class="btn" type="button" data-ax="pdel" aria-label="Hapus profil">${IC('x')}</button>${c == 1 ? `<input type="text" class="pu" maxlength="30" placeholder="Dipakai oleh (kosong = siap jual)" aria-label="Dipakai oleh" value="${E(p.u || '')}">` : ''}<select class="pc" aria-label="Jumlah pemakai per profil">${capOpts(c)}</select>${c > 1 ? `<div class="ak-us">${mem(p).map(urow).join('')}</div>` : ''}</div>`; };
   /* baca satu baris profil di editor → objek profil. forCap = jumlah user yang diinginkan (saat ganti jumlah user) */
   function rowProf(r, forCap) {
     const t0 = T().today(), c = Math.max(1, Math.min(MAXCAP, forCap || +r.querySelector('.pc').value || 1)); let ms = [], err = '';
@@ -228,7 +228,7 @@
     EA = a || null; const d = a || {app: '', pid: '', email: '', pass: '', status: 'ready', holder: '', hw: '', st: T().today(), days: 30, exp: '', cost: '', note: '', profs: [], rm: DEF_RM}, P = T().P;
     ED = +d.days || (d.st && d.exp ? span(d.st, d.exp) : 0); ERM = d.rm == null ? DEF_RM : +d.rm;
     const sts = Object.entries(ST).filter(([k]) => k != 'part' && (k != 'used' || !slots(d))).map(([k, [, l]]) => `<option value="${k}" ${eff(d) == k || (d.status == k) ? 'selected' : ''}>${l}</option>`).join('');
-    Q('#am .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${a ? 'Edit akun simpanan' : 'Tambah akun simpanan'}</h3>
+    Q('#am .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>${a ? 'Edit akun simpanan' : 'Tambah akun simpanan'}</h3>
     <section class="ak-sec"><h4>🔐 Data akun</h4>
       ${P.length ? `<label class="f"><span>Pilih dari produk (opsional)</span><select id="akProd"><option value="">— ketik manual —</option>${P.map(p => `<option value="${E(p.id)}" ${d.pid == p.id ? 'selected' : ''}>${E(p.name)}</option>`).join('')}</select></label>` : ''}
       <label class="f"><span>Nama aplikasi / produk</span><input type="text" id="akApp" list="appl" maxlength="60" placeholder="mis. Netflix Premium" value="${E(d.app)}"></label>
@@ -260,7 +260,7 @@
       <label class="f"><span>Modal akun (Rp)</span><input type="number" id="akCost" min="0" inputmode="numeric" value="${d.cost || ''}"></label>
       <label class="f"><span>Catatan</span><input type="text" id="akNote" maxlength="200" placeholder="mis. login hanya dari 1 perangkat" value="${E(d.note || '')}"></label>
     </section>
-    ${a ? '<button class="btn danger ak-del" id="akDel" type="button">🗑 Hapus akun ini</button>' : ''}
+    ${a ? '<button class="btn danger ak-del" id="akDel" type="button">' + IC('trash') + ' Hapus akun ini</button>' : ''}
     <div class="ak-sbar"><div class="ak-rw"><button class="btn" type="button" data-ax="cancel">Batalkan</button><button class="btn pri" id="akSave" type="button">Simpan akun</button></div></div>`;
     prevAcc(); SNAP = formSnap(); Q('#am').hidden = false;
   }
@@ -290,7 +290,7 @@
     const p = (a.profs || [])[i]; if (!p) return; EA = a; ES = {aid: a.id, i, k}; const m = getM(p, k), multi = cap(p) > 1;
     const e0 = pend(m); SD = +m.d || (m.s && e0 ? span(m.s, e0) : (m.u ? 0 : 30));
     const others = multi ? mem(p).map((o, j) => j != k && o.u ? `User ${j + 1}: ${E(o.u)}${pend(o) ? ' (habis ' + fd(pend(o)) + ')' : ''}` : '').filter(Boolean) : [];
-    Q('#am .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${E(p.n || 'Profil ' + (i + 1))}${multi ? ' · User ' + (k + 1) + ' dari ' + cap(p) : ''} · ${E(a.app)}</h3>
+    Q('#am .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>${E(p.n || 'Profil ' + (i + 1))}${multi ? ' · User ' + (k + 1) + ' dari ' + cap(p) : ''} · ${E(a.app)}</h3>
     <small>${E(a.email || '')}${p.p ? ' · PIN ' + E(p.p) : ''}${a.exp ? ' · akun berakhir ' + fd(a.exp) : ''}</small>
     ${others.length ? `<small class="ak-oth">👥 Di profil yang sama → ${others.join(' · ')}</small>` : ''}
     <section class="ak-sec"><h4>👤 Pemakai</h4><label class="f"><span>Dipakai oleh</span><input type="text" id="slU" maxlength="30" placeholder="nama pembeli / pemakai" value="${E(m.u || '')}"></label>
@@ -301,7 +301,7 @@
       <label class="f"><span>Atau isi durasi sendiri (hari)</span><input type="number" id="slDays" min="1" max="3650" inputmode="numeric" placeholder="mis. 45" value="${DURS.some(x => x[0] == SD) || !SD ? '' : SD}"></label>
       <label class="f"><span>Tanggal berakhir (otomatis, bisa diubah)</span><input type="date" id="slEnd" value="${E(e0)}"></label>
       <div class="prev" id="slPrev"></div></section>
-    <div class="ak-sbar"><div class="ak-rw"><button class="btn" type="button" data-ax="cancel">Batalkan</button><button class="btn pri" id="slSave" type="button">${multi ? 'Simpan user ' + (k + 1) : 'Simpan profil'}</button></div>${m.u ? `<div class="ak-sr">${e0 ? '<button class="btn" id="slRenew" type="button">🔁 Perpanjang</button>' : ''}<button class="btn danger" id="slClear" type="button">${multi ? 'Kosongkan user' : 'Kosongkan profil'}</button></div>` : ''}</div>`;
+    <div class="ak-sbar"><div class="ak-rw"><button class="btn" type="button" data-ax="cancel">Batalkan</button><button class="btn pri" id="slSave" type="button">${multi ? 'Simpan user ' + (k + 1) : 'Simpan profil'}</button></div>${m.u ? `<div class="ak-sr">${e0 ? '<button class="btn" id="slRenew" type="button">' + IC('repeat') + ' Perpanjang</button>' : ''}<button class="btn danger" id="slClear" type="button">${multi ? 'Kosongkan user' : 'Kosongkan profil'}</button></div>` : ''}</div>`;
     prevSlot(); SNAP = formSnap(); Q('#am').hidden = false;
   }
   function slotPut(fn) { // ubah satu pemakai (user) pada satu profil lalu simpan akunnya

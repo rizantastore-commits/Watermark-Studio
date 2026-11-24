@@ -58,7 +58,7 @@ const Auth = (() => {
         <form id="gform" hidden autocomplete="on">
           <div class="seg"><button type="button" data-gm="login" class="on">Masuk</button><button type="button" data-gm="reg">Daftar</button></div>
           <label class="f"><span>👤 Username</span><input id="gu" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" placeholder="mis. kak_rina"></label>
-          <label class="f"><span>🔒 Password</span><div class="pw"><input id="gp" type="password" autocomplete="current-password" placeholder="password kamu (daftar baru: min. 8 karakter)"><button type="button" class="eye" id="geye" aria-label="Lihat password">👁</button></div></label>
+          <label class="f"><span>🔒 Password</span><div class="pw"><input id="gp" type="password" autocomplete="current-password" placeholder="password kamu (daftar baru: min. 8 karakter)"><button type="button" class="eye" id="geye" aria-label="Lihat password">${IC('eye')}</button></div></label>
           <div class="str" id="gstr" hidden><i></i><i></i><i></i><em></em></div>
           <label class="f" id="gp2w" hidden><span>🔁 Ulangi password</span><input id="gp2" type="password" autocomplete="new-password" placeholder="ketik lagi"></label>
           <div id="gerr" class="gerr" role="alert"></div>
@@ -72,13 +72,13 @@ const Auth = (() => {
     <footer class="gcred">${credits}</footer>
   </div>
   <div class="mdl" id="up" hidden><div class="mcard">
-    <button class="mx" data-close aria-label="Tutup">✕</button><div class="mico">🔒</div><h3>Fitur Premium</h3><p id="upT"></p>
+    <button class="mx" data-close aria-label="Tutup">${IC('x')}</button><div class="mico">🔒</div><h3>Fitur Premium</h3><p id="upT"></p>
     <ul class="pl">${C.PREMIUM_LIST.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
-    <button class="btn pri wide" data-plans type="button">👑 Lihat paket & harga</button>
+    <button class="btn pri wide" data-plans type="button">${IC('crown')} Lihat paket & harga</button>
     <a class="btn wide" id="upWa" target="_blank" rel="noopener">Tanya admin di WhatsApp</a>
   </div></div>
   <div class="mdl" id="plans" hidden><div class="mcard pcard">
-    <button class="mx" data-close aria-label="Tutup">✕</button><div class="mico">👑</div><h3>Upgrade Premium</h3>
+    <button class="mx" data-close aria-label="Tutup">${IC('x')}</button><div class="mico">👑</div><h3>Upgrade Premium</h3>
     <p class="pill" id="plSt"></p>
     <div class="cmp"><div class="ch"><span></span><b>Gratis</b><b class="pr">Premium</b></div>${(C.COMPARE || []).map(r => `<div class="cr"><span>${esc(r[0])}</span>${[r[1], r[2]].map((v, i) => `<em class="${i ? 'pr' : ''}">${v === true ? '✓' : v === false ? '—' : esc(v)}</em>`).join('')}</div>`).join('')}</div>
     <h4 class="plh">Pilih paket</h4><div class="pgrid" id="plGrid"></div>
@@ -86,24 +86,24 @@ const Auth = (() => {
     <div class="mcred">${credits}</div>
   </div></div>
   <div class="mdl" id="acc" hidden><div class="mcard">
-    <button class="mx" data-close aria-label="Tutup">✕</button><div id="accPf"></div><p id="accS" class="pill"></p><p id="accD" class="gsub"></p>
-    <button class="btn pri wide" data-plans type="button" id="accUp">👑 Lihat paket Premium</button>
+    <button class="mx" data-close aria-label="Tutup">${IC('x')}</button><div id="accPf"></div><p id="accS" class="pill"></p><p id="accD" class="gsub"></p>
+    <button class="btn pri wide" data-plans type="button" id="accUp">${IC('crown')} Lihat paket Premium</button>
     <a class="btn wide" id="accWa" target="_blank" rel="noopener"></a>
-    <a class="btn wide" id="accTk" href="index.html">🧾 Kasir & Rekap Toko</a>
-    <a class="btn wide" id="accWm" href="watermark.html">🎀 Watermark</a>
+    <a class="btn wide" id="accTk" href="index.html">${IC('receipt')} Kasir & Rekap Toko</a>
+    <a class="btn wide" id="accWm" href="watermark.html">${IC('droplet')} Watermark</a>
     <a class="btn wide" id="accAdm" href="admin.html" hidden>Buka Panel Admin</a>
-    <button class="btn wide" id="accEd" type="button">🪪 Edit profil</button>
-    <div class="accrow"><button class="btn" id="accSet" type="button">⚙️ Pengaturan</button><button class="btn" id="accOut" type="button">Keluar</button></div>
+    <button class="btn wide" id="accEd" type="button">${IC('idcard')} Edit profil</button>
+    <div class="accrow"><button class="btn" id="accSet" type="button">${IC('settings')} Pengaturan</button><button class="btn" id="accOut" type="button">Keluar</button></div>
     <div class="mcred">${credits}</div>
   </div></div>`);
   const hb = Q('.hb');
-  if (hb && !ADMIN_PAGE) hb.insertAdjacentHTML('beforeend', '<button class="upg" id="upg" data-plans aria-label="Premium" hidden>👑<em>Premium</em></button><button class="ib um" id="um" aria-label="Akun saya" hidden></button>');
+  if (hb && !ADMIN_PAGE) hb.insertAdjacentHTML('beforeend', '<button class="upg" id="upg" data-plans aria-label="Premium" hidden>' + IC('crown') + '<em>Premium</em></button><button class="ib um" id="um" aria-label="Akun saya" hidden></button>');
   if (hb && !ADMIN_PAGE) { // HP: tombol sekunder dikumpulkan ke satu menu ☰ supaya header rapi (di layar lebar tetap tampil biasa)
     const mn = document.createElement('div'); mn.className = 'hmenu'; mn.id = 'hmenu';
     [...hb.children].forEach(c => { if (c.id != 'un' && c.id != 're') mn.appendChild(c); });
     hb.appendChild(mn);
-    hb.insertAdjacentHTML('beforeend', '<button class="ib hbm" id="hbm" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="hmenu">☰</button>');
-    const bm = Q('#hbm'), setOpen = o => { mn.classList.toggle('open', o); bm.setAttribute('aria-expanded', String(o)); bm.textContent = o ? '✕' : '☰'; };
+    hb.insertAdjacentHTML('beforeend', '<button class="ib hbm" id="hbm" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="hmenu">' + IC('menu') + '</button>');
+    const bm = Q('#hbm'), setOpen = o => { mn.classList.toggle('open', o); bm.setAttribute('aria-expanded', String(o)); bm.innerHTML = IC(o ? 'x' : 'menu'); };
     bm.addEventListener('click', e => { e.stopPropagation(); setOpen(!mn.classList.contains('open')); });
     document.addEventListener('click', e => { if (mn.classList.contains('open') && (!e.target.closest('#hmenu') || e.target.closest('#hmenu button, #hmenu a'))) setOpen(false); });
     document.addEventListener('keydown', e => { if (e.key == 'Escape') setOpen(false); });
@@ -170,6 +170,7 @@ const Auth = (() => {
   function enter(r) {
     setUser(r.user, r); if (r.token) setTok(r.token); gate('off');
     if (typeof window.WM_ON_AUTH == 'function') window.WM_ON_AUTH(U);
+    document.dispatchEvent(new CustomEvent('wm:auth', {detail: U}));
   }
   async function check() {
     gate('load'); const t = getTok();
@@ -192,7 +193,7 @@ const Auth = (() => {
     Q('#gp').value = ''; Q('#gp2').value = ''; enter(r);
   }
   async function logout(msg) {
-    const t = getTok(); setTok(''); if (t) A.logout(t); clearTimeout(thTimer); thTimer = 0; if (window.WM_THEME) WM_THEME.clearLocal(); U = null; lastP = null; Q('#acc').hidden = true; Q('#plans').hidden = true; if (window.WM_SETTINGS) WM_SETTINGS.close(); if (typeof window.WM_ON_LOGOUT == 'function') window.WM_ON_LOGOUT(); paint(); setMode('login'); gate('form', msg || '');
+    const t = getTok(); setTok(''); if (t) A.logout(t); clearTimeout(thTimer); thTimer = 0; if (window.WM_THEME) WM_THEME.clearLocal(); U = null; lastP = null; Q('#acc').hidden = true; Q('#plans').hidden = true; if (window.WM_SETTINGS) WM_SETTINGS.close(); if (typeof window.WM_ON_LOGOUT == 'function') window.WM_ON_LOGOUT(); document.dispatchEvent(new CustomEvent('wm:logout')); paint(); setMode('login'); gate('form', msg || '');
   }
   async function refresh() {
     const t = getTok(); if (!t || !U) return;
@@ -210,7 +211,7 @@ const Auth = (() => {
     Q('#accPf').innerHTML = profCard(U);
     Q('#accS').textContent = left(); Q('#accS').classList.toggle('on', p);
     Q('#accD').textContent = U.role == 'premium' && p && U.premiumUntil < 4e12 ? `Aktif sampai ${fmtDate(U.premiumUntil)}` : U.expired ? `Premium habis sejak ${fmtDate(U.premiumUntil)}` : p ? 'Semua fitur terbuka' : 'Fitur dasar aktif';
-    Q('#accUp').textContent = p ? '👑 Perpanjang premium' : '👑 Lihat paket Premium'; Q('#accUp').hidden = U.role == 'admin';
+    Q('#accUp').innerHTML = IC('crown') + (p ? ' Perpanjang premium' : ' Lihat paket Premium'); Q('#accUp').hidden = U.role == 'admin';
     const w = Q('#accWa'); w.textContent = 'Chat admin WhatsApp'; w.href = wa(waTxt(p ? 'Mau perpanjang premium.' : ''));
     Q('#accAdm').hidden = !isAdmin(); Q('#accTk').hidden = KASIR; Q('#accWm').hidden = !KASIR; Q('#acc').hidden = false;
   }

@@ -16,7 +16,9 @@
 <link rel="stylesheet" href="premium.css">
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="akun.css">
+<link rel="stylesheet" href="announce.css">
 <link rel="stylesheet" href="ios-fix.css">
+<link rel="stylesheet" href="help.css">
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script src="theme.js"></script>
@@ -27,7 +29,7 @@
   <header class="atop">
     <div class="gmark sm">🧾</div>
     <div class="ttl"><h1>Kasir & Rekap Toko</h1><p>Data khusus akunmu · ReyVion</p></div>
-    <div class="hb"><button class="ib" id="tkth" type="button" aria-label="Tema & pengaturan" title="Tema & pengaturan">🎨</button><a class="btn hbw" href="watermark.html" aria-label="Watermark" title="Watermark">🎀<span class="tk-hm"> Watermark</span></a></div>
+    <div class="hb"><button class="ib" id="tkth" type="button" aria-label="Tema & pengaturan" title="Tema & pengaturan"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="13.5" cy="6.5" r="1" fill="currentColor" stroke="none"/><circle cx="17.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="8.5" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="6.5" cy="12.5" r="1" fill="currentColor" stroke="none"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.83-.44-1.12-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.55-2.5 5.55-5.55C21.97 6.01 17.46 2 12 2z"/></svg></button><a class="btn hbw" href="watermark.html" aria-label="Watermark" title="Watermark"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg><span class="tk-hm"> Watermark</span></a></div>
   </header>
 
   <section id="lk" class="pv" hidden>
@@ -37,9 +39,9 @@
       <h2>Kasir &amp; Rekap Toko</h2>
       <p class="gsub">Catat penjualan akun/aplikasi, hitung untung rugi, dan dapat pengingat perpanjangan. Data tersimpan per akun, jadi tiap member punya rekap sendiri dan tidak pernah tercampur.</p>
       <div class="pv-acts">
-        <button class="btn pri" data-up="Kasir &amp; Rekap Toko" type="button">👑 Unlock Premium</button>
-        <button class="btn" data-plans type="button">💳 Lihat paket &amp; harga</button>
-        <a class="btn" href="watermark.html">🎀 Watermark (gratis)</a>
+        <button class="btn pri" data-up="Kasir &amp; Rekap Toko" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M5 20h14"/></svg> Unlock Premium</button>
+        <button class="btn" data-plans type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg> Lihat paket &amp; harga</button>
+        <a class="btn" href="watermark.html"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg> Watermark (gratis)</a>
       </div>
     </div>
 
@@ -70,23 +72,23 @@
       <span class="pv-tag">CONTOH TAMPILAN · DATA FIKTIF</span>
       <div class="stats" id="dStats"></div>
       <div class="seg tk-seg" id="dvt">
-        <button type="button" data-dv="rekap" class="on"><span class="ic">📒</span> Rekap</button>
-        <button type="button" data-dv="prod"><span class="ic">📦</span> Produk</button>
-        <button type="button" data-dv="lap"><span class="ic">📊</span> Laporan</button>
-        <button type="button" data-dv="refund"><span class="ic">💸</span> Refund</button>
+        <button type="button" data-dv="rekap" class="on"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg></span> Rekap</button>
+        <button type="button" data-dv="prod"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span> Produk</button>
+        <button type="button" data-dv="lap"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></span> Laporan</button>
+        <button type="button" data-dv="refund"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span> Refund</button>
       </div>
       <section id="dv-rekap">
         <div class="tk-rm" id="dRm" hidden></div>
         <div class="tools">
           <input type="search" id="dQ" placeholder="Cari aplikasi, email, pembeli…" aria-label="Cari contoh">
           <button class="btn pri" type="button" data-dx="add">+ Catat</button>
-          <button class="btn" type="button" data-dx="csv" aria-label="Unduh CSV">⬇</button>
+          <button class="btn" type="button" data-dx="csv" aria-label="Unduh CSV"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></button>
         </div>
         <div class="chips" id="dFlt"></div>
         <div class="tk-list" id="dList"></div>
       </section>
       <section id="dv-prod" hidden>
-        <div class="tools"><button class="btn pri" type="button" data-dx="padd">+ Produk</button><button class="btn" type="button" data-dx="pcopy">📋 Salin daftar harga</button></div>
+        <div class="tools"><button class="btn pri" type="button" data-dx="padd">+ Produk</button><button class="btn" type="button" data-dx="pcopy"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> Salin daftar harga</button></div>
         <div class="tk-list" id="dPl"></div>
       </section>
       <section id="dv-lap" hidden>
@@ -123,12 +125,12 @@
   <main id="panel" hidden>
     <div class="tk-err" id="tkErr" hidden></div>
     <nav class="seg tk-seg" id="vt" aria-label="Menu kasir">
-      <button type="button" data-v="kasir" class="on"><span class="ic">🛒</span><span class="lb">Kasir</span></button>
-      <button type="button" data-v="rekap"><span class="ic">📒</span><span class="lb">Rekap</span></button>
-      <button type="button" data-v="prod"><span class="ic">📦</span><span class="lb">Produk</span></button>
-      <button type="button" data-v="lap"><span class="ic">📊</span><span class="lb">Laporan</span></button>
-      <button type="button" data-v="klaim"><span class="ic">🛡️</span><span class="lb">Klaim</span><i class="tk-dot" id="klDot" hidden></i></button>
-      <button type="button" data-v="more"><span class="ic">☰</span><span class="lb">Lainnya</span></button>
+      <button type="button" data-v="kasir" class="on"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></span><span class="lb">Kasir</span></button>
+      <button type="button" data-v="rekap"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg></span><span class="lb">Rekap</span></button>
+      <button type="button" data-v="prod"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span><span class="lb">Produk</span></button>
+      <button type="button" data-v="lap"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg></span><span class="lb">Laporan</span></button>
+      <button type="button" data-v="klaim"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span class="lb">Klaim</span><i class="tk-dot" id="klDot" hidden></i></button>
+      <button type="button" data-v="more"><span class="ic"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></span><span class="lb">Lainnya</span></button>
     </nav>
     <div class="tk-rm" id="remind" hidden></div>
     <div class="tk-rm" id="akAlert" hidden></div>
@@ -141,7 +143,7 @@
       <div class="tools">
         <input type="search" id="q" placeholder="Cari aplikasi, email, pembeli…" aria-label="Cari">
         <button class="btn pri" id="add" type="button">+ Catat</button>
-        <button class="btn" id="csv" type="button" title="Unduh rekap (CSV)" aria-label="Unduh CSV">⬇</button>
+        <button class="btn" id="csv" type="button" title="Unduh rekap (CSV)" aria-label="Unduh CSV"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></button>
       </div>
       <div class="tk-fl">
         <div class="chips" id="flt"></div>
@@ -152,13 +154,13 @@
 
     <section id="v-prod" hidden>
       <nav class="ak-sub" id="psw" aria-label="Produk atau akun simpanan">
-        <button type="button" data-ps="cat" class="on">📦 Katalog</button>
-        <button type="button" data-ps="acc">🔐 Akun Simpanan</button>
+        <button type="button" data-ps="cat" class="on"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg> Katalog</button>
+        <button type="button" data-ps="acc"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Akun Simpanan</button>
       </nav>
       <div id="p-cat">
         <div class="tools">
           <button class="btn pri" id="addp" type="button">+ Produk</button>
-          <button class="btn" id="pcopy" type="button">📋 Salin daftar harga</button>
+          <button class="btn" id="pcopy" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> Salin daftar harga</button>
         </div>
         <small class="tk-hint">Isi produk sekali (modal, paket harga, stok). Saat mencatat penjualan tinggal pilih produknya: harga terisi otomatis dan stok berkurang sendiri.</small>
         <div id="plist" class="tk-list"></div>
@@ -173,9 +175,9 @@
           <button class="btn ak-mbtn" type="button" data-ax="more" aria-expanded="false" aria-controls="akMenu" aria-label="Menu lainnya">⋯</button>
         </div>
         <div class="ak-menu" id="akMenu" hidden>
-          <button class="btn" id="akRep" type="button">📋 Salin laporan untuk marker</button>
-          <button class="btn" id="akRepFull" type="button">🔐 Laporan lengkap + password</button>
-          <button class="btn" id="akCsv" type="button">⬇ Unduh CSV</button>
+          <button class="btn" id="akRep" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> Salin laporan untuk marker</button>
+          <button class="btn" id="akRepFull" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Laporan lengkap + password</button>
+          <button class="btn" id="akCsv" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg> Unduh CSV</button>
         </div>
         <div class="ak-fl"><div class="chips" id="akFlt"></div></div>
         <div class="ak-tl"><select id="akSrt" aria-label="Urutkan akun"><option value="new">↕ Terbaru</option><option value="app">↕ Produk A–Z</option><option value="due">↕ Segera berakhir</option><option value="holder">↕ Pemegang</option></select><button class="btn" id="akTgl" type="button" data-ax="tglall">⤢ Buka semua</button></div>
@@ -188,8 +190,8 @@
       <div class="tools">
         <select id="lapM" aria-label="Pilih bulan"></select>
         <button class="btn pri" id="addx" type="button">+ Pengeluaran</button>
-        <button class="btn" id="lapcsv" type="button" title="Unduh laporan bulan ini (CSV)" aria-label="Unduh laporan CSV">⬇</button>
-        <button class="btn" id="lapcopy" type="button" title="Salin ringkasan bulan ini" aria-label="Salin ringkasan">📋</button>
+        <button class="btn" id="lapcsv" type="button" title="Unduh laporan bulan ini (CSV)" aria-label="Unduh laporan CSV"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></button>
+        <button class="btn" id="lapcopy" type="button" title="Salin ringkasan bulan ini" aria-label="Salin ringkasan"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></button>
       </div>
       <div class="stats" id="lapSum"></div>
       <div class="tk-card wide"><h3>Tren 6 bulan</h3><div id="lapTr"></div></div>
@@ -201,7 +203,7 @@
     </section>
 
     <section id="v-refund" hidden>
-      <button class="btn tk-bk" data-v="more" type="button">← Lainnya</button>
+      <button class="btn tk-bk" data-v="more" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> Lainnya</button>
       <div class="tk-card">
         <h3>Hitung Refund</h3>
         <small>Refund = harga ÷ durasi × sisa hari − potongan admin</small>
@@ -224,7 +226,7 @@
         </div>
         <div id="rfOut" class="tk-out"></div>
         <div class="row2">
-          <button class="btn" id="rfcopy" type="button">📋 Salin rincian</button>
+          <button class="btn" id="rfcopy" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> Salin rincian</button>
           <button class="btn pri" id="rfrec" type="button" hidden>Catat sebagai refund</button>
           <button class="btn" id="rfreset" type="button">Reset</button>
         </div>
@@ -232,7 +234,7 @@
     </section>
 
     <section id="v-qris" hidden>
-      <button class="btn tk-bk" data-v="more" type="button">← Lainnya</button>
+      <button class="btn tk-bk" data-v="more" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> Lainnya</button>
       <div class="tk-card wide">
         <div class="tk-h">
           <h3>📲 QRIS Dinamis Otomatis</h3>
@@ -243,10 +245,10 @@
         <div id="qrSetupBox" class="qr-setup">
           <div class="row2">
             <label class="btn pri" style="cursor:pointer;justify-content:center">
-              <span>📷 Upload Gambar QRIS</span>
+              <span><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> Upload Gambar QRIS</span>
               <input type="file" id="qrFile" accept="image/*" hidden>
             </label>
-            <button class="btn" id="qrManualBtn" type="button">⌨️ Tempel Kode QRIS</button>
+            <button class="btn" id="qrManualBtn" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 8h.01M12 12h.01M14 8h.01M16 12h.01M18 8h.01M6 8h.01M7 16h10M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></svg> Tempel Kode QRIS</button>
           </div>
           <div id="qrManualWrap" hidden style="margin-top:8px">
             <label class="f"><span>String / Payload QRIS (000201...)</span><input type="text" id="qrRawIn" placeholder="Tempel hasil scan teks QRIS di sini…"></label>
@@ -263,8 +265,8 @@
             <small id="qrMerchCity" style="display:block">Siap digunakan</small>
           </div>
           <div class="qr-bar-acts">
-            <label class="btn" style="cursor:pointer" title="Ganti gambar QRIS">🔄 Ganti<input type="file" id="qrFile2" accept="image/*" hidden></label>
-            <button class="btn danger" id="qrDelCfg" type="button" title="Hapus QRIS dari akun">🗑️</button>
+            <label class="btn" style="cursor:pointer" title="Ganti gambar QRIS"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg> Ganti<input type="file" id="qrFile2" accept="image/*" hidden></label>
+            <button class="btn danger" id="qrDelCfg" type="button" title="Hapus QRIS dari akun"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
           </div>
         </div>
       </div>
@@ -292,8 +294,8 @@
           </div>
           <div class="tk-out" id="qrCalcOut"></div>
           <div class="row2">
-            <button class="btn pri" id="qrGenBtn" type="button">✨ Buat Gambar QR</button>
-            <button class="btn" id="qrSavePreset" type="button">⭐ Simpan Preset</button>
+            <button class="btn pri" id="qrGenBtn" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 3-1.91 5.81a2 2 0 0 1-1.28 1.28L3 12l5.81 1.91a2 2 0 0 1 1.28 1.28L12 21l1.91-5.81a2 2 0 0 1 1.28-1.28L21 12l-5.81-1.91a2 2 0 0 1-1.28-1.28z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg> Buat Gambar QR</button>
+            <button class="btn" id="qrSavePreset" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11.53 2.3a.53.53 0 0 1 .95 0l2.31 4.68a2.12 2.12 0 0 0 1.6 1.16l5.16.76a.53.53 0 0 1 .3.9l-3.74 3.64a2.12 2.12 0 0 0-.61 1.88l.88 5.14a.53.53 0 0 1-.77.56l-4.62-2.43a2.12 2.12 0 0 0-1.97 0L6.4 21.01a.53.53 0 0 1-.77-.56l.88-5.14a2.12 2.12 0 0 0-.61-1.88L2.16 9.8a.53.53 0 0 1 .3-.91l5.16-.75a2.12 2.12 0 0 0 1.6-1.16z"/></svg> Simpan Preset</button>
           </div>
         </div>
 
@@ -303,8 +305,8 @@
             <canvas id="qrCanvas" width="540" height="680"></canvas>
           </div>
           <div class="row2">
-            <button class="btn pri" id="qrCopyImg" type="button">📋 Salin Gambar</button>
-            <button class="btn" id="qrDlImg" type="button">⬇ Unduh PNG</button>
+            <button class="btn pri" id="qrCopyImg" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> Salin Gambar</button>
+            <button class="btn" id="qrDlImg" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg> Unduh PNG</button>
           </div>
           <small style="text-align:center">Klik <b>Salin Gambar</b> lalu langsung <b>Paste (Ctrl+V / Tempel)</b> di chat WhatsApp pembeli!</small>
         </div>
@@ -330,16 +332,16 @@
 
     <section id="v-more" hidden>
       <div class="tk-hub">
-        <button type="button" class="tk-tile" data-akgo="1"><i>🔐</i><b>Akun Simpanan</b><span>Email, password, profil &amp; PIN, laporan ke marker</span></button>
-        <button type="button" class="tk-tile" data-v="refund"><i>💸</i><b>Hitung Refund</b><span>Sisa hari, potongan admin, garansi penuh</span></button>
-        <button type="button" class="tk-tile" data-v="qris"><i>📲</i><b>QRIS Dinamis</b><span id="hubQr">Gambar QRIS sesuai nominal tagihan</span></button>
-        <button type="button" class="tk-tile" data-v="pesan"><i>💬</i><b>Pesan &amp; Nota</b><span>Template WA per akun, nama toko, teks nota</span></button>
-        <button type="button" class="tk-tile" data-v="alat"><i>🧰</i><b>Pelanggan &amp; Backup</b><span>Pembeli teratas, jatuh tempo, backup data</span></button>
+        <button type="button" class="tk-tile" data-akgo="1"><i><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></i><b>Akun Simpanan</b><span>Email, password, profil &amp; PIN, laporan ke marker</span></button>
+        <button type="button" class="tk-tile" data-v="refund"><i><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></i><b>Hitung Refund</b><span>Sisa hari, potongan admin, garansi penuh</span></button>
+        <button type="button" class="tk-tile" data-v="qris"><i><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg></i><b>QRIS Dinamis</b><span id="hubQr">Gambar QRIS sesuai nominal tagihan</span></button>
+        <button type="button" class="tk-tile" data-v="pesan"><i><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></i><b>Pesan &amp; Nota</b><span>Template WA per akun, nama toko, teks nota</span></button>
+        <button type="button" class="tk-tile" data-v="alat"><i><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg></i><b>Pelanggan &amp; Backup</b><span>Pembeli teratas, jatuh tempo, backup data</span></button>
       </div>
     </section>
 
     <section id="v-pesan" hidden>
-      <button class="btn tk-bk" data-v="more" type="button">← Lainnya</button>
+      <button class="btn tk-bk" data-v="more" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> Lainnya</button>
       <div class="tk-card wide">
         <h3>🏪 Identitas toko</h3>
         <small>Dipakai di header nota dan kode <b>{toko}</b> pada template pesan.</small>
@@ -364,11 +366,11 @@
     </section>
 
     <section id="v-alat" hidden>
-      <button class="btn tk-bk" data-v="more" type="button">← Lainnya</button>
+      <button class="btn tk-bk" data-v="more" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> Lainnya</button>
       <div class="tk-card wide"><h3>👥 Pelanggan teratas</h3><small>Diurutkan dari total belanja (sudah dikurangi refund).</small><div id="alCust"></div></div>
-      <div class="tk-card wide"><h3>⏰ Jatuh tempo 7 hari ke depan</h3><div id="alDue"></div><button class="btn" id="dueCopy" type="button">📋 Salin daftar</button></div>
+      <div class="tk-card wide"><h3>⏰ Jatuh tempo 7 hari ke depan</h3><div id="alDue"></div><button class="btn" id="dueCopy" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> Salin daftar</button></div>
       <div class="tk-card wide"><h3>💾 Backup &amp; pulihkan</h3><small>Unduh semua catatan (penjualan, produk, pengeluaran) ke satu file JSON. Simpan di tempat aman, lalu pulihkan kapan saja. Maksimal 500 catatan sekali pulihkan.</small>
-        <div class="row2"><button class="btn pri" id="bkp" type="button">⬇ Backup (JSON)</button><button class="btn" id="rst" type="button">⬆ Pulihkan dari file</button></div>
+        <div class="row2"><button class="btn pri" id="bkp" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg> Backup (JSON)</button><button class="btn" id="rst" type="button"><svg class="svi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg> Pulihkan dari file</button></div>
         <input type="file" id="rstF" accept="application/json,.json" hidden>
       </div>
     </section>
@@ -388,12 +390,15 @@
 <script src="config.js"></script>
 <script src="api.js"></script>
 <script>window.WM_PAGE = 'toko';</script>
+<script src="icons.js"></script>
 <script src="auth.js"></script>
+<script src="announce.js"></script>
 <script src="toko.js"></script>
 <script src="kasir.js"></script>
 <script src="akun.js"></script>
 <script src="premium.js"></script>
 <script src="settings.js"></script>
+<script src="help.js"></script>
 <script>(()=>{const c=WM_CONFIG.CREDITS||{};document.getElementById("acred").innerHTML=`Dibuat dengan 💖 oleh <b>${c.brand||""}</b>${c.dev?` · Dev <a href="${c.link||"#"}" target="_blank" rel="noopener">${c.dev}</a>`:""}`})()</script>
 </body>
 </html>

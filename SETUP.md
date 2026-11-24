@@ -216,3 +216,65 @@ Catatan: batas bulanan dihitung per bulan kalender (zona Asia/Jakarta). Mengedit
 - Hash password tetap SHA-256 ×300 (Apps Script tidak punya bcrypt/argon2; menaikkan iterasi terlalu banyak membuat login lambat dan menahan semua pengguna).
 - Apps Script tidak bisa membaca IP pengunjung, jadi pembatasan login per-username, bukan per-IP.
 - Mode DEMO (`api.js`) tidak meniru fitur baru ini; fitur v22 hanya jalan di mode LIVE.
+
+
+## Update v28 — Pusat pengumuman & "Apa yang baru"
+Admin menulis pengumuman **sekali**, tampil sebagai **banner di atas halaman** semua member (Kasir & Watermark), plus riwayatnya di tombol **🔔 Apa yang baru**. Cocok untuk info update, promo paket, dan pemberitahuan maintenance. Jadi kamu punya jalur resmi selain WA.
+
+**WAJIB deploy ulang Apps Script** (ada endpoint baru).
+
+### Langkah pasang (urut)
+1. Apps Script → **ganti seluruh isi Code.gs** dengan versi baru → Save.
+2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama). Sheet **Announcements** dibuat otomatis saat pengumuman pertama disimpan (atau jalankan `setup()` lagi, aman, data lama tidak dihapus).
+3. Upload (timpa) ke hosting: `index.html`, `watermark.html`, `admin.html`, `auth.js`, `api.js`, `admin-plus.js`, `admin-plus.css`. **File baru:** `announce.js`, `announce.css`, `admin-ann.js`.
+4. Member **tidak perlu login ulang**.
+
+### Cara pakai (Admin → tab 📣 Info)
+- **+ Pengumuman** → pilih *Mulai cepat* (Update fitur / Promo paket / Maintenance / Info umum) atau tulis sendiri. Ada **pratinjau** persis seperti yang dilihat member.
+- **Jenis:** Info, Promo, Update, Maintenance (beda warna & ikon).
+- **Untuk siapa:** semua member, hanya akun gratis (cocok untuk promo upgrade), atau hanya premium (cocok untuk info fitur premium).
+- **Tombol (opsional):** *Lihat paket* (membuka daftar harga), *Chat WhatsApp* (pesan otomatis berisi judul pengumuman + username), atau link `https://…` sendiri.
+- **Jadwal:** *Mulai tayang* boleh diisi tanggal/jam nanti (mis. pemberitahuan maintenance). *Banner tampil selama* 1 / 3 / 7 / 30 hari atau tanpa batas.
+- **Sematkan 📌:** member tidak bisa menutup bannernya (pakai untuk hal penting seperti maintenance).
+- **Tayangkan:** matikan untuk menyimpan sebagai **draf**. Tombol **Sembunyikan / Tayangkan** di daftar untuk menarik pengumuman sementara tanpa menghapusnya.
+
+### Perilaku yang perlu kamu tahu
+- Banner muncul paling lambat **5 menit** setelah terbit (atau langsung saat member membuka ulang halaman / kembali ke tab).
+- Member bisa **menutup** banner (tersimpan **per perangkat**, jadi di HP lain bisa muncul lagi). Yang disematkan tidak bisa ditutup.
+- Setelah banner berakhir, **promo & maintenance hilang**, sedangkan jenis **Update tetap tersimpan** di riwayat 🔔 sebagai catatan "apa yang baru". Angka merah di 🔔 menghitung pengumuman yang belum dibuka; member baru tidak dibanjiri pengumuman lama.
+- Di halaman Watermark (layar tetap) hanya **1 banner** ditampilkan, sisanya lewat tombol "+N". Di HP, tombol 🔔 ada di menu ☰.
+- Pengumuman hanya terlihat **setelah login**, tidak di halaman login. Saat **mode maintenance** menyala member tidak bisa masuk sama sekali, jadi **umumkan maintenance sebelum** menyalakannya.
+- Batas: judul 80 karakter, isi 500 karakter, maksimal 100 pengumuman. Tag `<` `>` dibuang otomatis. Link tombol hanya boleh `https://` (atau halaman sendiri seperti `index.html`).
+- Template "Mulai cepat" berisi tanda **…** sebagai tempat mengisi tanggal/detail. Kalau masih tersisa saat disimpan, kamu akan diingatkan.
+- Terbit / ubah / hapus pengumuman tercatat di tab **Aktivitas**.
+- **Mode DEMO** (tanpa Sheets) juga meniru fitur ini, jadi bisa dicoba dulu (admin `admin` / `admin123`).
+- Kalau Code.gs belum di-deploy, banner tidak tampil dan tab Info menampilkan pesan agar deploy versi terbaru.
+
+
+## Update v29 — Pengumuman lebih bagus & tampilan dipercantik
+**Tidak perlu deploy ulang Apps Script** (Code.gs tidak berubah). Cukup upload (timpa) 3 file: `announce.js`, `announce.css`, `admin-ann.js`.
+
+### Untuk member
+- **Kartu baru:** garis aksen warna per jenis, ikon dalam tile, label jenis berwarna, bayangan lembut, tombol promo berkilau. Maintenance diberi strip kuning supaya terlihat penting.
+- **Banner berputar (carousel):** kalau ada lebih dari satu pengumuman, tampil satu per satu (ganti tiap 7 detik, bisa digeser di HP, titik navigasi + tombol *Lihat semua*). Berhenti otomatis saat disentuh atau saat teks dibuka. Halaman Watermark tetap 1 banner + tombol "🔔 +N".
+- **Hitung mundur:** promo menampilkan "⏳ Berakhir 5 jam lagi" (merah kalau kurang dari 24 jam), maintenance menampilkan sampai kapan.
+- **Teks panjang:** otomatis dipotong dengan tombol *Selengkapnya / Ringkas*.
+- **Format teks:** `**tebal**` dan daftar dengan awalan `- ` (aman, tag HTML tetap dibuang).
+- **Riwayat 🔔:** dikelompokkan *Hari ini / Kemarin / Minggu ini / Lebih lama*, ada filter per jenis, penanda **Baru**, tampilan kosong yang lebih ramah, dan lonceng bergoyang saat ada yang baru. Tutup dengan Esc.
+- Banner tidak lagi digambar ulang tiap menit (animasi tidak mengulang), menutup banner pakai animasi geser.
+
+### Untuk admin (tab 📣 Info)
+- **Cari** pengumuman, daftar diurutkan (Tayang → Terjadwal → Draf → Selesai), garis warna per jenis, info *"Tayang X lagi"* / *"Sisa X"*.
+- Tombol **📄 Gandakan** (salinan jadi draf).
+- Pilih jenis lewat kartu bergambar; toolbar **B**, **• Daftar**, dan emoji cepat; penghitung judul & isi.
+- Jadwal cepat: *Sekarang / +1 jam / Besok 08.00 / Minggu depan*.
+- Pratinjau bisa diganti **Banner** / **Riwayat 🔔**; tombol Terbitkan menempel di bawah; **Ctrl+Enter** untuk menyimpan.
+- Template Update fitur & Maintenance sudah memakai format daftar / tebal.
+
+
+## Update v30 — Bantuan, Checklist Member Baru, FAQ & Lapor/Usul Fitur
+**WAJIB deploy ulang Apps Script** (endpoint `fb_send`, `admin_fb_list`, `admin_fb_update`):
+1. Buka Apps Script, **ganti seluruh isi `Code.gs`** dengan versi terbaru → **Save**.
+2. **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (URL tetap sama).
+3. Sheet baru **Feedback** dibuat otomatis saat masukan pertama dikirim (atau jalankan `setup()` sekali).
+4. Upload (timpa) semua file di folder `reyvion-v30` ke hosting (termasuk file baru `help.js` dan `help.css`).

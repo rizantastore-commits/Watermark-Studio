@@ -1,0 +1,162 @@
+/* ===== help.css — Bantuan, Checklist Member Baru, FAQ & Lapor/Usul Fitur (v30.1 rapi di HP) ===== */
+
+/* ---------- Tombol melayang ---------- */
+.hlp-fab {
+  position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 42;
+  display: inline-flex; align-items: center; gap: 8px; height: 46px; padding: 0 16px;
+  border-radius: 99px; border: 2.5px solid var(--line); background: var(--solid); color: var(--ink);
+  font: 700 14px Fredoka, Nunito, sans-serif; box-shadow: var(--chunk), 0 10px 24px -10px rgba(0,0,0,.28);
+  cursor: pointer; transition: transform .15s, box-shadow .15s;
+}
+.hlp-fab[hidden] { display: none; }
+.hlp-fab:hover { transform: translateY(-2px); }
+.hlp-fab:active { transform: translateY(1px); }
+.hlp-fab .hlp-ic { font-size: 18px; line-height: 1; }
+.hlp-fab .hlp-pg {
+  padding: 1px 8px; border-radius: 99px; font-size: 11.5px; line-height: 1.5;
+  background: var(--soft); color: var(--pd); border: 1.5px solid var(--line);
+}
+.hlp-fab.done .hlp-pg { display: none; }
+
+/* ---------- Jendela: kartu dengan header tetap + isi yang bisa di-scroll ---------- */
+.mdl.hlp-mdl { align-items: center; }
+.mcard.hlp-card {
+  width: min(520px, 100%); max-height: min(88dvh, 780px);
+  padding: 0; gap: 0; overflow: hidden; text-align: left;
+  display: flex; flex-direction: column;
+}
+.hlp-head {
+  position: relative; flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 18px 18px 10px;
+}
+.hlp-head h3 { margin: 0; font: 700 19px/1.2 Fredoka, sans-serif; min-width: 0; }
+.hlp-head .mx { position: static; flex: none; width: 36px; height: 36px; }
+.hlp-tabs { flex: none; margin: 0 18px 12px; }
+.hlp-tabs button {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  height: 40px; padding: 0 6px; font-size: 13.5px; white-space: nowrap; min-width: 0;
+}
+.hlp-body {
+  display: grid; gap: 14px; align-content: start; min-height: 0;
+  padding: 2px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+}
+.hlp-body > * { min-width: 0; }
+.hlp-sub { margin: 0; font: 700 15px Fredoka, sans-serif; }
+
+/* ---------- Checklist onboarding ---------- */
+.hlp-onb {
+  display: grid; gap: 12px; padding: 14px; border-radius: 20px;
+  background: linear-gradient(135deg, var(--soft), transparent 85%), var(--solid);
+  border: 2px solid var(--line);
+}
+.hlp-onb-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hlp-onb-top b { font: 700 15px Fredoka, sans-serif; }
+.hlp-bar { height: 8px; border-radius: 99px; background: var(--soft); border: 1.5px solid var(--line); overflow: hidden; }
+.hlp-bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--p2), var(--p)); transition: width .3s; }
+.hlp-steps { display: grid; gap: 8px; }
+.hlp-step {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px;
+  padding: 11px 12px; border-radius: 16px; background: var(--panel); border: 2px solid var(--line); text-align: left;
+}
+.hlp-step.ok { opacity: .8; border-color: #3fd9a0; }
+.hlp-chk {
+  width: 28px; height: 28px; padding: 0; border-radius: 9px; display: grid; place-items: center;
+  border: 2px solid var(--line); background: var(--solid); color: var(--ink); font-size: 14px; cursor: pointer;
+}
+.hlp-step.ok .hlp-chk { background: #3fd9a0; border-color: #26b882; color: #fff; }
+.hlp-st-t { min-width: 0; }
+.hlp-st-t b { display: block; font: 700 14px/1.3 Nunito, sans-serif; overflow-wrap: anywhere; }
+.hlp-st-t small { display: block; margin-top: 2px; font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+.hlp-go { height: 34px; padding: 0 12px; font-size: 12.5px; flex: none; }
+.hlp-done { font-size: 12px; color: var(--mut); white-space: nowrap; }
+
+/* ---------- FAQ ---------- */
+.hlp-faq { display: grid; gap: 8px; }
+.hlp-q { border: 2px solid var(--line); border-radius: 16px; background: var(--solid); overflow: hidden; text-align: left; }
+.hlp-q summary {
+  list-style: none; padding: 12px 14px; font: 700 13.5px/1.35 Nunito, sans-serif;
+  cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+}
+.hlp-q summary::-webkit-details-marker { display: none; }
+.hlp-q summary::after { content: "▾"; flex: none; color: var(--p); font-size: 15px; transition: transform .2s; }
+.hlp-q[open] summary::after { transform: rotate(180deg); }
+.hlp-q[open] summary { border-bottom: 2px dashed var(--line); }
+.hlp-q p { margin: 0; padding: 10px 14px 13px; font-size: 13px; line-height: 1.5; color: var(--mut); overflow-wrap: anywhere; }
+
+/* ---------- Form feedback ---------- */
+.hlp-form { display: grid; gap: 12px; }
+.hlp-form > small { display: block; line-height: 1.45; }
+.hlp-cats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.hlp-cat {
+  display: grid; justify-items: center; align-content: center; gap: 3px; min-height: 64px; padding: 8px 4px;
+  border-radius: 16px; border: 2px solid var(--line); background: var(--solid);
+  color: var(--ink); font: 700 12.5px/1.2 Nunito, sans-serif; cursor: pointer; text-align: center;
+}
+.hlp-cat .hlp-ce { font-size: 20px; line-height: 1; }
+.hlp-cat.on { background: var(--soft); border-color: var(--p); color: var(--pd); box-shadow: 0 0 0 3px rgba(255,79,154,.16); }
+.hlp-form .f > span { justify-content: flex-start; text-align: left; font-weight: 800; }
+.hlp-form textarea { min-height: 110px; resize: vertical; line-height: 1.45; }
+.hlp-cnt { text-align: right; font-size: 11.5px; }
+.hlp-fb-ok {
+  padding: 12px 14px; border-radius: 16px; background: rgba(63, 217, 160, .18);
+  border: 2px solid #3fd9a0; font-size: 13px; line-height: 1.45; text-align: left;
+}
+.hlp-acts { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 10px; }
+.hlp-acts .btn { width: 100%; min-width: 0; flex: none; text-decoration: none; }
+
+/* ---------- Banner "Mulai cepat" di atas kasir ---------- */
+.hlp-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 11px 12px 11px 14px; border-radius: 20px; background: linear-gradient(120deg, var(--soft), transparent 75%), var(--solid);
+  border: 2.5px solid var(--line); box-shadow: var(--chunk);
+}
+.hlp-banner-l { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.hlp-banner-l > span { flex: none; font-size: 22px; line-height: 1; }
+.hlp-banner-l > div { min-width: 0; }
+.hlp-banner-l b { display: block; font: 700 14px/1.25 Fredoka, sans-serif; }
+.hlp-banner-l small { display: block; font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; }
+.hlp-banner-acts { display: flex; gap: 6px; flex: none; align-items: center; }
+.hlp-banner-acts .btn { height: 36px; padding: 0 12px; font-size: 12.5px; flex: none; border-radius: 14px; }
+.hlp-banner-acts .hlp-ban-x { width: 36px; padding: 0; }
+
+/* ---------- HP: jendela jadi bottom sheet, semua tombol & kolom dilonggarkan ---------- */
+@media (max-width: 640px) {
+  .mdl.hlp-mdl { place-items: end center; padding: 0; }
+  .mcard.hlp-card {
+    width: 100%; max-height: 90dvh; border-radius: 26px 26px 0 0; border-bottom: 0;
+    animation: sheet .3s cubic-bezier(.3, 1.2, .5, 1);
+  }
+  .hlp-head { padding: 16px 14px 8px; }
+  .hlp-head h3 { font-size: 18px; }
+  .hlp-tabs { margin: 0 14px 10px; }
+  .hlp-tabs button { font-size: 12.5px; gap: 4px; }
+  .hlp-body { padding: 2px 14px calc(18px + env(safe-area-inset-bottom, 0px)); gap: 12px; }
+  .hlp-onb { padding: 12px; }
+  /* tombol aksi checklist pindah ke baris sendiri supaya teks langkah tidak sempit */
+  .hlp-step { grid-template-columns: 28px minmax(0, 1fr); }
+  .hlp-step > .hlp-go, .hlp-step > .hlp-done { grid-column: 2; justify-self: stretch; margin-top: 4px; }
+  .hlp-step > .hlp-go { width: 100%; height: 38px; }
+  .hlp-step > .hlp-done { justify-self: start; }
+  .hlp-acts { grid-template-columns: 1fr; }
+  .hlp-acts .btn { height: 46px; }
+  .hlp-fab {
+    right: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); width: 50px; height: 50px; padding: 0;
+    justify-content: center; border-radius: 50%;
+  }
+  .hlp-fab .hlp-tx { display: none; }
+  .hlp-fab .hlp-ic { font-size: 22px; }
+  .hlp-fab .hlp-pg {
+    position: absolute; top: -6px; right: -6px; padding: 0 6px; font-size: 10.5px; line-height: 17px;
+    background: var(--p); color: #fff; border-color: var(--solid);
+  }
+  /* biar isi halaman paling bawah tidak ketutup tombol melayang */
+  body.tokopg .adm { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-width: 380px) {
+  .hlp-banner { flex-wrap: wrap; }
+  .hlp-banner-acts { width: 100%; }
+  .hlp-banner-acts .btn.pri { flex: 1; }
+  .hlp-cat { font-size: 11.5px; min-height: 60px; }
+}

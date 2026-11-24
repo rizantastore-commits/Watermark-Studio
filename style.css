@@ -214,3 +214,35 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;background:v
 }
 @media(max-width:899px) and (max-height:620px){.app,.app.multi{grid-template-rows:auto minmax(0,50fr) minmax(0,50fr) auto}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== v31: ikon SVG menggantikan emoji di tombol (lihat icons.js) ===== */
+.svi{width:1.2em;height:1.2em;flex:none;display:inline-block;vertical-align:-.24em;pointer-events:none}
+.svi.sm{width:1em;height:1em}
+.chips button,#stTabs button,.an-more,.an-tl button,.an-tag{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.an-tag{gap:5px}
+.chips button em{margin-left:0}
+.ib .svi{width:20px;height:20px}
+.mx,.an-x,.eye{display:grid;place-items:center;padding:0;line-height:1}
+.mx .svi,.an-x .svi{width:16px;height:16px}
+.eye{color:var(--pd)}.eye .svi{width:18px;height:18px}
+.upg .svi{width:1.15em;height:1.15em}
+.atop-acts .svi{width:20px;height:20px}
+.bnav button i{display:flex;align-items:center;justify-content:center}
+.bnav button i .svi{width:1.1em;height:1.1em;vertical-align:0}
+.todo-i i,.qa-b i{display:flex;align-items:center;justify-content:center;color:var(--p)}
+.todo-i i .svi,.qa-b i .svi{width:1.05em;height:1.05em;vertical-align:0}
+.todo-i s{display:flex;align-items:center}.todo-i s .svi{width:20px;height:20px;vertical-align:0}
+.an-tb i .svi{width:20px;height:20px;vertical-align:0;color:var(--ac)}
+.an-tag .svi{width:1.05em;height:1.05em;vertical-align:0}
+.fbi .svi{width:22px;height:22px;vertical-align:0}
+.hbm .svi{width:20px;height:20px}
+
+/* v31 — kasir, toko, akun, bantuan */
+#vt .ic,#dvt .ic,.tk-seg button .ic{display:inline-flex;align-items:center;justify-content:center}
+#vt .ic .svi,#dvt .ic .svi,.tk-seg button .ic .svi{width:1em;height:1em;vertical-align:0}
+[data-ps] .svi,[data-kstab] .svi,[data-ivprev] .svi,button.ak-ch .svi{margin-right:6px;vertical-align:-.22em}
+.ak-i .svi{width:18px;height:18px;vertical-align:0}
+.hlp-fab .hlp-ic{display:inline-flex}.hlp-fab .hlp-ic .svi{vertical-align:0}
+.hlp-ce{display:inline-flex}.hlp-ce .svi{width:1em;height:1em;vertical-align:0;margin:0}
+.hlp-chk{display:grid;place-items:center;padding:0}.hlp-chk .svi{width:14px;height:14px;vertical-align:0;margin:0}
+.tk-tile i{display:grid;place-items:center}.tk-tile i .svi{width:30px;height:30px;vertical-align:0;margin:0;color:var(--p)}

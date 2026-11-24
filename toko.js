@@ -110,9 +110,9 @@
   function card(r) {
     const dl = left(r), s = state(r), tot = Math.max(1, +r.days || 1), pct = r.ref ? 100 : Math.min(100, Math.max(0, (tot - dl) / tot * 100));
     const bd = s == 'ref' ? ['rf', 'Refund'] : [s, leftTxt(dl)], open = OPEN.has(r.id);
-    const acts = r.ref ? `<button class="btn" data-claim="${r.id}" type="button">🛡️ Klaim</button><button class="btn" data-edit="${r.id}" type="button">Edit</button>`
-      : `<button class="btn pri" data-renew="${r.id}" type="button">🔁 Perpanjang</button><button class="btn" data-wa="${r.id}" type="button">WA</button><button class="btn" data-nota="${r.id}" type="button" title="Buat nota PNG">🧾 Nota</button><button class="btn tk-mb" data-more="${r.id}" type="button" aria-label="Aksi lainnya" aria-expanded="${open}">⋯</button>`;
-    const sec = r.ref ? '' : `<div class="tk-act tk-sec"><button class="btn" data-qrec="${r.id}" type="button" title="Buat QRIS sesuai harga">📲 QR</button><button class="btn" data-claim="${r.id}" type="button">🛡️ Klaim</button><button class="btn" data-rf="${r.id}" type="button">💸 Refund</button><button class="btn" data-dup="${r.id}" type="button" title="Jual lagi ke pembeli lain">⧉ Duplikat</button><button class="btn" data-edit="${r.id}" type="button">✎ Edit</button></div>`;
+    const acts = r.ref ? `<button class="btn" data-claim="${r.id}" type="button">${IC('shield')} Klaim</button><button class="btn" data-edit="${r.id}" type="button">Edit</button>`
+      : `<button class="btn pri" data-renew="${r.id}" type="button">${IC('repeat')} Perpanjang</button><button class="btn" data-wa="${r.id}" type="button">WA</button><button class="btn" data-nota="${r.id}" type="button" title="Buat nota PNG">${IC('receipt')} Nota</button><button class="btn tk-mb" data-more="${r.id}" type="button" aria-label="Aksi lainnya" aria-expanded="${open}">⋯</button>`;
+    const sec = r.ref ? '' : `<div class="tk-act tk-sec"><button class="btn" data-qrec="${r.id}" type="button" title="Buat QRIS sesuai harga">${IC('qr')} QR</button><button class="btn" data-claim="${r.id}" type="button">${IC('shield')} Klaim</button><button class="btn" data-rf="${r.id}" type="button">${IC('banknote')} Refund</button><button class="btn" data-dup="${r.id}" type="button" title="Jual lagi ke pembeli lain">⧉ Duplikat</button><button class="btn" data-edit="${r.id}" type="button">${IC('pencil')} Edit</button></div>`;
     const laba = (+r.price || 0) - (+r.cost || 0), cb = claimBadge(claimsOf(r.buyer));
     return `<article class="tk-rec ${s}${open ? ' mo' : ''}"><div class="tk-h"><strong>${E(r.app)}</strong><span class="badge ${bd[0]}">${E(bd[1])}</span></div>
       ${r.email ? `<small>📧 ${E(r.email)}</small>` : ''}${r.buyer || r.wa ? `<small>👤 ${E(r.buyer || '')}${r.wa ? ' · ' + E(r.wa) : ''}${cb}</small>` : ''}
@@ -154,10 +154,10 @@
     Q('#appl').innerHTML = [...new Set(R.map(r => r.app).concat(P.map(p => p.name)))].map(a => `<option value="${E(a)}">`).join('');
     Q('#catl').innerHTML = [...new Set(P.map(p => p.cat).filter(Boolean))].map(a => `<option value="${E(a)}">`).join('');
   }
-  const trow = (t = {}) => `<div class="tk-trow"><input type="number" class="td" min="1" max="3650" inputmode="numeric" placeholder="durasi (hari)" value="${t.d || ''}"><input type="number" class="tp" min="0" inputmode="numeric" placeholder="harga (Rp)" value="${t.price ?? ''}"><button class="btn" type="button" data-trdel aria-label="Hapus paket">✕</button></div>`;
+  const trow = (t = {}) => `<div class="tk-trow"><input type="number" class="td" min="1" max="3650" inputmode="numeric" placeholder="durasi (hari)" value="${t.d || ''}"><input type="number" class="tp" min="0" inputmode="numeric" placeholder="harga (Rp)" value="${t.price ?? ''}"><button class="btn" type="button" data-trdel aria-label="Hapus paket">${IC('x')}</button></div>`;
   function peditor(p) {
     PE = p || null; const d = p || {name: '', cat: '', cost: '', stock: 0, min: 3, tiers: [{d: 30, price: ''}], note: ''};
-    Q('#pm .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${p ? 'Edit produk' : 'Tambah produk'}</h3>
+    Q('#pm .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>${p ? 'Edit produk' : 'Tambah produk'}</h3>
     <label class="f"><span>Nama produk</span><input type="text" id="pName" maxlength="60" placeholder="mis. Netflix Premium" value="${E(d.name)}"></label>
     <div class="row2"><label class="f"><span>Kategori (opsional)</span><input type="text" id="pCat" list="catl" maxlength="30" placeholder="mis. Streaming" value="${E(d.cat || '')}"></label>
     <label class="f"><span>Modal per akun (Rp)</span><input type="number" id="pCost" min="0" inputmode="numeric" value="${d.cost || ''}"></label></div>
@@ -226,7 +226,7 @@
   function editor(r, pre) {
     EDIT = r || null; const d = r || pre || {app: '', email: '', buyer: '', wa: '', price: '', cost: '', orderDate: today(), days: 30, rm: window.Gate && Gate.free() ? Gate.F.REMIND.slice() : [RMS.includes(3) ? 3 : RMS[0]], note: ''};
     EDAYS = +d.days || 30; ERM = [...(d.rm || [])]; EPID = d.pid || ''; EACC = '';
-    Q('#em .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${r ? 'Edit catatan' : 'Catat penjualan'}</h3>
+    Q('#em .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>${r ? 'Edit catatan' : 'Catat penjualan'}</h3>
     ${P.length ? `<label class="f"><span>Pilih dari produk (opsional)</span><select id="eProd"><option value="">— ketik manual —</option>${P.map(p => `<option value="${p.id}" ${EPID == p.id ? 'selected' : ''}>${E(p.name)} · stok ${+p.stock || 0}</option>`).join('')}</select></label>` : ''}
     <div class="chips" id="eTiers" ${EPID && (P.find(p => p.id == EPID) || {tiers: []}).tiers.length ? '' : 'hidden'}>${tierChips(P.find(p => p.id == EPID))}</div>
     ${!r && AK.some(a => Akun.free(a) > 0) ? `<label class="f"><span>Ambil dari akun simpanan (opsional)</span><select id="eAcc"><option value="">— tidak —</option>${AK.filter(a => Akun.free(a) > 0).map(a => `<option value="${E(a.id)}">${E(a.app)} · ${E(a.email)}${(a.profs || []).length ? ' · ' + Akun.free(a) + ' slot kosong' : ''}</option>`).join('')}</select></label>` : ''}
@@ -283,7 +283,7 @@
   /* ---------- jendela perpanjang ---------- */
   function renewer(r) {
     RN = r; RDAYS = +r.days || 30; RRM = [...(r.rm || [])]; const dl = left(r), p = P.find(x => x.id == r.pid);
-    Q('#rn .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>Perpanjang ${E(r.app)}</h3>
+    Q('#rn .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>Perpanjang ${E(r.app)}</h3>
     <small>${E(r.buyer || 'Tanpa nama')} · berakhir ${fd(r.end)} (${leftTxt(dl).toLowerCase()})</small>
     <div class="chips" id="rTiers" ${p && p.tiers.length ? '' : 'hidden'}>${tierChips(p)}</div>
     <div class="sec2"><h4>Perpanjang berapa lama?</h4><div class="chips" id="rDur">${durChips(RDAYS)}</div>
@@ -309,7 +309,7 @@
   /* ---------- pengeluaran ---------- */
   function xeditor(x) {
     XE = x || null; const d = x || {date: today(), label: '', cat: XCAT[0], amount: ''};
-    Q('#xm .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${x ? 'Edit pengeluaran' : 'Catat pengeluaran'}</h3>
+    Q('#xm .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>${x ? 'Edit pengeluaran' : 'Catat pengeluaran'}</h3>
     <label class="f"><span>Keterangan</span><input type="text" id="xLabel" maxlength="80" placeholder="mis. Iklan IG, beli pulsa, fee admin" value="${E(d.label)}"></label>
     <div class="row2"><label class="f"><span>Tanggal</span><input type="date" id="xDate" value="${d.date}"></label>
     <label class="f"><span>Jumlah (Rp)</span><input type="number" id="xAmt" min="0" inputmode="numeric" value="${d.amount}"></label></div>
@@ -787,7 +787,7 @@
       pcard.hidden = !presets.length;
       if (presets.length) {
         Q('#qrPresetList').innerHTML = presets.map((pr, idx) =>
-          `<div class="tk-line c3"><span><b>${E(pr.label || 'Paket')}</b><br><small>${rp(pr.amt)}</small></span><b>${rp(pr.amt)}</b><div style="display:flex;gap:4px"><button class="btn pri" type="button" data-qruse="${idx}">Pakai</button><button class="btn" type="button" data-qrpdel="${idx}">✕</button></div></div>`
+          `<div class="tk-line c3"><span><b>${E(pr.label || 'Paket')}</b><br><small>${rp(pr.amt)}</small></span><b>${rp(pr.amt)}</b><div style="display:flex;gap:4px"><button class="btn pri" type="button" data-qruse="${idx}">Pakai</button><button class="btn" type="button" data-qrpdel="${idx}">${IC('x')}</button></div></div>`
         ).join('');
       }
     } else {
@@ -873,7 +873,7 @@
       <div class="tk-note">${E(c.issue || '-')}</div>
       ${c.kind == 'ganti' && (c.oldAcc || c.newAcc) ? `<div class="tk-grid tk-wrap"><span>Akun lama<b>${E(c.oldAcc || '-')}</b></span><span>Akun baru<b>${E(c.newAcc || '-')}</b></span></div>` : ''}
       ${c.fix ? `<small>✅ ${E(c.fix)}</small>` : ''}
-      <div class="tk-act">${c.status != 'selesai' ? `<button class="btn pri" data-cdone="${c.id}" type="button">✔ Selesai</button>` : ''}<button class="btn" data-cwa2="${c.id}" type="button">WA</button><button class="btn" data-cedit="${c.id}" type="button">Edit</button></div></article>`;
+      <div class="tk-act">${c.status != 'selesai' ? `<button class="btn pri" data-cdone="${c.id}" type="button">${IC('check')} Selesai</button>` : ''}<button class="btn" data-cwa2="${c.id}" type="button">WA</button><button class="btn" data-cedit="${c.id}" type="button">Edit</button></div></article>`;
   }
   function renderKlaim() {
     const open = CL.filter(c => c.status != 'selesai').length, hot = claimBuyers().filter(b => b.n >= FLAG).length;
@@ -888,7 +888,7 @@
   function ceditor(c, sale) {
     CE = c || null; const d = c || {rid: sale ? sale.id : '', buyer: sale ? sale.buyer || '' : '', wa: sale ? sale.wa || '' : '', app: sale ? sale.app : '', date: today(), kind: 'komplain', status: 'baru', issue: '', fix: '', oldAcc: sale ? sale.email || '' : '', newAcc: ''};
     const sales = [...R].sort((a, b) => key(a.buyer).localeCompare(key(b.buyer)) || key(a.app).localeCompare(key(b.app)));
-    Q('#cm .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>${c ? 'Edit klaim' : 'Catat klaim'}</h3>
+    Q('#cm .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>${c ? 'Edit klaim' : 'Catat klaim'}</h3>
     <label class="f"><span>Dari catatan penjualan (opsional)</span><select id="cSale"><option value="">— isi manual —</option>${sales.map(r => `<option value="${r.id}" ${d.rid == r.id ? 'selected' : ''}>${E(r.buyer || 'Tanpa nama')} · ${E(r.app)}</option>`).join('')}</select></label>
     <div class="row2"><label class="f"><span>Nama pembeli</span><input type="text" id="cBuyer" maxlength="40" value="${E(d.buyer || '')}"></label>
     <label class="f"><span>WhatsApp pembeli</span><input type="tel" id="cWa" maxlength="20" value="${E(d.wa || '')}"></label></div>
@@ -992,12 +992,12 @@
   async function openNota(r) {
     if (!r || r.ref) return toast('Catatan yang sudah di-refund tidak bisa dibuatkan nota');
     NT = r; const d = notaData(r);
-    Q('#nt .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>🧾 Nota pembelian</h3>
+    Q('#nt .ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>🧾 Nota pembelian</h3>
     <small>${E(r.app)}${r.buyer ? ' · ' + E(r.buyer) : ''} · ${d.no}</small>
     <div class="qr-canvas-wrap nt-wrap"><canvas id="ntCv"></canvas></div>
     <div class="tk-ckrow">${r.email ? '<label class="tk-ck"><input type="checkbox" id="ntEm" checked> Tampilkan akun</label>' : ''}${r.note ? '<label class="tk-ck"><input type="checkbox" id="ntNote"> Tampilkan catatan</label>' : ''}</div>
-    <button class="btn pri wide" id="ntShare" type="button">📤 Kirim ke WhatsApp</button>
-    <div class="row2"><button class="btn" id="ntCopy" type="button">📋 Salin gambar</button><button class="btn" id="ntDl" type="button">⬇ Unduh PNG</button></div>
+    <button class="btn pri wide" id="ntShare" type="button">${IC('send')} Kirim ke WhatsApp</button>
+    <div class="row2"><button class="btn" id="ntCopy" type="button">${IC('clipboard')} Salin gambar</button><button class="btn" id="ntDl" type="button">${IC('download')} Unduh PNG</button></div>
     <small class="tk-hint">Di HP, tombol kirim langsung membuka pilihan aplikasi dengan gambar terlampir. Di komputer, gambar disalin lalu tinggal Paste (Ctrl+V) di chat WA.</small>`;
     Q('#nt').hidden = false;
     try { await Promise.all([document.fonts.load(fnt(FONT_H, 26)), document.fonts.load(fnt(FONT_B, 14))]); } catch (e) {}

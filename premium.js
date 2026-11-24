@@ -32,7 +32,7 @@
     const el = Q('#ksHList'); if (!el || !free() || !n) return;
     el.insertAdjacentHTML('beforeend', lockCard(`${n} transaksi lebih lama disembunyikan`, `Akun gratis menampilkan riwayat ${F.HISTORY_DAYS} hari terakhir. Datamu tetap aman dan terbuka lagi saat premium.`, 'Buka semua'));
   }
-  const lockCard = (t, s, b) => `<div class="gt-lock"><b>🔒 ${esc(t)}</b><small>${esc(s || 'Khusus akun premium')}</small><button class="btn pri" data-plans type="button">👑 ${esc(b || 'Buka')}</button></div>`;
+  const lockCard = (t, s, b) => `<div class="gt-lock"><b>🔒 ${esc(t)}</b><small>${esc(s || 'Khusus akun premium')}</small><button class="btn pri" data-plans type="button">${IC('crown')} ${esc(b || 'Buka')}</button></div>`;
 
   /* ---------- fitur yang dikunci untuk akun gratis ---------- */
   const RULES = [
@@ -81,7 +81,7 @@
     if (!bar) { bar = document.createElement('div'); bar.id = 'gtBar'; bar.className = 'gt-bar'; host.parentNode.insertBefore(bar, host); }
     const show = ['#v-kasir', '#v-rekap', '#v-prod', '#v-lap'].some(s => Q(s) && !Q(s).hidden); bar.hidden = !show; if (!show) return;
     const u = usage(), h = meter('Transaksi bulan ini', u.tx, F.TX_MONTH) + meter('Produk', u.prod, F.PRODUCTS) + meter('Pengeluaran bulan ini', u.ex, F.EXPENSES_MONTH);
-    const html = `<div class="gt-h"><b>🆓 Akun Gratis</b><button class="btn pri" data-plans type="button">👑 Upgrade</button></div><div class="gt-ms">${h}</div>`;
+    const html = `<div class="gt-h"><b>🆓 Akun Gratis</b><button class="btn pri" data-plans type="button">${IC('crown')} Upgrade</button></div><div class="gt-ms">${h}</div>`;
     if (bar.dataset.h != html) { bar.dataset.h = html; bar.innerHTML = html; }
   }
   setInterval(paint, 700); document.addEventListener('click', () => setTimeout(paint, 60)); paint();

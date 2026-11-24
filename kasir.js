@@ -16,9 +16,9 @@
   function skeleton() {
     Q('#v-kasir').innerHTML = `
     <nav class="seg ks-tabs" id="ksTabs">
-      <button type="button" data-kstab="pos" class="on">🛒 Kasir</button>
-      <button type="button" data-kstab="his">🧾 Riwayat</button>
-      <button type="button" data-kstab="shop">🏪 Toko</button>
+      <button type="button" data-kstab="pos" class="on">${IC('cart')} Kasir</button>
+      <button type="button" data-kstab="his">${IC('receipt')} Riwayat</button>
+      <button type="button" data-kstab="shop">${IC('store')} Toko</button>
     </nav>
     <div id="ks-pos" class="ks-grid">
       <div class="ks-main">
@@ -46,14 +46,14 @@
         <div class="ks-total"><small>TOTAL BAYAR</small><b id="ksTot">Rp0</b></div>
         <div class="seg ks-method" id="ksMethod">${Object.entries(PAYS).map(([k, l]) => `<button type="button" data-kspay="${k}" class="${k == PAY ? 'on' : ''}">${l}</button>`).join('')}</div>
         <div id="ksPayBox"></div>
-        <button class="btn pri wide" data-ksinv type="button">🧾 Buat invoice & QR tagihan</button>
-        <button class="btn pri wide ks-done" id="ksDone" data-ksdone type="button">✓ Pembayaran diterima · Selesai</button>
+        <button class="btn pri wide" data-ksinv type="button">${IC('receipt')} Buat invoice & QR tagihan</button>
+        <button class="btn pri wide ks-done" id="ksDone" data-ksdone type="button">${IC('check')} Pembayaran diterima · Selesai</button>
         <button class="btn" data-ksclear type="button">Kosongkan pesanan</button>
       </div></aside>
     </div>
     <div id="ks-his" hidden>
       <div class="stats" id="ksHStats"></div>
-      <div class="tools"><input type="search" id="ksHQ" placeholder="Cari no. nota, pembeli, produk…" aria-label="Cari riwayat"><button class="btn" data-kscsv type="button" aria-label="Unduh CSV">⬇</button></div>
+      <div class="tools"><input type="search" id="ksHQ" placeholder="Cari no. nota, pembeli, produk…" aria-label="Cari riwayat"><button class="btn" data-kscsv type="button" aria-label="Unduh CSV">${IC('download')}</button></div>
       <div class="chips" id="ksHF"></div><div class="tk-list" id="ksHList"></div>
     </div>
     <div id="ks-shop" hidden>
@@ -61,7 +61,7 @@
         <div class="ks-main">
         <div class="tk-card wide"><h3>🏪 Profil toko</h3><small>Tampil di header nota. Tersimpan di akunmu.</small>
           <div class="ks-logo"><div class="ks-lg" id="ksLg">🧾</div><div class="ks-lgb">
-            <label class="btn pri" style="cursor:pointer">📷 Upload logo<input type="file" id="ksLogoF" accept="image/*" hidden></label>
+            <label class="btn pri" style="cursor:pointer">${IC('camera')} Upload logo<input type="file" id="ksLogoF" accept="image/*" hidden></label>
             <button class="btn" data-kslogodel type="button">Hapus</button></div></div>
           <label class="f"><span>Nama toko</span><input type="text" id="ksShop" maxlength="40" placeholder="mis. Rizanta Store"></label>
           <label class="f"><span>No. HP / WhatsApp toko</span><input type="tel" id="ksPhone" maxlength="20" inputmode="tel" placeholder="08xxxxxxxxxx"></label>
@@ -72,11 +72,11 @@
         <div class="tk-card wide ks-iv"><h3>🎨 Tampilan invoice</h3><small>Atur tema, bentuk, dan posisi. Pratinjau di kanan langsung berubah.</small>
           ${IVOPTS.map(([k, l, ch]) => `<div class="ks-ivg"><span>${l}</span><div class="ks-ch">${ch.map(([v, t]) => `<button type="button" data-iv="${k}:${v}">${t}</button>`).join('')}</div></div>`).join('')}
           <div class="ks-ivg"><span>Warna aksen</span><div class="ks-ch"><input type="color" id="ivAccent" value="#ff5fa2" aria-label="Warna aksen"><button type="button" data-ivacc0>Ikut warna tema</button></div></div>
-          <div class="ks-ivb"><button class="btn pri" data-ksshopsave type="button">💾 Simpan tampilan</button><button class="btn" data-ivreset type="button">Kembalikan bawaan</button></div>
+          <div class="ks-ivb"><button class="btn pri" data-ksshopsave type="button">${IC('save')} Simpan tampilan</button><button class="btn" data-ivreset type="button">Kembalikan bawaan</button></div>
         </div>
         </div>
         <div class="tk-card wide ks-pvs"><h3>👀 Pratinjau nota</h3>
-          <div class="ks-ch ks-pvm"><button type="button" data-ivprev="inv">⏳ Invoice + QR</button><button type="button" data-ivprev="nota">✓ Nota lunas</button></div>
+          <div class="ks-ch ks-pvm"><button type="button" data-ivprev="inv">${IC('hourglass')} Invoice + QR</button><button type="button" data-ivprev="nota">${IC('check')} Nota lunas</button></div>
           <div class="qr-canvas-wrap ks-pvw"><canvas id="ksPv"></canvas></div></div>
       </div>
     </div>`;
@@ -97,7 +97,7 @@
     const el = Q('#ksCart'); if (!el) return;
     if (!CART.length) { el.innerHTML = '<div class="empty ks-empty">Belum ada pesanan. Ketuk produk di atas ya 👆</div>'; return; }
     el.innerHTML = CART.map((i, x) => `<div class="ks-it" data-k="${i.k}">
-      <div class="ks-ith"><b>${x + 1}. ${E(i.app)}</b><button type="button" class="ib" data-ksdel="${i.k}" aria-label="Hapus item">✕</button></div>
+      <div class="ks-ith"><b>${x + 1}. ${E(i.app)}</b><button type="button" class="ib" data-ksdel="${i.k}" aria-label="Hapus item">${IC('x')}</button></div>
       <div class="ks-itg">
         <label class="f"><span>Harga (Rp)</span><input type="number" data-kf="price" inputmode="numeric" min="0" value="${i.price || ''}"></label>
         <label class="f"><span>Durasi (hari)</span><input type="number" data-kf="days" inputmode="numeric" min="1" value="${i.days}"></label>
@@ -306,11 +306,11 @@
   /* ---------- jendela nota ---------- */
   async function openReceipt(o) {
     RC = o; await Promise.all([syncLogo(), fonts()]);
-    const m = Q('#ks-rc'); m.querySelector('.mcard').innerHTML = `<button class="mx" data-ksclose aria-label="Tutup">✕</button><h3>🧾 Nota ${E(o.inv)}</h3>
+    const m = Q('#ks-rc'); m.querySelector('.mcard').innerHTML = `<button class="mx" data-ksclose aria-label="Tutup">${IC('x')}</button><h3>🧾 Nota ${E(o.inv)}</h3>
       <div class="qr-canvas-wrap nt-wrap"><canvas id="ksRc"></canvas></div>
       <div class="tk-ckrow"><label class="tk-ck"><input type="checkbox" id="ksRcAcc" checked> Tampilkan akun/email</label></div>
-      <button class="btn pri wide" data-ksrcshare type="button">📤 Kirim ke WhatsApp</button>
-      <div class="row2"><button class="btn" data-ksrccopy type="button">📋 Salin gambar</button><button class="btn" data-ksrcdl type="button">⬇ Unduh PNG</button></div>
+      <button class="btn pri wide" data-ksrcshare type="button">${IC('send')} Kirim ke WhatsApp</button>
+      <div class="row2"><button class="btn" data-ksrccopy type="button">${IC('clipboard')} Salin gambar</button><button class="btn" data-ksrcdl type="button">${IC('download')} Unduh PNG</button></div>
       <button class="btn wide" data-ksclose type="button">Transaksi baru</button>`;
     m.hidden = false; paintRc();
   }
@@ -321,12 +321,12 @@
     RC = {unpaid: true, inv: PINV, date: T().today(), time: hhmm(), buyer: BUYER.trim(), wa: WA.trim(), pay: PAY, cash: 0, disc: Math.min(n0(DISC), s), total: t, merch: qc && qc.merch,
       qr: PAY == 'qris' ? T().buildDynamicQRIS(qc.raw, t) : '', items: CART.map(i => ({app: i.app, days: i.days, start: i.start, end: T().addD(i.start, i.days), price: i.price, email: i.email}))};
     await Promise.all([syncLogo(), fonts()]);
-    Q('#ks-rc .mcard').innerHTML = `<button class="mx" data-ksclose aria-label="Tutup">✕</button><h3>🧾 Invoice ${E(RC.inv)}</h3><small>Kirim ke pembeli, lalu tandai lunas setelah bayar.</small>
+    Q('#ks-rc .mcard').innerHTML = `<button class="mx" data-ksclose aria-label="Tutup">${IC('x')}</button><h3>🧾 Invoice ${E(RC.inv)}</h3><small>Kirim ke pembeli, lalu tandai lunas setelah bayar.</small>
       <div class="qr-canvas-wrap nt-wrap"><canvas id="ksRc"></canvas></div>
       <div class="tk-ckrow"><label class="tk-ck"><input type="checkbox" id="ksRcAcc" checked> Tampilkan akun/email</label></div>
-      <button class="btn pri wide" data-ksrcshare type="button">📤 Kirim invoice ke WhatsApp</button>
-      <div class="row2"><button class="btn" data-ksrccopy type="button">📋 Salin gambar</button><button class="btn" data-ksrcdl type="button">⬇ Unduh PNG</button></div>
-      <button class="btn pri wide" data-ksinvpaid type="button">✓ Sudah dibayar · Tandai LUNAS</button>
+      <button class="btn pri wide" data-ksrcshare type="button">${IC('send')} Kirim invoice ke WhatsApp</button>
+      <div class="row2"><button class="btn" data-ksrccopy type="button">${IC('clipboard')} Salin gambar</button><button class="btn" data-ksrcdl type="button">${IC('download')} Unduh PNG</button></div>
+      <button class="btn pri wide" data-ksinvpaid type="button">${IC('check')} Sudah dibayar · Tandai LUNAS</button>
       <button class="btn wide" data-ksclose type="button">Kembali ke kasir</button>`;
     Q('#ks-rc').hidden = false; paintRc();
   }
@@ -358,7 +358,7 @@
     Q('#ksHStats').innerHTML = `<div class="st"><b>${ls.length}</b><span>Transaksi</span></div><div class="st"><b>${rp(all)}</b><span>Total omzet</span></div><div class="st"><b>${rp(sum('cash'))}</b><span>Tunai</span></div><div class="st"><b>${rp(sum('qris') + sum('tf'))}</b><span>QRIS + Transfer</span></div>`;
     Q('#ksHList').innerHTML = ls.length ? ls.map(o => `<div class="tk-rec ks-hr"><div class="ks-hrh"><b>${E(o.inv)}</b><span class="badge ok">${E((PAYS[o.pay] || o.pay))}</span></div>
       <div class="ks-hrm">${T().fd(o.date)}${o.time ? ' · ' + o.time : ''}${o.buyer ? ' · ' + E(o.buyer) : ''}</div><div class="ks-hri">${o.items.map(i => E(i.app) + ' (' + durTxt(i.days) + ')').join(', ')}</div>
-      <div class="ks-hrf"><b>${rp(o.total)}</b><span><button class="btn" type="button" data-ksrc="${E(o.inv)}">🧾 Nota</button> <button class="btn" type="button" data-kswa="${E(o.inv)}">💬 WA</button></span></div></div>`).join('')
+      <div class="ks-hrf"><b>${rp(o.total)}</b><span><button class="btn" type="button" data-ksrc="${E(o.inv)}">${IC('receipt')} Nota</button> <button class="btn" type="button" data-kswa="${E(o.inv)}">${IC('message')} WA</button></span></div></div>`).join('')
       : '<div class="empty">Belum ada transaksi di periode ini.</div>';
     if (window.Gate) Gate.histNote(HIDDEN);
   }

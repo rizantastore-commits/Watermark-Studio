@@ -33,6 +33,22 @@ window.WM_API = (() => {
   const ER = (error, code) => ({ok: false, error, code});
   const valid = (n, p) => !/^[A-Za-z0-9_.]{3,20}$/.test(n) ? 'Username 3-20 karakter: huruf, angka, titik, atau underscore.' : String(p).length < 6 ? 'Password minimal 6 karakter.' : '';
 
+  /* pengumuman (meniru Code.gs v28) */
+  const ANN_T = ['info', 'promo', 'update', 'maint'], ANN_A = ['all', 'free', 'premium'];
+  const annFor = (d, n, p) => (d.ann || []).filter(x => x.active && x.start <= n && !(x.aud == 'free' && p) && !(x.aud == 'premium' && !p) && !(x.end && x.end <= n && x.type != 'update'))
+    .sort((x, y) => y.start - x.start).slice(0, 30).map(x => ({id: x.id, title: x.title, body: x.body, type: x.type, start: x.start, end: x.end, pin: x.pin, cta: x.cta, ctaLabel: x.ctaLabel}));
+  function annClean(r, n) {
+    const title = String(r.title || '').replace(/[<>]/g, '').trim().slice(0, 80), body = String(r.body || '').replace(/[<>]/g, '').trim().slice(0, 500);
+    if (!title) return {err: 'Judul pengumuman belum diisi.'};
+    const type = String(r.type || 'info'), aud = String(r.aud || 'all'); if (!ANN_T.includes(type)) return {err: 'Jenis pengumuman tidak valid.'}; if (!ANN_A.includes(aud)) return {err: 'Tujuan pengumuman tidak valid.'};
+    const cta = String(r.cta || '').trim(); let label = String(r.ctaLabel || '').replace(/[<>]/g, '').trim().slice(0, 24);
+    if (cta && cta != 'plans' && cta != 'wa' && !/^https:\/\/[^\s<>"']{4,300}$/i.test(cta) && !/^[a-z0-9-]{1,30}\.html$/i.test(cta)) return {err: 'Link tombol harus diawali https:// (atau pilih Lihat paket / Chat WhatsApp).'};
+    if (!cta) label = ''; else if (!label) label = cta == 'plans' ? 'Lihat paket' : cta == 'wa' ? 'Chat admin' : 'Buka';
+    let start = +r.start || n, end = +r.end || 0; start = Math.min(Math.max(start, 1), n + 365 * DAY);
+    if (end && end <= start) return {err: 'Waktu berakhir harus setelah waktu mulai.'};
+    return {row: {title, body, type, aud, start, end: end ? Math.min(end, start + 3650 * DAY) : 0, pin: r.pin === true, cta, ctaLabel: label, active: r.active !== false}};
+  }
+
   function demo(r) {
     const d = load(); DCFG = d.cfg && d.cfg.waNumber ? d.cfg : null; const n = Date.now(), act = r.action;
     const L = (who, a, tg, det) => { (d.log = d.log || []).push({time: n, actor: who, action: a, target: tg || '', detail: det || ''}); if (d.log.length > 500) d.log.shift(); };
@@ -95,8 +111,45 @@ window.WM_API = (() => {
       store(d); return OK({token: a.token, user: pub(a, n)});
     }
     if (act == 'tpl_delete') { a.tpls = (a.tpls || []).filter(t => t.n != r.name); store(d); return OK(); }
+    if (act == 'ann_list') return OK({anns: annFor(d, n, prem(a, n))});
+    if (act == 'fb_send') {
+      const msg = String(r.message || '').trim();
+      if (msg.length < 6) return ER('Tuliskan kendala atau usulanmu minimal 6 karakter ya.');
+      d.fb = d.fb || [];
+      const item = {
+        id: 'fb_' + tok().slice(0, 8), username: a.username, role: prem(a, n) ? 'premium' : a.role,
+        category: r.category || 'fitur', page: r.page || '', message: msg.slice(0, 800),
+        status: 'baru', createdAt: n, adminNote: ''
+      };
+      d.fb.unshift(item); store(d); return OK({id: item.id});
+    }
+    if (act == 'admin_fb_list') {
+      if (a.role != 'admin') return ER('Khusus admin.');
+      return OK({items: d.fb || []});
+    }
+    if (act == 'admin_fb_update') {
+      if (a.role != 'admin') return ER('Khusus admin.');
+      const it = (d.fb || []).find(x => x.id == r.id);
+      if (!it) return ER('Masukan tidak ditemukan.');
+      it.status = r.status || it.status;
+      if (r.adminNote !== undefined) it.adminNote = String(r.adminNote).slice(0, 200);
+      store(d); return OK();
+    }
     if (a.role != 'admin') return ER('Khusus admin.', 'forbidden');
     if (act == 'admin_list') return OK({users: d.users.map(u => pub(u, n))});
+    if (act == 'admin_ann_list') return OK({anns: (d.ann || []).map(x => ({...x})).sort((x, y) => y.start - x.start)});
+    if (act == 'admin_ann_save') {
+      const c = annClean(r, n); if (c.err) return ER(c.err);
+      d.ann = d.ann || []; let it = r.id ? d.ann.find(x => x.id == r.id) : null;
+      if (r.id && !it) return ER('Pengumuman tidak ditemukan (mungkin sudah dihapus).');
+      const isNew = !it;
+      if (isNew) { if (d.ann.length >= 100) return ER('Maksimal 100 pengumuman. Hapus yang lama dulu.'); it = {id: 'n' + n.toString(36) + Math.random().toString(36).slice(2, 6), createdAt: n}; d.ann.push(it); }
+      Object.assign(it, c.row, {updatedAt: n, by: a.username}); L(a.username, 'ann_save', c.row.title.slice(0, 40), (isNew ? 'baru' : 'diubah') + ' · ' + c.row.type + ' · ' + c.row.aud); store(d); return OK({id: it.id});
+    }
+    if (act == 'admin_ann_delete') {
+      const it = (d.ann || []).find(x => x.id == r.id); if (!it) return ER('Pengumuman tidak ditemukan (mungkin sudah dihapus).');
+      d.ann = d.ann.filter(x => x !== it); L(a.username, 'ann_delete', it.title.slice(0, 40), ''); store(d); return OK({});
+    }
     if (act == 'admin_log') return OK({logs: (d.log || []).slice(-(+r.limit || 200)).reverse()});
     if (act == 'admin_usage') { const o = {}; d.users.forEach(u => { o[u.username.toLowerCase()] = {rec: (u.recs || []).length, last: 0, tpl: (u.tpls || []).length}; }); return OK({usage: o}); }
     if (act == 'admin_member') { const u = find(d, r.username), t = {}; (u && u.recs || []).forEach(x => { const k = x.t || 'penjualan'; t[k] = (t[k] || 0) + 1; }); return OK({data: {types: t, total: (u && u.recs || []).length, last: 0, tpls: (u && u.tpls || []).map(x => x.n)}}); }

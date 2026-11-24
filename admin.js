@@ -26,7 +26,7 @@
     const info = u.role == 'admin' ? 'Akses penuh' : u.premium ? (u.premiumUntil >= 4e12 ? 'Seumur hidup' : `Sampai ${fd(u.premiumUntil)} · ${daysLeft(u)} hari lagi`) : u.expired ? `Habis ${fd(u.premiumUntil)}` : 'Fitur dasar';
     let bar = '';
     if (isP) { if (u.premiumUntil >= 4e12) bar = '<div class="mm-bar life"><i style="width:100%"></i></div>'; else { const d = daysLeft(u); bar = `<div class="mm-bar ${d <= 3 ? 'bad' : d <= 7 ? 'warn' : 'ok'}"><i style="width:${Math.max(6, Math.min(100, d / 30 * 100))}%"></i></div>`; } }
-    const on = (u.lastSeen || u.lastLogin) && Auth.now() - (u.lastSeen || u.lastLogin) < 15 * 60 * 1000, ext = u.role == 'admin' ? '' : `<button class="btn pri" data-ext="${E(u.username)}" type="button">${isP ? '+30 hari' : '👑 Premium 30 hari'}</button>`;
+    const on = (u.lastSeen || u.lastLogin) && Auth.now() - (u.lastSeen || u.lastLogin) < 15 * 60 * 1000, ext = u.role == 'admin' ? '' : `<button class="btn pri" data-ext="${E(u.username)}" type="button">${isP ? '+30 hari' : IC('crown') + ' Premium 30 hari'}</button>`;
     const us = USE[u.username.toLowerCase()], seen = u.lastSeen || u.lastLogin;
     return `<article class="mrow mm ${s}"><label class="mm-ck" title="Pilih"><input type="checkbox" data-sel="${E(u.username)}" aria-label="Pilih ${E(u.username)}" ${SEL.has(u.username) ? 'checked' : ''} ${u.role == 'admin' ? 'disabled' : ''}></label><div class="mm-top"><div class="mm-av${on ? ' on' : ''}" title="${on ? 'Sedang aktif (15 menit terakhir)' : ''}">${Auth.avatar(u)}</div><div class="mi"><strong>${E(u.username)}<span class="badge ${s}">${lb}</span></strong><small>${info}</small></div></div>
       ${bar}${pfLine(u)}
@@ -36,7 +36,7 @@
   function trow(u) { // akun di Sampah: bisa dipulihkan atau dihapus permanen
     const left = Math.max(0, Math.ceil((u.deletedAt + 30 * DAY - Auth.now()) / DAY));
     return `<article class="mrow mm sp"><div class="mm-top"><div class="mm-av">${Auth.avatar(u)}</div><div class="mi"><strong>${E(u.username)}<span class="badge sp">Sampah</span></strong><small>Dihapus ${fd(u.deletedAt)} · hilang permanen ${left} hari lagi</small></div></div>
-      <div class="mm-act"><button class="btn pri" data-restore="${E(u.username)}" type="button">↩ Pulihkan</button><button class="btn" data-purge="${E(u.username)}" type="button">Hapus permanen</button></div></article>`;
+      <div class="mm-act"><button class="btn pri" data-restore="${E(u.username)}" type="button">${IC('undo')} Pulihkan</button><button class="btn" data-purge="${E(u.username)}" type="button">Hapus permanen</button></div></article>`;
   }
   function render() {
     const n = Auth.now(), soon = USERS.filter(u => u.premium && u.role == 'premium' && u.premiumUntil < n + 7 * DAY);
@@ -78,7 +78,7 @@
   }
   function editor(u) {
     EDIT = u; DUR = null; const self = u.username == Auth.user().username;
-    Q('.ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">✕</button><h3>Profil member</h3>${Auth.profCard(u)}
+    Q('.ed').innerHTML = `<button class="mx" data-close aria-label="Tutup">${IC('x')}</button><h3>Profil member</h3>${Auth.profCard(u)}
     <small>Daftar ${fd(u.createdAt)} · ${u.premium && u.role == 'premium' ? 'Premium sampai ' + (u.premiumUntil >= 4e12 ? 'selamanya' : fd(u.premiumUntil)) : u.role == 'admin' ? 'Admin' : 'Gratis'}</small>
     <div class="sec2"><h4>Role</h4><div class="chips" id="erole">${[['free', 'Gratis'], ['premium', 'Premium'], ['admin', 'Admin']].map(([k, l]) => `<button data-role="${k}" class="${(u.role == k ? 'on' : '')}">${l}</button>`).join('')}</div></div>
     <div class="sec2" id="edur"><h4>Durasi premium</h4>
